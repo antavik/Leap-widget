@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test-and-build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enforce zero third-party dependencies (G11)
+        run: Scripts/check-no-dependencies.sh
+
+      - name: Unit tests (QuaterlyCore)
+        run: swift test --package-path QuaterlyCore
+
+      - name: Build app + widget (Release)
+        run: >
+          xcodebuild -project Quaterly.xcodeproj -scheme Quaterly
+          -configuration Release build CODE_SIGNING_ALLOWED=NO
