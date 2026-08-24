@@ -1,4 +1,4 @@
-# Quaterly — macOS Calendar Widget
+# Leap — macOS Calendar Widget
 
 **Design document · v2.4 · 2026-08-12**
 
@@ -24,7 +24,7 @@ WidgetKit, AppKit, Xcode. Zero third-party dependencies.
 | G8 | Option to show a **week numbers** column |
 | G9 | Option to choose the **first day of the week** (system default or an explicit weekday) |
 | G10 | **Minimal footprint** — near-zero idle CPU and memory; the app must feel weightless (§4.11) |
-| G11 | **Zero third-party dependencies** — Apple SDKs only; no SPM/CocoaPods/Carthage packages, build or runtime. The local `QuaterlyCore` package (§4.1) is first-party code, not a dependency |
+| G11 | **Zero third-party dependencies** — Apple SDKs only; no SPM/CocoaPods/Carthage packages, build or runtime. The local `LeapCore` package (§4.1) is first-party code, not a dependency |
 
 ### Non-goals (v1)
 
@@ -68,11 +68,11 @@ One widget kind. The user adds it in any size and configures it in place
 
 ```
 ┌────────────────────────────┐        ┌─────────────────────────────┐
-│ Quaterly.app (host, LSUI)  │        │ QuaterlyWidget.appex        │
+│ Leap.app (host, LSUI)  │        │ LeapWidget.appex        │
 │  • onboarding / guide      │        │  • AppIntentConfiguration   │
 │  • settings window         │  App   │  • TimelineProvider         │
 │  • URL relay:              │ Group  │  • MonthGridView (SwiftUI)  │
-│    quaterly:// → ical://   │◀──────▶│  • widgetURL(quaterly://)   │
+│    leap:// → ical://   │◀──────▶│  • widgetURL(leap://)   │
 └──────────────┬─────────────┘        └─────────────────────────────┘
                │ NSWorkspace.open(ical://)
                ▼
@@ -97,29 +97,32 @@ One widget kind. The user adds it in any size and configures it in place
 ### 4.1 Targets & modules
 
 ```
-quaterly/
-├── Quaterly.xcodeproj
-├── Quaterly/                    # Host app target (SwiftUI, macOS 14+)
-│   ├── QuaterlyApp.swift        # @main; activation policy .accessory (LSUIElement)
+leap/
+├── Leap.xcodeproj
+├── Leap/                    # Host app target (SwiftUI, macOS 14+)
+│   ├── LeapApp.swift        # @main; activation policy .accessory (LSUIElement)
 │   ├── AppDelegate.swift        # URL relay, reopen handling
 │   ├── Onboarding/              # install guide (§4.7)
 │   └── Settings/                # defaults editor (§4.8)
-├── QuaterlyWidget/              # Widget extension target (macOS 14+)
-│   ├── QuaterlyWidgetBundle.swift
+├── LeapWidget/              # Widget extension target (macOS 14+)
+│   ├── LeapWidgetBundle.swift
 │   ├── CalendarWidget.swift     # Widget + AppIntentConfiguration
 │   ├── ConfigurationIntent.swift
 │   └── Provider.swift           # TimelineProvider
-└── QuaterlyCore/                # Local Swift package, shared by both targets
+└── LeapCore/                # Local Swift package, shared by both targets
     ├── CalendarMath.swift       # month grids, pure functions — fully unit-tested
     ├── MonthModel.swift
+    ├── WidgetConfig.swift       # per-instance render config, model pipeline, year label
+    ├── WidgetKind.swift         # widget kind identifiers
+    ├── ClickPreset.swift        # preset click targets (relay wire format)
     ├── Theme.swift              # semantic colors, metrics (§4.4)
     └── Views/
         ├── MonthGridView.swift
         └── MultiMonthView.swift
 ```
 
-- Bundle IDs: `com.antavik.quaterly` / `com.antavik.quaterly.widget`.
-- App Group: `<TEAMID>.com.antavik.quaterly` (shared `UserDefaults` suite). On macOS the
+- Bundle IDs: `com.antavik.leap` / `com.antavik.leap.widget`.
+- App Group: `<TEAMID>.com.antavik.leap` (shared `UserDefaults` suite). On macOS the
   group ID must be **Team-ID-prefixed** — the iOS-style `group.*` form is not backed by
   provisioning for Developer ID apps and triggers a user consent prompt on macOS 15+.
 - Host app runs as `.accessory` (no Dock icon); it shows its onboarding window on first
@@ -171,7 +174,7 @@ Three-month span is fixed to *previous + current + next* per G1 — no direction
 parameter. Widget declaration:
 
 ```swift
-AppIntentConfiguration(kind: "com.antavik.quaterly.calendar",
+AppIntentConfiguration(kind: "com.antavik.leap.calendar",
                        intent: CalendarConfigIntent.self,
                        provider: Provider()) { entry in
     MultiMonthView(entry: entry)
@@ -185,7 +188,44 @@ AppIntentConfiguration(kind: "com.antavik.quaterly.calendar",
 (`systemExtraLarge` included behind an `if #available(macOS 15, *)` split of the
 families array.)
 
-### 4.3 Calendar mathematics (`QuaterlyCore`)
+**As shipped:** two widget kinds instead of one, because a single intent cannot vary
+its parameters per family — the small size has no companion direction, and the
+two-month size has no month picker.
+
+| Kind | Gallery name | Family | Intent | Month choice |
+|------|--------------|--------|--------|--------------|
+| `com.antavik.leap.calendar` | Two Months | `systemMedium` | `CalendarConfigIntent` | current + previous *or* next |
+| `com.antavik.leap.calendar.small` | Month | `systemSmall` | `SmallCalendarConfigIntent` | current, previous, *or* next |
+
+Both intents conform to `CalendarConfiguration` and therefore share first weekday,
+week numbers, adjacent-month days, year label, and click target verbatim; both render
+through `MultiMonthView`, so the small widget is exactly the one-model path at the
+same `Theme.compact` scale as the two-month widget — element sizes match across
+families. The small widget's year label follows the *displayed* month's
+year, not today's — they differ when the neighbour month crosses a year boundary.
+The today marker stays confined to the offset-0 month, so a previous/next small
+widget shows no marker.
+
+Click handling: when the configured action resolves to a target, the content carries
+`widgetURL` (relayed through the host app). When it resolves to nothing — "Nothing",
+or a custom action with an empty URL — the content is wrapped in an interactive
+no-op `Button(intent:)` instead: the click is swallowed inside the widget process,
+because a bare `widgetURL` would launch the host app just to do nothing, and rapid
+clicks can race that launch-and-quit into showing the app window. (Each no-op click
+still triggers WidgetKit's post-intent timeline reload — three-entry rebuild,
+microseconds, acceptable.)
+
+Relay hardening: `leap://` is registered system-wide, so any process — or a web
+page after a single consent prompt — can invoke it; the app must not act as a
+confused deputy that opens arbitrary URLs. Presets therefore travel as opaque
+tokens (`?action=appleCalendar`) resolved against `ClickPreset` in the app; only
+user-typed custom targets put a real URL on the wire (`?url=…`), and the app
+rejects path-launching schemes there (`file`, `smb`, `afp`, `nfs`, `ftp`, `cifs`).
+Residual risk — laundering a third-party URL scheme through the custom channel —
+is accepted: it requires the user to have consented to opening Leap, and matches
+what any locally running process could already do directly.
+
+### 4.3 Calendar mathematics (`LeapCore`)
 
 Pure, deterministic, fully testable — the widget provider and any future surface consume
 the same functions.
@@ -251,7 +291,7 @@ Derived from the reference screenshot (`systemSmall`, light):
 | Grid | `Grid`/`LazyVGrid`, 7 equal columns, tight vertical leading; up to 6 week rows — row height fixed for 6 rows so months with 5 vs 6 weeks don't shift the header |
 | Week numbers (optional) | Extra narrow **leading** column: `.system(size: 9, weight: .medium)`, `.secondary`, right-aligned digits; blank header cell; day columns compress evenly. Apple's widget has none — parity (G4) applies with the option **off**; when on, styling follows Apple Calendar's week-number treatment |
 | Multi-month | Medium: two `MonthGridView`s in `HStack` with a hairline of spacing; Large: three months (prev/current top row, next bottom-leading) ; ExtraLarge: three in one row; type scale steps down one notch for ≥2 months |
-| Year boundary | Between adjacent months of different years, `YearBoundaryDivider` is rendered: **v1 — a thin separator line** (`Color(nsColor: .separatorColor)`, 1 px, slightly inset), horizontal when the months are stacked, vertical when side by side. Month titles stay year-less (Apple style) — the divider alone marks the crossing. The component is a deliberate swap-point: **future versions replace the line with a graphical asset** (§9) in both orientations, without touching layout |
+| Year boundary | No divider (removed after v1 trial — visual noise). Month titles stay year-less (Apple style); the optional `’26` year label is the only year cue |
 
 Exact point values are tuned against side-by-side screenshots of the Apple widget during
 implementation (Xcode widget previews at all families, both appearances); the table
@@ -260,7 +300,7 @@ above is the starting spec.
 ### 4.5 Theming
 
 - **Zero custom color literals.** Only `Color.primary`, `.secondary`, `Color.red`,
-  `Color(nsColor: .separatorColor)` (year divider), and the semantic widget background.
+  and the semantic widget background.
   Light/dark (G3) then costs nothing: SwiftUI re-renders the archived view for the
   active appearance.
 - Respect `\.widgetRenderingMode`: in the faded Desktop state the system remaps content
@@ -300,12 +340,12 @@ func timeline(for config: CalendarConfigIntent, in context: Context) async -> Ti
 “Install” on macOS means: *register the extension, then walk the user through the
 system's add-widget flow* (constraint #1).
 
-1. **First launch** (user opens Quaterly.app, e.g. after dragging to /Applications):
-   LaunchServices/PluginKit registers `QuaterlyWidget.appex` automatically — the widget
+1. **First launch** (user opens Leap.app, e.g. after dragging to /Applications):
+   LaunchServices/PluginKit registers `LeapWidget.appex` automatically — the widget
    now appears in the system widget gallery. No further "installation" exists or is
    possible.
 2. **Onboarding window** (SwiftUI, 3 steps, with short screen recordings):
-   - *Desktop:* right-click Desktop → **Edit Widgets…** → search "Quaterly" → drag to
+   - *Desktop:* right-click Desktop → **Edit Widgets…** → search "Leap" → drag to
      Desktop.
    - *Notification Center:* click the menu-bar clock → scroll down → **Edit Widgets**.
    - *Configure:* right-click the placed widget → **Edit “Calendar”** → choose Months /
@@ -317,14 +357,14 @@ system's add-widget flow* (constraint #1).
    re-runnable guide).
 
 Dev note (not shipped): during development the gallery can cache stale metadata —
-`killall NotificationCenter chronod` and `pluginkit -m -i com.antavik.quaterly.widget`
+`killall NotificationCenter chronod` and `pluginkit -m -i com.antavik.leap.widget`
 are the standard remedies.
 
 ### 4.8 Settings (App Group)
 
 Per-instance options live in the widget's own intent (§4.2) — that is the primary
 configuration surface. The host app's Settings window holds only cross-instance
-defaults, stored in `UserDefaults(suiteName: "<TEAMID>.com.antavik.quaterly")` (§4.1):
+defaults, stored in `UserDefaults(suiteName: "<TEAMID>.com.antavik.leap")` (§4.1):
 
 | Key | Default | Notes |
 |---|---|---|
@@ -333,10 +373,10 @@ defaults, stored in `UserDefaults(suiteName: "<TEAMID>.com.antavik.quaterly")` (
 
 ### 4.9 Click → default calendar app
 
-- Every widget view sets `.widgetURL(URL(string: "quaterly://open-calendar")!)`
+- Every widget view sets `.widgetURL(URL(string: "leap://open-calendar")!)`
   (small family supports only `widgetURL`; using the same single target on all families
   keeps behavior uniform — the whole widget is one click surface, like Apple's).
-- Host app declares the `quaterly` URL scheme (`CFBundleURLTypes`) and handles it in the
+- Host app declares the `leap` URL scheme (`CFBundleURLTypes`) and handles it in the
   AppDelegate **without showing any window**:
 
 ```swift
@@ -362,7 +402,7 @@ func application(_ app: NSApplication, open urls: [URL]) {
 | Locale switch (first weekday, symbols, RTL) | `autoupdatingCurrent` + system widget reload on locale change; explicit first-day override wins over locale; layout uses leading/trailing, never left/right |
 | First-day override changes row count (e.g. a month needs 6 rows Mon-first but 5 Sun-first) | Grid, header, and week numbers all derive from one effective calendar; fixed 6-row height absorbs the difference |
 | Week 52/53 → W1 at year boundary | Week number computed per displayed row from the effective calendar; W53 years (e.g. 2026 ISO) covered by unit tests |
-| Displayed span crosses New Year (Dec \| Jan adjacent) | `YearBoundaryDivider` rendered between the two months (§4.4); detected via `MonthModel.year` mismatch; at most one boundary can appear in a 3-month span; single-month span never shows one |
+| Displayed span crosses New Year (Dec \| Jan adjacent) | No divider (§4.4); `MonthModel.year` metadata retained — the small widget's year label follows the displayed month's year |
 | Timezone travel | System reloads widgets on TZ change; entries are TZ-relative |
 | Host app deleted | System removes the app's widgets from Desktop/Notification Center automatically — no dangling click targets |
 | macOS 15 `systemExtraLarge` | Families gated with `#available`; macOS 14 users simply don't see XL |
@@ -413,7 +453,7 @@ Rules:
 | Layer | Approach |
 |---|---|
 | `CalendarMath` | Unit tests (Swift Testing): fixed `Calendar` fixtures — Mon-first, Sun-first, Fri–Sat weekend regions; leap Feb; 4/5/6-row months; year boundaries; DST midnights; `isToday` only in offset-0; all 7 first-day overrides (header rotation ↔ row layout consistency); week numbers — ISO vs US numbering, W52/W53/W1 boundaries; `year` metadata across Dec/Jan spans |
-| Views | Xcode Previews matrix: 4 families × {1,2,3 months} × {light, dark} × {fullColor, vibrant} × {week numbers on/off}; fixed Dec/Jan fixture for the year-boundary divider in every multi-month layout; snapshot tests via `ImageRenderer` for regression |
+| Views | Xcode Previews matrix: 4 families × {1,2,3 months} × {light, dark} × {fullColor, vibrant} × {week numbers on/off}; fixed Dec/Jan fixture for year-boundary layouts; snapshot tests via `ImageRenderer` for regression |
 | Parity (G4) | Manual overlay comparison against Apple's widget screenshots per family/appearance |
 | Timeline | Unit test provider output: entry count, midnight alignment across DST |
 | Integration | Manual: add/remove/edit widget on Desktop + Notification Center; click-through to Calendar, Fantastical; appearance switch live; "reduce transparency" accessibility mode |
@@ -431,7 +471,7 @@ Rules:
 - **Dependency policy (G11):** Apple SDKs only — no third-party packages anywhere,
   including tests (snapshots via native `ImageRenderer`, §5, not an external snapshot
   library). Consequences: nothing to license-audit, no supply-chain surface to notarize
-  around, no dependency updates to chase, and `Package.swift` of `QuaterlyCore` declares
+  around, no dependency updates to chase, and `Package.swift` of `LeapCore` declares
   an empty `dependencies: []` — CI fails the build if that ever changes.
 
 ## 7. Risks
@@ -445,17 +485,13 @@ Rules:
 
 ## 8. Milestones
 
-1. **M1 (2–3 d):** `QuaterlyCore` — models, math, unit tests; `MonthGridView` with preview matrix.
+1. **M1 (2–3 d):** `LeapCore` — models, math, unit tests; `MonthGridView` with preview matrix.
 2. **M2 (2–3 d):** Widget extension — intent, provider, families, containerBackground, widgetURL; visual parity pass.
 3. **M3 (2 d):** Host app — URL relay, onboarding with placement detection, settings.
 4. **M4 (2–3 d):** QA matrix (§5) incl. performance budgets (§4.11), notarized DMG, README.
 
 ## 9. Future work
 
-Graphical **year-boundary asset** replacing the v1 separator line — drop-in inside
-`YearBoundaryDivider`; asset catalog in `QuaterlyCore`; needed variants: horizontal
-(stacked months) + vertical (side-by-side), light/dark, vibrant/tinted-safe (§4.5);
-prefer SVG/PDF template or SF-Symbol-style vector so one source scales across widget
-families · event dots via EventKit (opt-in, brings permission prompt) ·
+Event dots via EventKit (opt-in, brings permission prompt) ·
 custom accent colors · month paging via interactive widget buttons (AppIntents) ·
-iOS/iPadOS widget from the same `QuaterlyCore` · localization pass.
+iOS/iPadOS widget from the same `LeapCore` · localization pass.

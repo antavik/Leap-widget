@@ -14,10 +14,10 @@ jobs:
       - name: Enforce zero third-party dependencies (G11)
         run: Scripts/check-no-dependencies.sh
 
-      - name: Unit tests (QuaterlyCore)
-        run: swift test --package-path QuaterlyCore
+      - name: Unit tests (LeapCore)
+        run: swift test --package-path LeapCore
 
       - name: Build app + widget (Release)
         run: >
-          xcodebuild -project Quaterly.xcodeproj -scheme Quaterly
+          xcodebuild -project Leap.xcodeproj -scheme Leap
           -configuration Release build CODE_SIGNING_ALLOWED=NO
