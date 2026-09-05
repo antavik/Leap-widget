@@ -24,9 +24,9 @@ private func fixtureCalendar() -> Calendar {
     let model = monthModel(containing: today, offset: 0, calendar: calendar,
                            today: today,
                            options: MonthOptions(showWeekNumbers: true))
-    let image = renderedImage(MonthGridView(model: model), size: CGSize(width: 155, height: 155))
-    #expect(image != nil)
-    #expect(image!.size.width > 0)
+    let image = try #require(renderedImage(MonthGridView(model: model),
+                                           size: CGSize(width: 155, height: 155)))
+    #expect(image.size.width > 0)
 }
 
 /// The small widget's path: one model plus the displayed month's year label.
@@ -38,6 +38,34 @@ private func fixtureCalendar() -> Calendar {
     let image = renderedImage(
         MultiMonthView(models: [december], yearLabel: yearLabel(forYear: december.year)),
         size: CGSize(width: 155, height: 155))
+    #expect(image != nil)
+}
+
+/// The superscript title row at both type scales, with the widest label the
+/// design allows (Roman + week numbers).
+@Test @MainActor func monthNumberRendersAtBothScales() throws {
+    let calendar = fixtureCalendar()
+    let september = calendar.date(from: DateComponents(year: 2026, month: 9, day: 12))!
+    let model = monthModel(containing: september, offset: 0, calendar: calendar,
+                           today: september,
+                           options: MonthOptions(showWeekNumbers: true,
+                                                 monthNumberStyle: .roman))
+    #expect(model.monthNumberLabel == "IX")
+    for metrics in [Theme.single, Theme.compact] {
+        let image = renderedImage(MonthGridView(model: model, metrics: metrics),
+                                  size: CGSize(width: 155, height: 155))
+        #expect(image != nil)
+    }
+}
+
+@Test @MainActor func multiMonthWithMonthNumbersRenders() throws {
+    let calendar = fixtureCalendar()
+    let december = calendar.date(from: DateComponents(year: 2026, month: 12, day: 15))!
+    let config = WidgetConfig(span: 2, companionPrevious: false,
+                              options: MonthOptions(monthNumberStyle: .arabic))
+    let image = renderedImage(
+        MultiMonthView(date: december, family: .medium, config: config, calendar: calendar),
+        size: CGSize(width: 330, height: 155))
     #expect(image != nil)
 }
 

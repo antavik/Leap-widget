@@ -53,10 +53,10 @@ public struct MonthGridView: View {
         let weekendColumns = model.weekendColumns
 
         VStack(alignment: .firstWeekdayColumn, spacing: 4) {
-            Text(model.title)
-                .font(.system(size: metrics.title, weight: .semibold))
+            titleText
                 .foregroundStyle(.red)
                 .alignmentGuide(.firstWeekdayColumn) { $0[.leading] }
+                .accessibilityLabel(monthAccessibilityLabel)
             Grid(horizontalSpacing: 0, verticalSpacing: metrics.rowSpacing) {
                 GridRow {
                     if model.weekNumbers != nil {
@@ -79,6 +79,29 @@ public struct MonthGridView: View {
                 }
             }
         }
+    }
+
+    /// Month name with an optional superscript month number.
+    /// Keeping both in one `Text` preserves the title's
+    /// `firstWeekdayColumn` alignment guide.
+    private var titleText: Text {
+        let name = Text(model.title)
+            .font(.system(size: metrics.title, weight: .semibold))
+
+        guard let label = model.monthNumberLabel else { return name }
+
+        // Thin space: the gap belongs to the glyph run, so the alignment
+        // guide keeps measuring from the title's own leading edge.
+        return name + Text(verbatim: "\u{2009}" + label)
+            .font(.system(size: metrics.monthNumber, weight: .semibold))
+            .baselineOffset(metrics.monthNumberBaseline)
+            .foregroundStyle(.red.opacity(0.55))
+    }
+
+    private var monthAccessibilityLabel: Text {
+        model.monthNumberLabel == nil
+            ? Text(model.title)
+            : Text("\(model.title), month \(model.monthNumber)")
     }
 
     /// Weekday header cell; the first column's glyph exports its leading edge
@@ -165,7 +188,13 @@ public struct MonthGridView: View {
         .preferredColorScheme(.dark)
 }
 
-private func previewModel(firstWeekday: Int, showWeekNumbers: Bool = false) -> MonthModel {
+#Preview("Roman month number", traits: .fixedLayout(width: 170, height: 170)) {
+    MonthGridView(model: previewModel(firstWeekday: 2, monthNumberStyle: .roman))
+        .padding(12)
+}
+
+private func previewModel(firstWeekday: Int, showWeekNumbers: Bool = false,
+                          monthNumberStyle: MonthNumberStyle? = nil) -> MonthModel {
     var calendar = Calendar(identifier: .gregorian)
     calendar.locale = Locale(identifier: "en_US")
 
@@ -176,5 +205,6 @@ private func previewModel(firstWeekday: Int, showWeekNumbers: Bool = false) -> M
                       calendar: calendar,
                       today: today,
                       options: MonthOptions(firstWeekday: firstWeekday,
-                                            showWeekNumbers: showWeekNumbers))
+                                            showWeekNumbers: showWeekNumbers,
+                                            monthNumberStyle: monthNumberStyle))
 }

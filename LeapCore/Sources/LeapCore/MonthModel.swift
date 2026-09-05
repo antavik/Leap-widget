@@ -1,18 +1,36 @@
 import Foundation
 
+public enum MonthNumberStyle: String, CaseIterable, Sendable {
+    case arabic
+    case roman
+
+    private static let romanLabels = ["I", "II", "III", "IV", "V", "VI",
+                                                "VII", "VIII", "IX", "X", "XI", "XII"]
+
+    public func label(forMonth month: Int) -> String? {
+        switch self {
+        case .arabic:
+            return month > 0 ? String(month) : nil
+        case .roman:
+            return (1...12).contains(month) ? Self.romanLabels[month - 1] : nil
+        }
+    }
+}
+
 public struct MonthOptions: Equatable, Sendable {
-    /// `nil` = follow the calendar's locale; otherwise 1 = Sunday … 7 = Saturday
-    /// (`Calendar` weekday convention).
     public let firstWeekday: Int?
     public let showWeekNumbers: Bool
     public let showOutsideDays: Bool
+    public let monthNumberStyle: MonthNumberStyle?
 
     public init(firstWeekday: Int? = nil,
                 showWeekNumbers: Bool = false,
-                showOutsideDays: Bool = true) {
+                showOutsideDays: Bool = true,
+                monthNumberStyle: MonthNumberStyle? = nil) {
         self.firstWeekday = firstWeekday
         self.showWeekNumbers = showWeekNumbers
         self.showOutsideDays = showOutsideDays
+        self.monthNumberStyle = monthNumberStyle
     }
 }
 
@@ -35,6 +53,10 @@ public struct MonthModel: Equatable, Sendable {
     public let title: String
     /// Calendar year of the month — the small widget's year label follows it.
     public let year: Int
+    /// Month of the year, 1…12; always set, whatever the number option is.
+    public let monthNumber: Int
+    /// Rendered month number, e.g. "8" or "VIII"; `nil` when the option is off.
+    public let monthNumberLabel: String?
     /// Very-short standalone weekday symbols rotated to the effective first weekday.
     public let weekdayHeaders: [String]
     /// Always six 7-column rows; leading/trailing cells hold adjacent-month
@@ -45,10 +67,14 @@ public struct MonthModel: Equatable, Sendable {
     /// Whether `isOutsideMonth` days are drawn; off renders their cells blank.
     public let showsOutsideDays: Bool
 
-    public init(title: String, year: Int, weekdayHeaders: [String], weeks: [[Day]],
+    public init(title: String, year: Int, monthNumber: Int,
+                monthNumberLabel: String? = nil,
+                weekdayHeaders: [String], weeks: [[Day]],
                 weekNumbers: [Int]?, showsOutsideDays: Bool = true) {
         self.title = title
         self.year = year
+        self.monthNumber = monthNumber
+        self.monthNumberLabel = monthNumberLabel
         self.weekdayHeaders = weekdayHeaders
         self.weeks = weeks
         self.weekNumbers = weekNumbers

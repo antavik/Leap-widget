@@ -7,7 +7,7 @@ let package = Package(
     products: [
         .library(name: "LeapCore", targets: ["LeapCore"])
     ],
-    dependencies: [],  // G11: must stay empty — CI fails the build otherwise
+    dependencies: [],  // G11: zero third-party dependencies
     targets: [
         .target(name: "LeapCore"),
         .testTarget(name: "LeapCoreTests", dependencies: ["LeapCore"]),

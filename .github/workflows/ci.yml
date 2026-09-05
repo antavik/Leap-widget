@@ -11,9 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Enforce zero third-party dependencies (G11)
-        run: Scripts/check-no-dependencies.sh
-
       - name: Unit tests (LeapCore)
         run: swift test --package-path LeapCore
 

@@ -7,11 +7,15 @@ struct CalendarEntry: TimelineEntry {
     let models: [MonthModel]
     let yearLabel: String?
 
-    init(date: Date, config: CalendarConfigIntent, family: WidgetLayoutFamily) {
+    init(date: Date, config: CalendarConfigIntent, family: WidgetLayoutFamily,
+         builder: MonthModelBuilder? = nil) {
         let render = config.renderConfig
         self.date = date
         self.config = config
-        self.models = monthModels(containing: date, family: family, config: render)
+        self.models = monthModels(containing: date, family: family, config: render,
+                                  builder: builder ?? MonthModelBuilder(
+                                      calendar: .autoupdatingCurrent,
+                                      options: render.options))
         self.yearLabel = currentYearLabel(for: date, config: render)
     }
 }
@@ -30,9 +34,17 @@ struct Provider: AppIntentTimelineProvider {
     func timeline(for configuration: CalendarConfigIntent, in context: Context) async -> Timeline<CalendarEntry> {
         // Now + the next two midnights, `.atEnd`: the today marker flips
         // at 00:00 at ~1 reload/day.
-        let dates = timelineDates(from: Date.now, calendar: Calendar.autoupdatingCurrent)
+        let calendar = Calendar.autoupdatingCurrent
+        let dates = timelineDates(from: Date.now, calendar: calendar)
         let family = layoutFamily(for: context)
-        let entries = dates.map { CalendarEntry(date: $0, config: configuration, family: family) }
+
+        // Every entry shares the reload's calendar and configuration, so one
+        // builder covers them all; the setup dominates a month build.
+        let builder = MonthModelBuilder(calendar: calendar,
+                                        options: configuration.renderConfig.options)
+        let entries = dates.map {
+            CalendarEntry(date: $0, config: configuration, family: family, builder: builder)
+        }
         return Timeline(entries: entries, policy: .atEnd)
     }
 
@@ -50,13 +62,16 @@ struct SmallCalendarEntry: TimelineEntry {
     let model: MonthModel
     let yearLabel: String?
 
+    /// `builder` lets a timeline's entries share one calendar/locale/symbol
+    /// setup; passing `nil` resolves a fresh one from `calendar`.
     init(date: Date, config: SmallCalendarConfigIntent,
-         calendar: Calendar = .autoupdatingCurrent) {
-        let model = monthModel(containing: date,
-                               offset: config.month.offset,
-                               calendar: calendar,
-                               today: date,
-                               options: config.monthOptions)
+         calendar: Calendar = .autoupdatingCurrent,
+         builder: MonthModelBuilder? = nil) {
+        let builder = builder ?? MonthModelBuilder(calendar: calendar,
+                                                   options: config.monthOptions)
+        let model = builder.model(containing: date,
+                                  offset: config.month.offset,
+                                  today: date)
         self.date = date
         self.config = config
         self.model = model
@@ -76,8 +91,12 @@ struct SmallProvider: AppIntentTimelineProvider {
 
     func timeline(for configuration: SmallCalendarConfigIntent,
                   in context: Context) async -> Timeline<SmallCalendarEntry> {
-        let dates = timelineDates(from: Date.now, calendar: Calendar.autoupdatingCurrent)
-        let entries = dates.map { SmallCalendarEntry(date: $0, config: configuration) }
+        let calendar = Calendar.autoupdatingCurrent
+        let dates = timelineDates(from: Date.now, calendar: calendar)
+        let builder = MonthModelBuilder(calendar: calendar, options: configuration.monthOptions)
+        let entries = dates.map {
+            SmallCalendarEntry(date: $0, config: configuration, builder: builder)
+        }
         return Timeline(entries: entries, policy: .atEnd)
     }
 }

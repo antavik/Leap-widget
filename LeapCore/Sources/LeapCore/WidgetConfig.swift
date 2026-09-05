@@ -31,16 +31,20 @@ public func monthModels(containing date: Date,
                         family: WidgetLayoutFamily,
                         config: WidgetConfig,
                         calendar: Calendar = .autoupdatingCurrent) -> [MonthModel] {
+    monthModels(containing: date,
+                family: family,
+                config: config,
+                builder: MonthModelBuilder(calendar: calendar, options: config.options))
+}
+
+public func monthModels(containing date: Date,
+                        family: WidgetLayoutFamily,
+                        config: WidgetConfig,
+                        builder: MonthModelBuilder) -> [MonthModel] {
     displayedOffsets(span: config.span,
                      companionPrevious: config.companionPrevious,
                      capacity: family.capacity)
-        .map {
-            monthModel(containing: date,
-                       offset: $0,
-                       calendar: calendar,
-                       today: date,
-                       options: config.options)
-        }
+        .map { builder.model(containing: date, offset: $0, today: date) }
 }
 
 public func yearLabel(forYear year: Int) -> String {

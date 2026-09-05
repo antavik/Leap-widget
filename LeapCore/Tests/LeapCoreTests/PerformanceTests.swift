@@ -37,6 +37,31 @@ private func budgetCalendar() -> Calendar {
     #expect(elapsed / runs < .milliseconds(50))
 }
 
+/// Steady-state arithmetic path with one builder reused across the reload.
+/// The tight budget catches regressions to per-month ICU work.
+@Test func builderThreeMonthBuildMeetsClockBudget() {
+    let calendar = budgetCalendar()
+    let today = calendar.date(from: DateComponents(year: 2026, month: 8, day: 12))!
+    // Month numbers on: a table lookup per month must not move the budget.
+    let options = MonthOptions(firstWeekday: 2, showWeekNumbers: true,
+                               monthNumberStyle: .roman)
+    let builder = MonthModelBuilder(calendar: calendar, options: options)
+
+    for offset in -1...1 {   // warm-up
+        _ = builder.model(containing: today, offset: offset, today: today)
+    }
+
+    let runs = 100
+    let elapsed = ContinuousClock().measure {
+        for _ in 0..<runs {
+            for offset in -1...1 {
+                _ = builder.model(containing: today, offset: offset, today: today)
+            }
+        }
+    }
+    #expect(elapsed / runs < .milliseconds(1))
+}
+
 @Test func timelineDatesBuildMeetsClockBudget() {
     let calendar = budgetCalendar()
     let now = calendar.date(from: DateComponents(year: 2026, month: 8, day: 12, hour: 9))!

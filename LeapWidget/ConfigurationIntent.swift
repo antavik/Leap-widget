@@ -50,6 +50,25 @@ enum FirstWeekday: String, AppEnum {
     }
 }
 
+enum MonthNumberDisplay: String, AppEnum {
+    case off, arabic, roman
+
+    static let typeDisplayRepresentation: TypeDisplayRepresentation = "Month Number"
+    static let caseDisplayRepresentations: [MonthNumberDisplay: DisplayRepresentation] = [
+        .off: "Off",
+        .arabic: "Number (6)",
+        .roman: "Roman (VI)",
+    ]
+
+    var style: MonthNumberStyle? {
+        switch self {
+        case .off: nil
+        case .arabic: .arabic
+        case .roman: .roman
+        }
+    }
+}
+
 enum ClickAction: String, AppEnum {
     case appleCalendar, fantastical, googleCalendar, custom, doNothing
 
@@ -83,6 +102,7 @@ protocol CalendarConfiguration {
     var showWeekNumbers: Bool { get }
     var showOutsideDays: Bool { get }
     var showYear: Bool { get }
+    var monthNumber: MonthNumberDisplay { get }
     var clickAction: ClickAction { get }
     var customURL: String { get }
 }
@@ -98,7 +118,8 @@ extension CalendarConfiguration {
     var monthOptions: MonthOptions {
         MonthOptions(firstWeekday: firstWeekday.calendarWeekday,
                      showWeekNumbers: showWeekNumbers,
-                     showOutsideDays: showOutsideDays)
+                     showOutsideDays: showOutsideDays,
+                     monthNumberStyle: monthNumber.style)
     }
 }
 
@@ -120,6 +141,9 @@ struct CalendarConfigIntent: WidgetConfigurationIntent, CalendarConfiguration {
     @Parameter(title: "Show Current Year", default: true)
     var showYear: Bool
 
+    @Parameter(title: "Month Number", default: .off)
+    var monthNumber: MonthNumberDisplay
+
     @Parameter(title: "Click Opens", default: .appleCalendar)
     var clickAction: ClickAction
 
@@ -133,6 +157,7 @@ struct CalendarConfigIntent: WidgetConfigurationIntent, CalendarConfiguration {
                 \.$showWeekNumbers
                 \.$showOutsideDays
                 \.$showYear
+                \.$monthNumber
                 \.$clickAction
                 \.$customURL
             }
@@ -142,6 +167,7 @@ struct CalendarConfigIntent: WidgetConfigurationIntent, CalendarConfiguration {
                 \.$showWeekNumbers
                 \.$showOutsideDays
                 \.$showYear
+                \.$monthNumber
                 \.$clickAction
             }
         }
@@ -175,6 +201,9 @@ struct SmallCalendarConfigIntent: WidgetConfigurationIntent, CalendarConfigurati
     @Parameter(title: "Show Year", default: true)
     var showYear: Bool
 
+    @Parameter(title: "Month Number", default: .off)
+    var monthNumber: MonthNumberDisplay
+
     @Parameter(title: "Click Opens", default: .appleCalendar)
     var clickAction: ClickAction
 
@@ -188,6 +217,7 @@ struct SmallCalendarConfigIntent: WidgetConfigurationIntent, CalendarConfigurati
                 \.$showWeekNumbers
                 \.$showOutsideDays
                 \.$showYear
+                \.$monthNumber
                 \.$clickAction
                 \.$customURL
             }
@@ -197,6 +227,7 @@ struct SmallCalendarConfigIntent: WidgetConfigurationIntent, CalendarConfigurati
                 \.$showWeekNumbers
                 \.$showOutsideDays
                 \.$showYear
+                \.$monthNumber
                 \.$clickAction
             }
         }

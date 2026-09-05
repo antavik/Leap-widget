@@ -75,6 +75,7 @@ private func model(_ year: Int, _ month: Int, _ day: Int,
     #expect(february.weeks[4].allSatisfy { $0.isOutsideMonth })
     #expect(february.weeks[5].allSatisfy { $0.isOutsideMonth })
     #expect(february.weeks[4].map(\.number) == [1, 2, 3, 4, 5, 6, 7])
+
     // Leap Feb 2024 (starts Thursday, 29 days) ends mid-row Monday-first.
     let leap = model(2024, 2, 10, calendar: mondayFirst)
     #expect(leap.weeks.count == 6)
@@ -155,6 +156,42 @@ private func model(_ year: Int, _ month: Int, _ day: Int,
     #expect(previous.year == 2026)
     #expect(current.title == "JANUARY")
     #expect(current.year == 2027)
+}
+
+// MARK: - Month number
+
+@Test func monthNumberFollowsTheDisplayedMonth() throws {
+    let options = MonthOptions(monthNumberStyle: .arabic)
+    for (offset, expected) in [(-1, 7), (0, 8), (1, 9)] {
+        let displayed = model(2026, 8, 12, offset: offset,
+                              calendar: mondayFirst, options: options)
+        #expect(displayed.monthNumber == expected)
+        #expect(displayed.monthNumberLabel == String(expected))
+    }
+}
+
+// The one place number and year disagree: December + 1 is month 1 of the
+// next year.
+@Test func monthNumberWrapsAcrossTheYearBoundary() throws {
+    let january = model(2026, 12, 15, offset: 1, calendar: mondayFirst,
+                        options: MonthOptions(monthNumberStyle: .roman))
+    #expect(january.monthNumber == 1)
+    #expect(january.monthNumberLabel == "I")
+    #expect(january.year == 2027)
+
+    let december = model(2027, 1, 15, offset: -1, calendar: mondayFirst,
+                         options: MonthOptions(monthNumberStyle: .roman))
+    #expect(december.monthNumber == 12)
+    #expect(december.monthNumberLabel == "XII")
+    #expect(december.year == 2026)
+}
+
+// Off leaves no label, but the number itself stays available to the view's
+// accessibility text.
+@Test func monthNumberLabelAbsentWhenStyleIsOff() throws {
+    let august = model(2026, 8, 12, calendar: mondayFirst)
+    #expect(august.monthNumberLabel == nil)
+    #expect(august.monthNumber == 8)
 }
 
 // MARK: - Weekends
