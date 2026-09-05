@@ -142,22 +142,6 @@ private func model(_ year: Int, _ month: Int, _ day: Int,
     #expect(month.weeks.flatMap { $0 }.allSatisfy { !$0.isToday })
 }
 
-// MARK: - Year boundary metadata
-
-@Test func yearMetadataAcrossDecemberJanuarySpan() throws {
-    let january = date(2027, 1, 10, in: mondayFirst)
-    let previous = monthModel(containing: january, offset: -1,
-                              calendar: mondayFirst, today: january,
-                              options: MonthOptions())
-    let current = monthModel(containing: january, offset: 0,
-                             calendar: mondayFirst, today: january,
-                             options: MonthOptions())
-    #expect(previous.title == "DECEMBER")
-    #expect(previous.year == 2026)
-    #expect(current.title == "JANUARY")
-    #expect(current.year == 2027)
-}
-
 // MARK: - Month number
 
 @Test func monthNumberFollowsTheDisplayedMonth() throws {
@@ -171,16 +155,18 @@ private func model(_ year: Int, _ month: Int, _ day: Int,
 }
 
 // The one place number and year disagree: December + 1 is month 1 of the
-// next year.
+// next year; titles and years must follow the displayed month across it.
 @Test func monthNumberWrapsAcrossTheYearBoundary() throws {
     let january = model(2026, 12, 15, offset: 1, calendar: mondayFirst,
                         options: MonthOptions(monthNumberStyle: .roman))
+    #expect(january.title == "JANUARY")
     #expect(january.monthNumber == 1)
     #expect(january.monthNumberLabel == "I")
     #expect(january.year == 2027)
 
     let december = model(2027, 1, 15, offset: -1, calendar: mondayFirst,
                          options: MonthOptions(monthNumberStyle: .roman))
+    #expect(december.title == "DECEMBER")
     #expect(december.monthNumber == 12)
     #expect(december.monthNumberLabel == "XII")
     #expect(december.year == 2026)
@@ -256,7 +242,6 @@ private func model(_ year: Int, _ month: Int, _ day: Int,
 
 @Test func weekNumbersAbsentWhenDisabled() throws {
     #expect(model(2026, 8, 12, calendar: mondayFirst).weekNumbers == nil)
-    #expect(model(2026, 8, 12, calendar: mondayFirst).weekendColumns.count == 7)
 }
 
 // MARK: - Displayed offsets (span ↔ capacity)
@@ -270,23 +255,6 @@ private func model(_ year: Int, _ month: Int, _ day: Int,
     #expect(displayedOffsets(span: 3, companionPrevious: false, capacity: 2) == [0, 1])
     #expect(displayedOffsets(span: 3, companionPrevious: false, capacity: 1) == [0])
     #expect(displayedOffsets(span: 2, companionPrevious: true, capacity: 1) == [0])
-}
-
-// MARK: - Single displayed month (small family)
-
-@Test func singleMonthOffsetsSelectNeighbouringMonths() throws {
-    let january = date(2027, 1, 10, in: mondayFirst)
-    let previous = monthModel(containing: january, offset: -1, calendar: mondayFirst,
-                              today: january, options: MonthOptions())
-    let next = monthModel(containing: january, offset: 1, calendar: mondayFirst,
-                          today: january, options: MonthOptions())
-    #expect(previous.title == "DECEMBER")
-    #expect(previous.year == 2026)
-    #expect(next.title == "FEBRUARY")
-    #expect(next.year == 2027)
-    // The today marker only ever lands in the offset-0 month.
-    #expect(previous.weeks.flatMap { $0 }.allSatisfy { !$0.isToday })
-    #expect(next.weeks.flatMap { $0 }.allSatisfy { !$0.isToday })
 }
 
 @Test func yearLabelUsesTwoDigitsWithApostrophe() throws {

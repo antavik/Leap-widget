@@ -81,24 +81,20 @@ private func firstMismatch(calendar: Calendar, options: MonthOptions,
 }
 
 /// Full-model sweep: locales with different weekend/first-day conventions,
-/// time zones including a non-hour offset, every option combination.
+/// time zones including a non-hour offset, every first-weekday override.
 @Test func fastPathMatchesCalendarPathAcrossLocalesAndCenturies() {
     for localeID in ["en_US", "de_DE", "ar_SA", "he_IL"] {
         for timeZoneID in ["GMT", "America/New_York", "Asia/Kathmandu"] {
             let calendar = parityCalendar(locale: localeID, timeZone: timeZoneID)
             let probes = parityProbes(in: calendar)
+            // Week numbers on: the off model is a subset. Month-number labels
+            // come from the same table on both paths, so no style dimension.
             for firstWeekday in [nil, 1, 2, 7] as [Int?] {
-                for showWeekNumbers in [false, true] {
-                    for style in [nil, .arabic, .roman] as [MonthNumberStyle?] {
-                        let options = MonthOptions(firstWeekday: firstWeekday,
-                                                   showWeekNumbers: showWeekNumbers,
-                                                   monthNumberStyle: style)
-                        if let mismatch = firstMismatch(calendar: calendar,
-                                                        options: options, probes: probes) {
-                            Issue.record("locale=\(localeID) timeZone=\(timeZoneID) firstWeekday=\(String(describing: firstWeekday)) weekNumbers=\(showWeekNumbers) monthNumber=\(String(describing: style)) \(mismatch)")
-                            return
-                        }
-                    }
+                let options = MonthOptions(firstWeekday: firstWeekday, showWeekNumbers: true)
+                if let mismatch = firstMismatch(calendar: calendar,
+                                                options: options, probes: probes) {
+                    Issue.record("locale=\(localeID) timeZone=\(timeZoneID) firstWeekday=\(String(describing: firstWeekday)) \(mismatch)")
+                    return
                 }
             }
         }

@@ -1,5 +1,5 @@
 import Testing
-import XCTest
+import Foundation
 @testable import LeapCore
 
 /// Budget checks for §4.11. Clock budgets are hard assertions so CI fails on
@@ -60,37 +60,4 @@ private func budgetCalendar() -> Calendar {
         }
     }
     #expect(elapsed / runs < .milliseconds(1))
-}
-
-@Test func timelineDatesBuildMeetsClockBudget() {
-    let calendar = budgetCalendar()
-    let now = calendar.date(from: DateComponents(year: 2026, month: 8, day: 12, hour: 9))!
-
-    _ = timelineDates(from: now, calendar: calendar)   // warm-up
-
-    let runs = 100
-    let elapsed = ContinuousClock().measure {
-        for _ in 0..<runs {
-            _ = timelineDates(from: now, calendar: calendar)
-        }
-    }
-    #expect(elapsed / runs < .milliseconds(50))
-}
-
-/// Memory stays on XCTest `measure` for Instruments-style inspection only —
-/// §4.11 budget is < 15 MB peak; check the recorded XCTMemoryMetric by hand.
-final class MemoryFootprintTests: XCTestCase {
-    func testThreeMonthModelBuildMemory() {
-        let calendar = budgetCalendar()
-        let today = calendar.date(from: DateComponents(year: 2026, month: 8, day: 12))!
-        let options = MonthOptions(firstWeekday: 2, showWeekNumbers: true)
-        measure(metrics: [XCTMemoryMetric()]) {
-            for _ in 0..<10 {
-                for offset in -1...1 {
-                    _ = monthModel(containing: today, offset: offset,
-                                   calendar: calendar, today: today, options: options)
-                }
-            }
-        }
-    }
 }

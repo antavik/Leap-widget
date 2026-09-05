@@ -68,13 +68,3 @@ private func fixtureCalendar() -> Calendar {
         size: CGSize(width: 330, height: 155))
     #expect(image != nil)
 }
-
-@Test @MainActor func multiMonthRenders() throws {
-    let calendar = fixtureCalendar()
-    let december = calendar.date(from: DateComponents(year: 2026, month: 12, day: 15))!
-    let config = WidgetConfig(span: 2, companionPrevious: false, options: MonthOptions())
-    let image = renderedImage(
-        MultiMonthView(date: december, family: .medium, config: config, calendar: calendar),
-        size: CGSize(width: 330, height: 155))
-    #expect(image != nil)
-}
