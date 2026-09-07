@@ -61,10 +61,14 @@ private func fixtureCalendar() -> Calendar {
 @Test @MainActor func multiMonthWithMonthNumbersRenders() throws {
     let calendar = fixtureCalendar()
     let december = calendar.date(from: DateComponents(year: 2026, month: 12, day: 15))!
-    let config = WidgetConfig(span: 2, companionPrevious: false,
-                              options: MonthOptions(monthNumberStyle: .arabic))
+    let row = monthRow(containing: december,
+                       offsets: [0, 1],
+                       showYear: true,
+                       builder: MonthModelBuilder(
+                           calendar: calendar,
+                           options: MonthOptions(monthNumberStyle: .arabic)))
     let image = renderedImage(
-        MultiMonthView(date: december, family: .medium, config: config, calendar: calendar),
+        MultiMonthView(models: row.models, yearLabel: row.yearLabel),
         size: CGSize(width: 330, height: 155))
     #expect(image != nil)
 }

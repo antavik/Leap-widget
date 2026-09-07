@@ -240,21 +240,16 @@ private func model(_ year: Int, _ month: Int, _ day: Int,
     #expect(january.weekNumbers?[1] == 1)
 }
 
-@Test func weekNumbersAbsentWhenDisabled() throws {
-    #expect(model(2026, 8, 12, calendar: mondayFirst).weekNumbers == nil)
+@Test func sundayOverrideDropsRegionalISONumbering() throws {
+    // en_GB: Monday-first, 4-day rule. Overridden to Sunday, Jan 2027's first
+    // row is week 1 under the US rule; the hybrid would have said 53.
+    let january = model(2027, 1, 10, calendar: mondayFirst,
+                        options: MonthOptions(firstWeekday: 1, showWeekNumbers: true))
+    #expect(january.weekNumbers?.first == 1)
 }
 
-// MARK: - Displayed offsets (span ↔ capacity)
-
-@Test func displayedOffsetsClampToCapacity() throws {
-    #expect(displayedOffsets(span: 1, companionPrevious: false, capacity: 1) == [0])
-    #expect(displayedOffsets(span: 2, companionPrevious: true, capacity: 2) == [-1, 0])
-    #expect(displayedOffsets(span: 2, companionPrevious: false, capacity: 2) == [0, 1])
-    #expect(displayedOffsets(span: 3, companionPrevious: false, capacity: 3) == [-1, 0, 1])
-    // Clamping keeps the current month, dropping the past before the future.
-    #expect(displayedOffsets(span: 3, companionPrevious: false, capacity: 2) == [0, 1])
-    #expect(displayedOffsets(span: 3, companionPrevious: false, capacity: 1) == [0])
-    #expect(displayedOffsets(span: 2, companionPrevious: true, capacity: 1) == [0])
+@Test func weekNumbersAbsentWhenDisabled() throws {
+    #expect(model(2026, 8, 12, calendar: mondayFirst).weekNumbers == nil)
 }
 
 @Test func yearLabelUsesTwoDigitsWithApostrophe() throws {

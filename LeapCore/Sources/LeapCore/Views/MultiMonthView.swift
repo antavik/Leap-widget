@@ -7,17 +7,8 @@ public struct MultiMonthView: View {
 
     public init(models: [MonthModel], yearLabel: String?) {
         self.models = models
-        self.metrics = Theme.compact
+        self.metrics = models.count == 1 ? Theme.single : Theme.compact
         self.yearLabel = yearLabel
-    }
-
-    public init(date: Date,
-                family: WidgetLayoutFamily,
-                config: WidgetConfig,
-                calendar: Calendar = .autoupdatingCurrent) {
-        self.init(models: monthModels(containing: date, family: family,
-                                      config: config, calendar: calendar),
-                  yearLabel: currentYearLabel(for: date, config: config, calendar: calendar))
     }
 
     public var body: some View {
@@ -25,7 +16,7 @@ public struct MultiMonthView: View {
             if models.count == 1 {
                 MonthGridView(model: models[0], metrics: metrics)
             } else {
-                monthRow
+                sideBySideMonths
             }
         }
         .overlay(alignment: .topTrailing) {
@@ -33,12 +24,12 @@ public struct MultiMonthView: View {
                 Text(yearLabel)
                     .font(.system(size: metrics.title, weight: .bold))
                     .foregroundStyle(.red)
-                    .padding(.trailing, metrics.titleLeadingInset)
+                    .padding(.trailing, metrics.yearLabelTrailingInset)
             }
         }
     }
 
-    private var monthRow: some View {
+    private var sideBySideMonths: some View {
         HStack(alignment: .top, spacing: 10) {
             ForEach(models.indices, id: \.self) { index in
                 MonthGridView(model: models[index], metrics: metrics)
@@ -48,14 +39,16 @@ public struct MultiMonthView: View {
     }
 }
 
-#Preview("Aug | Sep — week numbers", traits: .fixedLayout(width: 360, height: 170)) {
-    MultiMonthView(date: previewDate(2026, 8, 12),
-                   family: .medium,
-                   config: WidgetConfig(span: 2,
-                                        companionPrevious: false,
-                                        options: MonthOptions(showWeekNumbers: true)),
-                   calendar: previewCalendar())
-    .padding(12)
+#Preview("Aug | Sep \u{2014} week numbers", traits: .fixedLayout(width: 360, height: 170)) {
+    let row = monthRow(containing: previewDate(2026, 8, 12),
+                       offsets: [0, 1],
+                       showYear: true,
+                       builder: MonthModelBuilder(
+                           calendar: previewCalendar(),
+                           options: MonthOptions(showWeekNumbers: true)))
+
+    MultiMonthView(models: row.models, yearLabel: row.yearLabel)
+        .padding(12)
 }
 
 private func previewCalendar() -> Calendar {

@@ -27,20 +27,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        NSApp.setActivationPolicy(.accessory)   // no Dock icon
         if relayedURL {
             NSApp.terminate(nil)
         } else {
             showMainWindow()
         }
-    }
-
-    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        if !flag {
-            showMainWindow()
-            return false   // handled here – skip AppKit's default reopen pass
-        }
-        return true
     }
 
     // MARK: - URL relay
@@ -56,10 +47,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard let relay = urls.first(where: { $0.host == "open-calendar" }) else { return }
         relayedURL = true
         openCalendar(target: target(from: relay))
-        if let window, window.isVisible {
-            return   // app was already open with UI – keep it running
-        }
-        NSApp.terminate(nil)
     }
 
     /// What the clicked widget asked for, as encoded in the relay URL.
@@ -157,8 +144,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let appMenu = NSMenu()
         let fileItem = NSMenuItem()
         let fileMenu = NSMenu(title: "File")
-        let editItem: NSMenuItem = NSMenuItem()
-        let editMenu = NSMenu(title: "Edit")
 
         appMenu.addItem(withTitle: "About Leap",
                         action: #selector(NSApplication.orderFrontStandardAboutPanel(_:)),
@@ -178,19 +163,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         fileItem.submenu = fileMenu
         mainMenu.addItem(fileItem)
 
-        editMenu.addItem(withTitle: "Undo", action: Selector(("undo:")), keyEquivalent: "z")
-        editMenu.addItem(withTitle: "Redo", action: Selector(("redo:")), keyEquivalent: "Z")
-        editMenu.addItem(.separator())
-        editMenu.addItem(withTitle: "Cut", action: #selector(NSText.cut(_:)), keyEquivalent: "x")
-        editMenu.addItem(withTitle: "Copy", action: #selector(NSText.copy(_:)), keyEquivalent: "c")
-        editMenu.addItem(withTitle: "Paste", action: #selector(NSText.paste(_:)), keyEquivalent: "v")
-        editMenu.addItem(withTitle: "Select All",
-                         action: #selector(NSText.selectAll(_:)),
-                         keyEquivalent: "a")
-
-        editItem.submenu = editMenu
-        mainMenu.addItem(editItem)
-
+        // No Edit menu: the onboarding window holds no editable text.
         NSApp.mainMenu = mainMenu
     }
 }

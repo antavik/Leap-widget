@@ -19,7 +19,7 @@ default calendar application.
 - **Desktop and Notification Center** placement, small and medium widget sizes
 - **Light/dark** follows macOS automatically, including the faded Desktop style
 - **Week numbers** (optional) — ISO-8601 in Monday-first layouts, regional otherwise
-- **First day of week** — system default or any explicit weekday
+- **First day of week** — system default, Monday, or Sunday
 - **Click → the calendar you choose** — per-widget dropdown: default calendar
   (`ical://`), Fantastical, Google Calendar, or any custom URL
 - No events shown, no EventKit — **no privacy prompts, no network**
@@ -47,9 +47,8 @@ other signing configuration is needed.
    show, first day of week, week numbers, and which app a click opens — each
    widget keeps its own settings.
 
-The app's window guides you through these steps and confirms with “Widget added ✓”
-when it detects the first placed widget. The app doesn't stay running — widgets are
-rendered by the system.
+The app's window guides you through these steps. The app doesn't stay running —
+widgets are rendered by the system.
 
 ## Project layout
 
@@ -58,8 +57,6 @@ rendered by the system.
 | `Leap/` | Host app: onboarding, `leap://` → calendar URL relay |
 | `LeapWidget/` | Widget extension: intent, timeline provider, widget declaration |
 | `LeapCore/` | Local Swift package: calendar math, models, theming, month views + all unit tests |
-| `DESIGN.md` | Full design document |
-| `TODO.md` | Implementation checklist |
 
 ## License
 

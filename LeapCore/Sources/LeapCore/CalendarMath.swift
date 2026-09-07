@@ -16,13 +16,7 @@ public struct MonthModelBuilder: Sendable {
 
     public init(calendar: Calendar, options: MonthOptions) {
         var effective = calendar
-        if let override: Int = options.firstWeekday {
-            effective.firstWeekday = override
-        }
-        if effective.firstWeekday == 2 {
-            // Monday-first layouts number weeks ISO-8601 style, matching Apple Calendar.
-            effective.minimumDaysInFirstWeek = 4
-        }
+        applyFirstWeekday(options.firstWeekday, to: &effective)
         self.calendar = effective
 
         self.options = options
@@ -161,13 +155,7 @@ func monthModelUsingCalendar(containing date: Date,
                              today: Date,
                              options: MonthOptions) -> MonthModel {
     var effective = calendar
-    if let override = options.firstWeekday {
-        effective.firstWeekday = override
-    }
-    if effective.firstWeekday == 2 {
-        // Monday-first layouts number weeks ISO-8601 style, matching Apple Calendar.
-        effective.minimumDaysInFirstWeek = 4
-    }
+    applyFirstWeekday(options.firstWeekday, to: &effective)
 
     let shifted = effective.date(byAdding: .month, value: offset, to: date)!
     let components = effective.dateComponents([.year, .month], from: shifted)
@@ -244,27 +232,13 @@ func monthModelUsingCalendar(containing date: Date,
                       showsOutsideDays: options.showOutsideDays)
 }
 
-/// Month offsets to render (0 = current) for the requested span: a 2-month
-/// span pairs the current month with the previous or next one, larger spans
-/// give `[-1, 0, 1]`. Clamped to `capacity`, dropping past months before
-/// future ones so offset 0 always survives.
-public func displayedOffsets(span: Int, companionPrevious: Bool, capacity: Int) -> [Int] {
-    var offsets: [Int]
-    switch span {
-    case ...1: offsets = [0]
-    case 2: offsets = companionPrevious ? [-1, 0] : [0, 1]
-    default: offsets = [-1, 0, 1]
+func applyFirstWeekday(_ override: Int?, to calendar: inout Calendar) {
+    if let override {
+        calendar.firstWeekday = override
+        calendar.minimumDaysInFirstWeek = override == 2 ? 4 : 1
+    } else if calendar.firstWeekday == 2 {
+        calendar.minimumDaysInFirstWeek = 4
     }
-
-    while offsets.count > max(capacity, 1) {
-        if offsets.first! < 0 {
-            offsets.removeFirst()
-        } else {
-            offsets.removeLast()
-        }
-    }
-
-    return offsets
 }
 
 /// Timeline entry dates: now plus the next two midnights. Midnights come

@@ -138,8 +138,8 @@ public struct MonthGridView: View {
                 .frame(maxWidth: .infinity)
                 .frame(height: metrics.rowHeight)
         } else if day.isToday {
-            // `verbatim` keeps the spec-locked ASCII digits of the year label
-            // and week numbers in every locale.
+            // `verbatim` keeps day numbers as ASCII digits in every locale,
+            // matching the grid's fixed monospaced-digit metrics.
             Text(verbatim: "\(day.number)")
                 .font(.system(size: metrics.day, weight: .semibold).monospacedDigit())
                 .foregroundStyle(.white)

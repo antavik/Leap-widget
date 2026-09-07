@@ -98,6 +98,8 @@ enum ClickTarget {
 }
 
 protocol CalendarConfiguration {
+    /// Months to show relative to today, in display order.
+    var monthOffsets: [Int] { get }
     var firstWeekday: FirstWeekday { get }
     var showWeekNumbers: Bool { get }
     var showOutsideDays: Bool { get }
@@ -111,7 +113,7 @@ extension CalendarConfiguration {
     var clickTarget: ClickTarget {
         if let preset = clickAction.preset { return .preset(preset) }
         guard clickAction == .custom else { return .none }
-        let trimmed = customURL.trimmingCharacters(in: .whitespaces)
+        let trimmed = customURL.trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmed.isEmpty ? .none : .customURL(trimmed)
     }
 
@@ -128,6 +130,8 @@ struct CalendarConfigIntent: WidgetConfigurationIntent, CalendarConfiguration {
 
     @Parameter(title: "Second Month", default: .next)
     var companion: Companion
+
+    var monthOffsets: [Int] { companion == .previous ? [-1, 0] : [0, 1] }
 
     @Parameter(title: "First Day of Week", default: .system)
     var firstWeekday: FirstWeekday
@@ -174,20 +178,13 @@ struct CalendarConfigIntent: WidgetConfigurationIntent, CalendarConfiguration {
     }
 }
 
-extension CalendarConfigIntent {
-    var renderConfig: WidgetConfig {
-        WidgetConfig(span: 2,
-                     companionPrevious: companion == .previous,
-                     showYear: showYear,
-                     options: monthOptions)
-    }
-}
-
 struct SmallCalendarConfigIntent: WidgetConfigurationIntent, CalendarConfiguration {
     static let title: LocalizedStringResource = "Calendar Options"
 
     @Parameter(title: "Month", default: .current)
     var month: DisplayedMonth
+
+    var monthOffsets: [Int] { [month.offset] }
 
     @Parameter(title: "First Day of Week", default: .system)
     var firstWeekday: FirstWeekday

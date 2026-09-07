@@ -13,7 +13,7 @@ public enum Theme {
         public let todayCircle: CGFloat
         public let rowHeight: CGFloat
         public let rowSpacing: CGFloat
-        public let titleLeadingInset: CGFloat
+        public let yearLabelTrailingInset: CGFloat
 
         public init(title: CGFloat,
                     monthNumber: CGFloat,
@@ -24,7 +24,7 @@ public enum Theme {
                     todayCircle: CGFloat,
                     rowHeight: CGFloat,
                     rowSpacing: CGFloat,
-                    titleLeadingInset: CGFloat) {
+                    yearLabelTrailingInset: CGFloat) {
             self.title = title
             self.monthNumber = monthNumber
             self.header = header
@@ -34,7 +34,7 @@ public enum Theme {
             self.todayCircle = todayCircle
             self.rowHeight = rowHeight
             self.rowSpacing = rowSpacing
-            self.titleLeadingInset = titleLeadingInset
+            self.yearLabelTrailingInset = yearLabelTrailingInset
         }
 
         /// Cap height as a fraction of point size for the system face; both
@@ -53,11 +53,11 @@ public enum Theme {
                                        header: 11, day: 12,
                                        weekNumber: 9, weekNumberColumnWidth: 14,
                                        todayCircle: 21, rowHeight: 16, rowSpacing: 2,
-                                       titleLeadingInset: 6)
+                                       yearLabelTrailingInset: 6)
 
     public static let compact = Metrics(title: 11, monthNumber: 8,
                                         header: 9, day: 10,
                                         weekNumber: 8, weekNumberColumnWidth: 12,
                                         todayCircle: 18, rowHeight: 14, rowSpacing: 2,
-                                        titleLeadingInset: 7)
+                                        yearLabelTrailingInset: 7)
 }

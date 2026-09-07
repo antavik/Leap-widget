@@ -3,10 +3,8 @@ import SwiftUI
 import AppIntents
 import LeapCore
 
-/// Click target relayed to the host app, which resolves it to the calendar
-/// app, or `nil` when a click should do nothing. Presets use opaque `action`
-/// tokens resolved via `ClickPreset`, so `leap://` cannot open arbitrary URLs
-/// from outside.
+/// Click target relayed to the host app, or `nil` for no action.
+/// Presets use opaque `action` tokens, so `leap://` cannot open arbitrary URLs.
 func calendarRelayURL(for target: ClickTarget) -> URL? {
     var components = URLComponents()
     components.scheme = "leap"
@@ -22,7 +20,8 @@ func calendarRelayURL(for target: ClickTarget) -> URL? {
     return components.url
 }
 
-/// In-process no-op for the "Nothing" click action, so the host app is never launched.
+/// In-process no-op for the "Nothing" click action.
+/// Avoids launching the host app, though WidgetKit still reloads the timeline.
 struct DoNothingIntent: AppIntent {
     static let title: LocalizedStringResource = "Do Nothing"
     static let isDiscoverable = false
@@ -38,9 +37,7 @@ private struct InertButtonStyle: ButtonStyle {
 }
 
 /// Uses a relay URL when the widget should open something, otherwise an
-/// in-process no-op button. A bare `widgetURL` would launch the host app for
-/// nothing, and rapid clicks can race that launch-and-quit into showing its
-/// window.
+/// in-process no-op button so no-op clicks do not launch the host app.
 private struct WidgetClickSurface<Content: View>: View {
     let target: ClickTarget
     @ViewBuilder let content: Content
@@ -60,20 +57,8 @@ struct CalendarWidgetView: View {
     let entry: CalendarEntry
 
     var body: some View {
-        WidgetClickSurface(target: entry.config.clickTarget) {
-            MultiMonthView(models: entry.models,
-                           yearLabel: entry.yearLabel)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-        }
-    }
-}
-
-struct SmallCalendarWidgetView: View {
-    let entry: SmallCalendarEntry
-
-    var body: some View {
-        WidgetClickSurface(target: entry.config.clickTarget) {
-            MultiMonthView(models: [entry.model], yearLabel: entry.yearLabel)
+        WidgetClickSurface(target: entry.clickTarget) {
+            MultiMonthView(models: entry.models, yearLabel: entry.yearLabel)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         }
     }
@@ -83,7 +68,7 @@ struct CalendarWidget: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: WidgetKind.calendar,
                                intent: CalendarConfigIntent.self,
-                               provider: Provider()) { entry in
+                               provider: Provider<CalendarConfigIntent>()) { entry in
             CalendarWidgetView(entry: entry)
                 .padding(12)
                 .containerBackground(.background, for: .widget)
@@ -99,8 +84,8 @@ struct SmallCalendarWidget: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: WidgetKind.calendarSmall,
                                intent: SmallCalendarConfigIntent.self,
-                               provider: SmallProvider()) { entry in
-            SmallCalendarWidgetView(entry: entry)
+                               provider: Provider<SmallCalendarConfigIntent>()) { entry in
+            CalendarWidgetView(entry: entry)
                 .padding(12)
                 .containerBackground(.background, for: .widget)
         }
@@ -122,13 +107,13 @@ private func smallIntent(showing month: DisplayedMonth) -> SmallCalendarConfigIn
 #Preview("Current month", as: .systemSmall) {
     SmallCalendarWidget()
 } timeline: {
-    SmallCalendarEntry(date: .now, config: smallIntent(showing: .current))
+    CalendarEntry(date: .now, config: smallIntent(showing: .current))
 }
 
 #Preview("Previous month – year boundary", as: .systemSmall) {
     SmallCalendarWidget()
 } timeline: {
-    SmallCalendarEntry(date: Calendar.autoupdatingCurrent.date(
-                           from: DateComponents(year: 2027, month: 1, day: 10))!,
-                       config: smallIntent(showing: .previous))
+    CalendarEntry(date: Calendar.autoupdatingCurrent.date(
+                      from: DateComponents(year: 2027, month: 1, day: 10))!,
+                  config: smallIntent(showing: .previous))
 }
