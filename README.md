@@ -21,7 +21,7 @@ default calendar application.
 - **Week numbers** (optional) — ISO-8601 in Monday-first layouts, regional otherwise
 - **First day of week** — system default, Monday, or Sunday
 - **Click → the calendar you choose** — per-widget dropdown: default calendar
-  (`ical://`), Fantastical, Google Calendar, or any custom URL
+  (`ical://`), Fantastical, or Google Calendar
 - No events shown, no EventKit — **no privacy prompts, no network**
 
 ## Building

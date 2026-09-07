@@ -70,14 +70,13 @@ enum MonthNumberDisplay: String, AppEnum {
 }
 
 enum ClickAction: String, AppEnum {
-    case appleCalendar, fantastical, googleCalendar, custom, doNothing
+    case appleCalendar, fantastical, googleCalendar, doNothing
 
     static let typeDisplayRepresentation: TypeDisplayRepresentation = "Click Opens"
     static let caseDisplayRepresentations: [ClickAction: DisplayRepresentation] = [
         .appleCalendar: "Default Calendar (ical://)",
         .fantastical: "Fantastical (x-fantastical3://)",
         .googleCalendar: "Google Calendar (web)",
-        .custom: "Custom URL…",
         .doNothing: "Nothing",
     ]
 
@@ -86,15 +85,9 @@ enum ClickAction: String, AppEnum {
         case .appleCalendar: .appleCalendar
         case .fantastical: .fantastical
         case .googleCalendar: .googleCalendar
-        case .custom, .doNothing: nil
+        case .doNothing: nil
         }
     }
-}
-
-enum ClickTarget {
-    case preset(ClickPreset)
-    case customURL(String)
-    case none
 }
 
 protocol CalendarConfiguration {
@@ -106,17 +99,9 @@ protocol CalendarConfiguration {
     var showYear: Bool { get }
     var monthNumber: MonthNumberDisplay { get }
     var clickAction: ClickAction { get }
-    var customURL: String { get }
 }
 
 extension CalendarConfiguration {
-    var clickTarget: ClickTarget {
-        if let preset = clickAction.preset { return .preset(preset) }
-        guard clickAction == .custom else { return .none }
-        let trimmed = customURL.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.isEmpty ? .none : .customURL(trimmed)
-    }
-
     var monthOptions: MonthOptions {
         MonthOptions(firstWeekday: firstWeekday.calendarWeekday,
                      showWeekNumbers: showWeekNumbers,
@@ -151,29 +136,14 @@ struct CalendarConfigIntent: WidgetConfigurationIntent, CalendarConfiguration {
     @Parameter(title: "Click Opens", default: .appleCalendar)
     var clickAction: ClickAction
 
-    @Parameter(title: "Custom URL", default: "")
-    var customURL: String
-
     static var parameterSummary: some ParameterSummary {
-        When(\CalendarConfigIntent.$clickAction, .equalTo, .custom) {
-            Summary("Show current and \(\.$companion) month") {
-                \.$firstWeekday
-                \.$showWeekNumbers
-                \.$showOutsideDays
-                \.$showYear
-                \.$monthNumber
-                \.$clickAction
-                \.$customURL
-            }
-        } otherwise: {
-            Summary("Show current and \(\.$companion) month") {
-                \.$firstWeekday
-                \.$showWeekNumbers
-                \.$showOutsideDays
-                \.$showYear
-                \.$monthNumber
-                \.$clickAction
-            }
+        Summary("Show current and \(\.$companion) month") {
+            \.$firstWeekday
+            \.$showWeekNumbers
+            \.$showOutsideDays
+            \.$showYear
+            \.$monthNumber
+            \.$clickAction
         }
     }
 }
@@ -204,29 +174,14 @@ struct SmallCalendarConfigIntent: WidgetConfigurationIntent, CalendarConfigurati
     @Parameter(title: "Click Opens", default: .appleCalendar)
     var clickAction: ClickAction
 
-    @Parameter(title: "Custom URL", default: "")
-    var customURL: String
-
     static var parameterSummary: some ParameterSummary {
-        When(\SmallCalendarConfigIntent.$clickAction, .equalTo, .custom) {
-            Summary("Show the \(\.$month) month") {
-                \.$firstWeekday
-                \.$showWeekNumbers
-                \.$showOutsideDays
-                \.$showYear
-                \.$monthNumber
-                \.$clickAction
-                \.$customURL
-            }
-        } otherwise: {
-            Summary("Show the \(\.$month) month") {
-                \.$firstWeekday
-                \.$showWeekNumbers
-                \.$showOutsideDays
-                \.$showYear
-                \.$monthNumber
-                \.$clickAction
-            }
+        Summary("Show the \(\.$month) month") {
+            \.$firstWeekday
+            \.$showWeekNumbers
+            \.$showOutsideDays
+            \.$showYear
+            \.$monthNumber
+            \.$clickAction
         }
     }
 }

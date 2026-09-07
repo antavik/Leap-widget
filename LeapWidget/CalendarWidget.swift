@@ -3,20 +3,17 @@ import SwiftUI
 import AppIntents
 import LeapCore
 
-/// Click target relayed to the host app, or `nil` for no action.
-/// Presets use opaque `action` tokens, so `leap://` cannot open arbitrary URLs.
-func calendarRelayURL(for target: ClickTarget) -> URL? {
+/// Relay URL for a click, or `nil` when a click should do nothing. The relay
+/// names calendars only by opaque `ClickPreset` token, never by URL, so
+/// `leap://` cannot be talked into opening something arbitrary from outside.
+func calendarRelayURL(for preset: ClickPreset?) -> URL? {
+    guard let preset else { return nil }
+
     var components = URLComponents()
     components.scheme = "leap"
     components.host = "open-calendar"
-    switch target {
-    case .preset(let preset):
-        components.queryItems = [URLQueryItem(name: "action", value: preset.rawValue)]
-    case .customURL(let string):
-        components.queryItems = [URLQueryItem(name: "url", value: string)]
-    case .none:
-        return nil
-    }
+    components.queryItems = [URLQueryItem(name: "action", value: preset.rawValue)]
+
     return components.url
 }
 
@@ -39,7 +36,7 @@ private struct InertButtonStyle: ButtonStyle {
 /// Uses a relay URL when the widget should open something, otherwise an
 /// in-process no-op button so no-op clicks do not launch the host app.
 private struct WidgetClickSurface<Content: View>: View {
-    let target: ClickTarget
+    let target: ClickPreset?
     @ViewBuilder let content: Content
 
     var body: some View {

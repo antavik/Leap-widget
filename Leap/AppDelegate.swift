@@ -46,64 +46,27 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func handle(urls: [URL]) {
         guard let relay = urls.first(where: { $0.host == "open-calendar" }) else { return }
         relayedURL = true
-        openCalendar(target: target(from: relay))
-    }
-
-    /// What the clicked widget asked for, as encoded in the relay URL.
-    private enum URLRelayTarget {
-        /// `?action=<token>` or `?url=<something>` – open exactly this.
-        case explicit(URL)
-        /// `?url=` empty or rejected – open nothing.
-        case doNothing
-        /// Neither key, or an unknown preset token – a timeline from another
-        /// app version; fall back to the default calendar.
-        case unspecified
+        openCalendar(presetURL(from: relay))
     }
 
     /// `leap://` is system-wide, so any process or consenting web page can
-    /// invoke it. Never let it launder path-launching URLs: `NSWorkspace.open`
-    /// would launch apps and files, not calendars.
-    private static let blockedSchemes: Set<String> = ["file", "smb", "afp", "nfs", "ftp", "cifs"]
+    /// invoke it. It therefore names calendars only by opaque `ClickPreset`
+    /// token: every URL that can reach `NSWorkspace` is a fixed string
+    /// compiled in here, never one the caller supplied. `nil` means the token
+    /// was missing or unknown — a timeline from another app version.
+    private func presetURL(from relay: URL) -> URL? {
+        guard let components = URLComponents(url: relay, resolvingAgainstBaseURL: false),
+              let token = components.queryItems?.first(where: { $0.name == "action" })?.value,
+              let preset = ClickPreset(rawValue: token)
+        else { return nil }
 
-    /// Per-widget click target. Preset `action` tokens resolve only through
-    /// `ClickPreset`, so the relay cannot name arbitrary URLs. `url` carries
-    /// custom targets and pre-token timelines, filtered by scheme.
-    private func target(from relay: URL) -> URLRelayTarget {
-        guard let components = URLComponents(url: relay, resolvingAgainstBaseURL: false)
-        else { return .unspecified }
-
-        let items = components.queryItems ?? []
-
-        if let token = items.first(where: { $0.name == "action" })?.value {
-            guard let preset = ClickPreset(rawValue: token),
-                  let url = URL(string: preset.url)
-            else { return .unspecified }
-            return .explicit(url)
-        }
-
-        guard let item = items.first(where: { $0.name == "url" })
-        else { return .unspecified }
-
-        guard let value = item.value, !value.isEmpty, let url = URL(string: value),
-              let scheme = url.scheme?.lowercased(),
-              !Self.blockedSchemes.contains(scheme)
-        else { return .doNothing }
-
-        return .explicit(url)
+        return URL(string: preset.url)
     }
 
-    private func openCalendar(target: URLRelayTarget) {
-        switch target {
-        case .doNothing:
+    private func openCalendar(_ url: URL?) {
+        // An unrecognised relay falls back to the default calendar.
+        if let target = url ?? URL(string: "ical://"), NSWorkspace.shared.open(target) {
             return
-        case .explicit(let url):
-            if NSWorkspace.shared.open(url) {
-                return
-            }
-        case .unspecified:
-            if let url = URL(string: "ical://"), NSWorkspace.shared.open(url) {
-                return
-            }
         }
 
         if let calendarApp = NSWorkspace.shared.urlForApplication(

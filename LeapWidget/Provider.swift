@@ -6,7 +6,7 @@ import LeapCore
 /// single-element `models`.
 struct CalendarEntry: TimelineEntry {
     let date: Date
-    let clickTarget: ClickTarget
+    let clickTarget: ClickPreset?
     let models: [MonthModel]
     let yearLabel: String?
 
@@ -22,7 +22,7 @@ struct CalendarEntry: TimelineEntry {
                                calendar: .autoupdatingCurrent,
                                options: config.monthOptions))
         self.date = date
-        self.clickTarget = config.clickTarget
+        self.clickTarget = config.clickAction.preset
         self.models = row.models
         self.yearLabel = row.yearLabel
     }
