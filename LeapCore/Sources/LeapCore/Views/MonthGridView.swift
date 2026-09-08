@@ -13,7 +13,6 @@ private extension HorizontalAlignment {
     static let firstWeekdayColumn = HorizontalAlignment(FirstWeekdayColumn.self)
 }
 
-/// Renders one month with widget styling and a fixed six-row grid.
 struct MonthGridView: View {
     @Environment(\.colorScheme) private var colorScheme
 
@@ -81,26 +80,20 @@ struct MonthGridView: View {
         }
     }
 
-    /// Month name with an optional superscript month number.
-    /// Keeping both in one `Text` preserves the title's
-    /// `firstWeekdayColumn` alignment guide.
+    /// Month name and optional superscript month number in one `Text`.
     private var titleText: Text {
         let name = Text(model.title)
             .font(.system(size: metrics.title, weight: .semibold))
 
         guard let label = model.monthNumberLabel else { return name }
 
-        // Thin space: the gap belongs to the glyph run, so the alignment
-        // guide keeps measuring from the title's own leading edge.
+        // Keep the gap in the glyph run so alignment stays on the title.
         return name + Text(verbatim: "\u{2009}" + label)
             .font(.system(size: metrics.monthNumber, weight: .semibold))
             .baselineOffset(metrics.monthNumberBaseline)
             .foregroundStyle(monthNumberTint)
     }
 
-    /// The number reads as a subdued companion to the month name in full
-    /// color, but vibrancy desaturates it further, so dark mode keeps it at
-    /// the title's own tint to stay legible.
     private var monthNumberTint: AnyShapeStyle {
         colorScheme == .dark ? AnyShapeStyle(.red) : AnyShapeStyle(.red.opacity(0.55))
     }

@@ -45,7 +45,6 @@ enum Theme {
         /// 1x-3x, this lift puts both presets' cap tops on the title's row.
         private static let pixelSnapLift: CGFloat = 0.3
 
-        /// Baseline lift that aligns the month number's cap top with the title's.
         var monthNumberBaseline: CGFloat {
             (title - monthNumber) * Self.capTopRatio + Self.pixelSnapLift
         }

@@ -1,8 +1,5 @@
 import Foundation
 
-/// Builds month models for a widget reload, resolving the calendar's month
-/// names, weekday headers, and weekend map once so the months of one reload
-/// share them.
 public struct MonthModelBuilder: Sendable {
     private let calendar: Calendar
     private let options: MonthOptions
@@ -11,10 +8,7 @@ public struct MonthModelBuilder: Sendable {
     private let weekdayHeaders: [String]
     private let weekendByWeekday: [Bool]
 
-    /// Whether the calendar numbers years the Gregorian way, so the two-digit
-    /// apostrophe form reads correctly. Era calendars (Japanese, Republic of
-    /// China) and other epochs (Buddhist, Hebrew) print their year in full:
-    /// Reiwa 8 as \u{2019}08 would read as 2008.
+    /// Whether this calendar can use a two-digit Gregorian year label.
     public let usesGregorianYearNumbering: Bool
 
     public init(calendar: Calendar, options: MonthOptions) {
@@ -125,7 +119,6 @@ public struct MonthModelBuilder: Sendable {
 ///   - offset: months relative to the reference month (-1, 0, +1).
 ///   - calendar: base calendar, usually `Calendar.autoupdatingCurrent`.
 ///   - today: marks its day only in the offset-0 month.
-///   - options: first-weekday override and week-number setting.
 public func monthModel(containing date: Date,
                        offset: Int,
                        calendar: Calendar,

@@ -33,8 +33,6 @@ private struct InertButtonStyle: ButtonStyle {
     }
 }
 
-/// Uses a relay URL when the widget should open something, otherwise an
-/// in-process no-op button so no-op clicks do not launch the host app.
 private struct WidgetClickSurface<Content: View>: View {
     let target: ClickPreset?
     @ViewBuilder let content: Content
