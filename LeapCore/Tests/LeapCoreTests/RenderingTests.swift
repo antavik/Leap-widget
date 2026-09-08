@@ -51,7 +51,7 @@ private func fixtureCalendar() -> Calendar {
                            options: MonthOptions(showWeekNumbers: true,
                                                  monthNumberStyle: .roman))
     #expect(model.monthNumberLabel == "IX")
-    for metrics in [Theme.single, Theme.compact] {
+    for metrics in [Theme.small, Theme.medium] {
         let image = renderedImage(MonthGridView(model: model, metrics: metrics),
                                   size: CGSize(width: 155, height: 155))
         #expect(image != nil)

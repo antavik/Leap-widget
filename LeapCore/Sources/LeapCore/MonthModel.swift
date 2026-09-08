@@ -40,7 +40,7 @@ public struct Day: Equatable, Sendable {
     public let isWeekend: Bool
     public let isOutsideMonth: Bool
 
-    public init(number: Int, isToday: Bool, isWeekend: Bool, isOutsideMonth: Bool = false) {
+    init(number: Int, isToday: Bool, isWeekend: Bool, isOutsideMonth: Bool = false) {
         self.number = number
         self.isToday = isToday
         self.isWeekend = isWeekend
@@ -67,7 +67,7 @@ public struct MonthModel: Equatable, Sendable {
     /// Whether `isOutsideMonth` days are drawn; off renders their cells blank.
     public let showsOutsideDays: Bool
 
-    public init(title: String, year: Int, monthNumber: Int,
+    init(title: String, year: Int, monthNumber: Int,
                 monthNumberLabel: String? = nil,
                 weekdayHeaders: [String], weeks: [[Day]],
                 weekNumbers: [Int]?, showsOutsideDays: Bool = true) {

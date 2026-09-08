@@ -1,8 +1,7 @@
 import Foundation
 
-/// The months a widget shows and the year label for the current month.
-/// `offsets` are relative to `date` in display order. The label uses the
-/// current month's model when present, or the first model otherwise.
+/// Widget months and an optional year label.
+/// `offsets` are relative to `date`; the label uses the current month or the first model.
 public func monthRow(containing date: Date,
                      offsets: [Int],
                      showYear: Bool,
@@ -13,11 +12,14 @@ public func monthRow(containing date: Date,
     // widget set to a neighbour carries that neighbour's year.
     let current = models[offsets.firstIndex(of: 0) ?? 0]
 
-    return (models, showYear ? yearLabel(forYear: current.year) : nil)
+    guard showYear else { return (models, nil) }
+
+    return (models, builder.usesGregorianYearNumbering
+        ? yearLabel(forYear: current.year)
+        : String(current.year))
 }
 
+/// Two-digit abbreviation of a Gregorian year, e.g. 2026 -> \u{2019}26.
 public func yearLabel(forYear year: Int) -> String {
-    // The apostrophe form abbreviates a full year number (2026 -> \u{2019}26).
-    // Era years are already short, and Reiwa 8 as \u{2019}08 would read as 2008.
-    year >= 100 ? String(format: "\u{2019}%02d", year % 100) : String(year)
+    String(format: "\u{2019}%02d", year % 100)
 }

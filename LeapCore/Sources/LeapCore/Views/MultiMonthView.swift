@@ -7,7 +7,7 @@ public struct MultiMonthView: View {
 
     public init(models: [MonthModel], yearLabel: String?) {
         self.models = models
-        self.metrics = models.count == 1 ? Theme.single : Theme.compact
+        self.metrics = models.count == 1 ? Theme.small : Theme.medium
         self.yearLabel = yearLabel
     }
 

@@ -1,21 +1,19 @@
 import SwiftUI
 
-/// Type and shape metrics for the month grid. Colors are never stored
-/// here — views use semantic styles only.
-public enum Theme {
-    public struct Metrics: Equatable, Sendable {
-        public let title: CGFloat
-        public let monthNumber: CGFloat
-        public let header: CGFloat
-        public let day: CGFloat
-        public let weekNumber: CGFloat
-        public let weekNumberColumnWidth: CGFloat
-        public let todayCircle: CGFloat
-        public let rowHeight: CGFloat
-        public let rowSpacing: CGFloat
-        public let yearLabelTrailingInset: CGFloat
+enum Theme {
+    struct Metrics: Equatable, Sendable {
+        let title: CGFloat
+        let monthNumber: CGFloat
+        let header: CGFloat
+        let day: CGFloat
+        let weekNumber: CGFloat
+        let weekNumberColumnWidth: CGFloat
+        let todayCircle: CGFloat
+        let rowHeight: CGFloat
+        let rowSpacing: CGFloat
+        let yearLabelTrailingInset: CGFloat
 
-        public init(title: CGFloat,
+        init(title: CGFloat,
                     monthNumber: CGFloat,
                     header: CGFloat,
                     day: CGFloat,
@@ -37,27 +35,33 @@ public enum Theme {
             self.yearLabelTrailingInset = yearLabelTrailingInset
         }
 
-        /// Cap height as a fraction of point size for the system face; both
-        /// the title and the month number are set in it, so the ratio cancels
-        /// out of everything except this lift.
-        private static let capHeightRatio: CGFloat = 0.7
+        /// Glyph-bbox top as a fraction of point size for the system face,
+        /// measured with `CTFontGetBoundingRectsForGlyphs`. Caps and lining
+        /// digits share it, so one ratio positions both runs.
+        private static let capTopRatio: CGFloat = 0.7222
 
-        /// Baseline lift that puts the month number's cap on the title's cap,
-        /// so the two share a top edge whatever the two sizes are.
-        public var monthNumberBaseline: CGFloat {
-            (title - monthNumber) * Self.capHeightRatio
+        /// The raised run's raster origin snaps to a device pixel, and that
+        /// rounding lands the number a pixel below the title. Measured at
+        /// 1x-3x, this lift puts both presets' cap tops on the title's row.
+        private static let pixelSnapLift: CGFloat = 0.3
+
+        /// Baseline lift that aligns the month number's cap top with the title's.
+        var monthNumberBaseline: CGFloat {
+            (title - monthNumber) * Self.capTopRatio + Self.pixelSnapLift
         }
     }
 
-    public static let single = Metrics(title: 13, monthNumber: 9,
-                                       header: 11, day: 12,
-                                       weekNumber: 9, weekNumberColumnWidth: 14,
-                                       todayCircle: 21, rowHeight: 16, rowSpacing: 2,
-                                       yearLabelTrailingInset: 6)
+    /// One month, `.systemSmall`.
+    static let small = Metrics(title: 13, monthNumber: 9.5,
+                               header: 11, day: 12,
+                               weekNumber: 9, weekNumberColumnWidth: 14,
+                               todayCircle: 21, rowHeight: 16, rowSpacing: 2,
+                               yearLabelTrailingInset: 6)
 
-    public static let compact = Metrics(title: 11, monthNumber: 8,
-                                        header: 9, day: 10,
-                                        weekNumber: 8, weekNumberColumnWidth: 12,
-                                        todayCircle: 18, rowHeight: 14, rowSpacing: 2,
-                                        yearLabelTrailingInset: 7)
+    /// Two months side by side, `.systemMedium`; everything shrinks to fit.
+    static let medium = Metrics(title: 11, monthNumber: 8.5,
+                                header: 9, day: 10,
+                                weekNumber: 8, weekNumberColumnWidth: 12,
+                                todayCircle: 18, rowHeight: 14, rowSpacing: 2,
+                                yearLabelTrailingInset: 7)
 }

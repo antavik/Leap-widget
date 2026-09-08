@@ -14,13 +14,13 @@ private extension HorizontalAlignment {
 }
 
 /// Renders one month with widget styling and a fixed six-row grid.
-public struct MonthGridView: View {
+struct MonthGridView: View {
     @Environment(\.colorScheme) private var colorScheme
 
     private let model: MonthModel
     private let metrics: Theme.Metrics
 
-    public init(model: MonthModel, metrics: Theme.Metrics = Theme.single) {
+    init(model: MonthModel, metrics: Theme.Metrics = Theme.small) {
         self.model = model
         self.metrics = metrics
     }
@@ -48,7 +48,7 @@ public struct MonthGridView: View {
     /// column, so the full column footprint is `weekNumberColumnWidth + 7`.
     private static let separatorGap: CGFloat = 3
 
-    public var body: some View {
+    var body: some View {
         let styles = self.styles
         let weekendColumns = model.weekendColumns
 
@@ -95,7 +95,14 @@ public struct MonthGridView: View {
         return name + Text(verbatim: "\u{2009}" + label)
             .font(.system(size: metrics.monthNumber, weight: .semibold))
             .baselineOffset(metrics.monthNumberBaseline)
-            .foregroundStyle(.red.opacity(0.55))
+            .foregroundStyle(monthNumberTint)
+    }
+
+    /// The number reads as a subdued companion to the month name in full
+    /// color, but vibrancy desaturates it further, so dark mode keeps it at
+    /// the title's own tint to stay legible.
+    private var monthNumberTint: AnyShapeStyle {
+        colorScheme == .dark ? AnyShapeStyle(.red) : AnyShapeStyle(.red.opacity(0.55))
     }
 
     private var monthAccessibilityLabel: Text {

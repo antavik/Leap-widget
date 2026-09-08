@@ -111,6 +111,29 @@ private func model(_ year: Int, _ month: Int, _ day: Int,
     }
 }
 
+@Test func nonGregorianCalendarsBuildWellFormedMonths() throws {
+    for identifier in [Calendar.Identifier.hebrew, .islamicUmmAlQura,
+                       .buddhist, .japanese] {
+        var calendar = Calendar(identifier: identifier)
+        calendar.locale = Locale(identifier: "en_US")
+        calendar.timeZone = TimeZone(identifier: "GMT")!
+        let builder = MonthModelBuilder(calendar: calendar,
+                                        options: MonthOptions(showWeekNumbers: true))
+        let start = Date(timeIntervalSince1970: 1_704_628_800)   // 2024-01-07
+
+        // Two years of consecutive months covers a Hebrew leap year's month 13.
+        for offset in 0..<24 {
+            let month = builder.model(containing: start, offset: offset, today: start)
+            let where_ = "identifier=\(identifier) offset=\(offset)"
+            #expect(month.weeks.count == 6, Comment(rawValue: where_))
+            #expect(month.weeks.allSatisfy { $0.count == 7 }, Comment(rawValue: where_))
+            #expect(month.weekdayHeaders.count == 7, Comment(rawValue: where_))
+            #expect(month.weekNumbers?.count == 6, Comment(rawValue: where_))
+            #expect(!month.title.isEmpty, Comment(rawValue: where_))
+        }
+    }
+}
+
 // MARK: - Today marker
 
 @Test func todayMarkedOnlyInCurrentMonth() throws {
@@ -250,6 +273,30 @@ private func model(_ year: Int, _ month: Int, _ day: Int,
 
 @Test func weekNumbersAbsentWhenDisabled() throws {
     #expect(model(2026, 8, 12, calendar: mondayFirst).weekNumbers == nil)
+}
+
+@Test func yearLabelFollowsTheCalendarsYearNumbering() throws {
+    let reference = Date(timeIntervalSince1970: 1_787_000_000)   // Aug 2026
+    let expected: [Calendar.Identifier: String] = [
+        .gregorian: "\u{2019}26",
+        .iso8601: "\u{2019}26",
+        .buddhist: "2569",
+        .japanese: "8",
+        .republicOfChina: "115",
+        .hebrew: "5786",
+    ]
+
+    for (identifier, label) in expected {
+        var calendar = Calendar(identifier: identifier)
+        calendar.locale = Locale(identifier: "en_US")
+        calendar.timeZone = TimeZone(identifier: "GMT")!
+        let row = monthRow(containing: reference,
+                           offsets: [0],
+                           showYear: true,
+                           builder: MonthModelBuilder(calendar: calendar,
+                                                      options: MonthOptions()))
+        #expect(row.yearLabel == label, "identifier=\(identifier)")
+    }
 }
 
 @Test func yearLabelUsesTwoDigitsWithApostrophe() throws {
