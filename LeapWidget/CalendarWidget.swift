@@ -48,6 +48,23 @@ private struct WidgetClickSurface<Content: View>: View {
     }
 }
 
+enum BuildStamp {
+    static let current: String = {
+        let info = Bundle.main.infoDictionary
+        let marketing = info?["CFBundleShortVersionString"] as? String ?? "?"
+
+        guard let commit = info?["LeapBuildCommit"] as? String, !commit.isEmpty else {
+            return "v\(marketing)"
+        }
+
+        return "v\(marketing) (\(commit))"
+    }()
+
+    static func stamped(_ text: String) -> LocalizedStringResource {
+        LocalizedStringResource(stringLiteral: "\(text)\n\(current)")
+    }
+}
+
 struct CalendarWidgetView: View {
     let entry: CalendarEntry
 
@@ -70,7 +87,7 @@ struct CalendarWidget: Widget {
         }
         .contentMarginsDisabled()
         .configurationDisplayName("Two Months")
-        .description("Two months at a glance – the current plus the previous or next.")
+        .description(BuildStamp.stamped("Two months at a glance – the current plus the previous or next."))
         .supportedFamilies([.systemMedium])
     }
 }
@@ -86,7 +103,7 @@ struct SmallCalendarWidget: Widget {
         }
         .contentMarginsDisabled()
         .configurationDisplayName("Month")
-        .description("One month at a glance – the current, previous, or next.")
+        .description(BuildStamp.stamped("One month at a glance – the current, previous, or next."))
         .supportedFamilies([.systemSmall])
     }
 }
