@@ -109,7 +109,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let fileMenu = NSMenu(title: "File")
 
         appMenu.addItem(withTitle: "About Leap",
-                        action: #selector(NSApplication.orderFrontStandardAboutPanel(_:)),
+                        action: #selector(showAboutPanel),
                         keyEquivalent: "")
         appMenu.addItem(.separator())
         appMenu.addItem(withTitle: "Quit Leap",
@@ -128,5 +128,31 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         // No Edit menu: the onboarding window holds no editable text.
         NSApp.mainMenu = mainMenu
+    }
+
+    @objc private func showAboutPanel() {
+        let info = Bundle.main.infoDictionary
+        var options: [NSApplication.AboutPanelOptionKey: Any] = [:]
+        if let marketing = info?["CFBundleShortVersionString"] as? String {
+            options[.applicationVersion] = marketing
+        }
+        if let commit = info?["LeapBuildCommit"] as? String, !commit.isEmpty {
+            options[.version] = commit
+        }
+        options[.credits] = NSAttributedString(
+            string: "Created by Antavik",
+            attributes: [
+                .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize),
+                .foregroundColor: NSColor.labelColor,
+                .paragraphStyle: centeredParagraphStyle
+            ])
+        NSApp.activate()
+        NSApp.orderFrontStandardAboutPanel(options: options)
+    }
+
+    private var centeredParagraphStyle: NSParagraphStyle {
+        let style = NSMutableParagraphStyle()
+        style.alignment = .center
+        return style
     }
 }

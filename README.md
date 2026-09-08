@@ -11,6 +11,8 @@ default calendar application.
 
 - macOS 14 Sonoma or later (Desktop widgets, per-widget configuration)
 - Xcode 16+ to build
+- [XcodeGen](https://github.com/yonaskolb/XcodeGen) (`brew install xcodegen`) — the
+  `.xcodeproj` is generated from `project.yml`, not committed
 
 ## Features
 
@@ -28,11 +30,22 @@ default calendar application.
 
 ```sh
 # Unit tests (calendar math, rendering, performance)
-swift test --package-path LeapCore
+make test
 
-# App + widget extension
-xcodebuild -project Leap.xcodeproj -scheme Leap -configuration Release build
+# Generate Leap.xcodeproj, then build app + widget extension
+make release
 ```
+
+`make release` and `make debug` regenerate the project first. Run `make project`
+on its own before opening Xcode, and again after adding or removing a source
+file so the target picks it up.
+
+The About panel's build number is the short hash of the built commit, stamped in
+by `make`. Building straight from Xcode shows `dev` instead.
+
+Build settings live in `Config/*.xcconfig`, target structure in `project.yml`.
+Edit those rather than Xcode's build-settings UI — Xcode writes overrides into
+the generated `.xcodeproj`, which the next `make project` throws away.
 
 Before signing for distribution, set your development team on both targets — no
 other signing configuration is needed.

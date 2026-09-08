@@ -6,4 +6,6 @@ xcuserdata/
 *.xcuserstate
 .swiftpm/
 
+Leap.xcodeproj/
+
 .claude/

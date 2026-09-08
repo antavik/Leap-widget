@@ -1,0 +1,14 @@
+// LeapWidget.appex target. Embedded in Leap.app, so it is never installed
+// on its own and needs the extra rpath back up to the host's Frameworks.
+
+CODE_SIGN_ENTITLEMENTS = LeapWidget/LeapWidget.entitlements
+CODE_SIGN_STYLE = Automatic
+COMBINE_HIDPI_IMAGES = YES
+ENABLE_HARDENED_RUNTIME = YES
+// INFOPLIST_FILE is emitted by XcodeGen from the target's sources.
+GENERATE_INFOPLIST_FILE = YES
+LD_RUNPATH_SEARCH_PATHS = $(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks
+PRODUCT_BUNDLE_IDENTIFIER = com.antavik.leap.widget
+PRODUCT_NAME = $(TARGET_NAME)
+SKIP_INSTALL = YES
+SWIFT_EMIT_LOC_STRINGS = YES

@@ -1,0 +1,61 @@
+name: Leap
+options:
+  minimumXcodeGenVersion: "2.46.0"
+  settingPresets: none
+  generateEmptyDirectories: true
+  defaultConfig: Release
+
+configs:
+  Debug: debug
+  Release: release
+
+configFiles:
+  Debug: Config/Debug.xcconfig
+  Release: Config/Release.xcconfig
+
+packages:
+  LeapCore:
+    path: LeapCore
+
+targets:
+  Leap:
+    type: application
+    platform: macOS
+    sources:
+      - path: Leap
+    configFiles:
+      Debug: Config/Leap.xcconfig
+      Release: Config/Leap.xcconfig
+    dependencies:
+      - package: LeapCore
+        product: LeapCore
+      - target: LeapWidget
+        embed: true
+
+  LeapWidget:
+    type: app-extension
+    platform: macOS
+    sources:
+      - path: LeapWidget
+    configFiles:
+      Debug: Config/LeapWidget.xcconfig
+      Release: Config/LeapWidget.xcconfig
+    dependencies:
+      - package: LeapCore
+        product: LeapCore
+
+schemes:
+  Leap:
+    build:
+      targets:
+        Leap: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release

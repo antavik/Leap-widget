@@ -14,7 +14,13 @@ jobs:
       - name: Unit tests (LeapCore)
         run: swift test --package-path LeapCore
 
+      - name: Generate Xcode project
+        run: |
+          brew install xcodegen
+          xcodegen generate --spec project.yml
+
       - name: Build app + widget (Release)
         run: >
           xcodebuild -project Leap.xcodeproj -scheme Leap
           -configuration Release build CODE_SIGNING_ALLOWED=NO
+          LEAP_BUILD_COMMIT=$(git rev-parse --short=8 HEAD)
