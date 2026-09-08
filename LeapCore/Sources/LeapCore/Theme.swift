@@ -51,10 +51,10 @@ enum Theme {
     }
 
     /// One month, `.systemSmall`.
-    static let small = Metrics(title: 13, monthNumber: 9.5,
-                               header: 11, day: 12,
-                               weekNumber: 9, weekNumberColumnWidth: 14,
-                               todayCircle: 21, rowHeight: 16, rowSpacing: 2,
+    static let small = Metrics(title: 11, monthNumber: 8.5,
+                               header: 9, day: 10,
+                               weekNumber: 8, weekNumberColumnWidth: 14,
+                               todayCircle: 18, rowHeight: 16, rowSpacing: 2,
                                yearLabelTrailingInset: 6)
 
     /// Two months side by side, `.systemMedium`; everything shrinks to fit.

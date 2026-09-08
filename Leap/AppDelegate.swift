@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import WidgetKit
 import LeapCore
 
 @MainActor
@@ -16,6 +17,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             forEventClass: AEEventClass(kInternetEventClass),
             andEventID: AEEventID(kAEGetURL))
         buildMainMenu()
+
+        // Reload every launch so chronod rebuilds archives for the
+        // environments in use now. Otherwise a gallery-added widget can get
+        // stuck on its placeholder with "no matching environment".
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
@@ -49,11 +55,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         openCalendar(presetURL(from: relay))
     }
 
-    /// `leap://` is system-wide, so any process or consenting web page can
-    /// invoke it. It therefore names calendars only by opaque `ClickPreset`
-    /// token: every URL that can reach `NSWorkspace` is a fixed string
-    /// compiled in here, never one the caller supplied. `nil` means the token
-    /// was missing or unknown — a timeline from another app version.
+    /// `leap://` is system-wide, so only known `ClickPreset` tokens map to
+    /// calendar URLs. `nil` means the token was missing or unknown.
     private func presetURL(from relay: URL) -> URL? {
         guard let components = URLComponents(url: relay, resolvingAgainstBaseURL: false),
               let token = components.queryItems?.first(where: { $0.name == "action" })?.value,

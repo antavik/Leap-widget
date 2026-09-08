@@ -24,31 +24,11 @@ struct MonthGridView: View {
         self.metrics = metrics
     }
 
-    private struct CellStyles {
-        let bright: AnyShapeStyle
-        let dim: AnyShapeStyle
-        let faint: AnyShapeStyle
-    }
-
-    /// Dark mode uses pure white instead of `.primary` because desktop
-    /// vibrancy dims the default label material. `faint` is for adjacent-month
-    /// days: subtler than weekends but still legible.
-    private var styles: CellStyles {
-        colorScheme == .dark
-            ? CellStyles(bright: AnyShapeStyle(.white),
-                         dim: AnyShapeStyle(.white.opacity(0.7)),
-                         faint: AnyShapeStyle(.white.opacity(0.4)))
-            : CellStyles(bright: AnyShapeStyle(.primary),
-                         dim: AnyShapeStyle(.secondary),
-                         faint: AnyShapeStyle(.tertiary))
-    }
-
     /// Gap on either side of the 1pt separator that trails the week-number
     /// column, so the full column footprint is `weekNumberColumnWidth + 7`.
     private static let separatorGap: CGFloat = 3
 
     var body: some View {
-        let styles = self.styles
         let weekendColumns = model.weekendColumns
 
         VStack(alignment: .firstWeekdayColumn, spacing: 4) {
@@ -59,20 +39,19 @@ struct MonthGridView: View {
             Grid(horizontalSpacing: 0, verticalSpacing: metrics.rowSpacing) {
                 GridRow {
                     if model.weekNumbers != nil {
-                        weekNumberCell(nil, styles: styles, showsSeparator: false)
+                        weekNumberCell(nil, showsSeparator: false)
                     }
                     ForEach(0..<7, id: \.self) { column in
-                        headerCell(column, weekend: weekendColumns[column], styles: styles)
+                        headerCell(column, weekend: weekendColumns[column])
                     }
                 }
                 ForEach(0..<6, id: \.self) { row in
                     GridRow {
                         if let weekNumbers = model.weekNumbers {
-                            weekNumberCell(rowHasVisibleDays(row) ? weekNumbers[row] : nil,
-                                           styles: styles)
+                            weekNumberCell(rowHasVisibleDays(row) ? weekNumbers[row] : nil)
                         }
                         ForEach(0..<7, id: \.self) { column in
-                            dayCell(model.weeks[row][column], styles: styles)
+                            dayCell(model.weeks[row][column])
                         }
                     }
                 }
@@ -107,10 +86,10 @@ struct MonthGridView: View {
     /// Weekday header cell; the first column's glyph exports its leading edge
     /// as the `firstWeekdayColumn` guide the month title aligns to.
     @ViewBuilder
-    private func headerCell(_ column: Int, weekend: Bool, styles: CellStyles) -> some View {
+    private func headerCell(_ column: Int, weekend: Bool) -> some View {
         let label = Text(model.weekdayHeaders[column])
             .font(.system(size: metrics.header, weight: .semibold))
-            .foregroundStyle(weekend ? styles.dim : styles.bright)
+            .foregroundStyle(weekend ? .secondary : .primary)
 
         if column == 0 {
             label
@@ -129,7 +108,7 @@ struct MonthGridView: View {
     }
 
     @ViewBuilder
-    private func dayCell(_ day: Day, styles: CellStyles) -> some View {
+    private func dayCell(_ day: Day) -> some View {
         if day.isOutsideMonth && !model.showsOutsideDays {
             // Pin the placeholder to the standard row height. A bare
             // `Color.clear` would absorb extra vertical space and make rows
@@ -153,22 +132,22 @@ struct MonthGridView: View {
         } else {
             Text(verbatim: "\(day.number)")
                 .font(.system(size: metrics.day, weight: .semibold).monospacedDigit())
-                .foregroundStyle(day.isOutsideMonth ? styles.faint
-                                 : day.isWeekend ? styles.dim : styles.bright)
+                .foregroundStyle(day.isOutsideMonth ? .tertiary
+                                 : day.isWeekend ? .secondary : .primary)
                 .frame(maxWidth: .infinity, minHeight: metrics.rowHeight)
         }
     }
 
     @ViewBuilder
-    private func weekNumberCell(_ number: Int?, styles: CellStyles,
+    private func weekNumberCell(_ number: Int?,
                                 showsSeparator: Bool = true) -> some View {
         HStack(spacing: Self.separatorGap) {
             Text(verbatim: number.map(String.init) ?? "")
                 .font(.system(size: metrics.weekNumber, weight: .medium).monospacedDigit())
-                .foregroundStyle(styles.dim)
+                .foregroundStyle(.secondary)
                 .frame(width: metrics.weekNumberColumnWidth, alignment: .trailing)
             Rectangle()
-                .fill(styles.faint)
+                .fill(.tertiary)
                 .frame(width: 1)
                 .padding(.vertical, -metrics.rowSpacing / 2)
                 .opacity(showsSeparator ? 1 : 0)

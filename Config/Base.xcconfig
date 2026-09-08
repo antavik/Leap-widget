@@ -15,6 +15,11 @@ SDKROOT = macosx
 SWIFT_VERSION = 6.0
 
 // Version stamped into every bundle. Bump here, not per target.
+// CFBundleVersion. chronod decides whether the widget's cached renders are
+// stale by comparing this against the record it already holds: ship the same
+// value twice and an updated widget keeps drawing the previous build until its
+// timeline runs out. It must strictly increase for every release. The Makefile
+// overrides it per build; this is the fallback for builds started from Xcode.
 CURRENT_PROJECT_VERSION = 1
 MARKETING_VERSION = 0.1.0
 
