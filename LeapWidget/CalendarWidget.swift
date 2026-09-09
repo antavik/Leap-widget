@@ -54,10 +54,10 @@ enum BuildStamp {
         let marketing = info?["CFBundleShortVersionString"] as? String ?? "?"
 
         guard let commit = info?["LeapBuildCommit"] as? String, !commit.isEmpty else {
-            return "v\(marketing)"
+            return "Version: \(marketing)."
         }
 
-        return "v\(marketing) (\(commit))"
+        return "Version: \(marketing) (\(commit))."
     }()
 
     static func stamped(_ text: String) -> LocalizedStringResource {
