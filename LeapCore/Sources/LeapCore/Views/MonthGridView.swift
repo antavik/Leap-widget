@@ -51,7 +51,8 @@ struct MonthGridView: View {
                             weekNumberCell(rowHasVisibleDays(row) ? weekNumbers[row] : nil)
                         }
                         ForEach(0..<7, id: \.self) { column in
-                            dayCell(model.weeks[row][column])
+                            dayCell(model.weeks[row][column],
+                                    weekend: weekendColumns[column])
                         }
                     }
                 }
@@ -108,7 +109,7 @@ struct MonthGridView: View {
     }
 
     @ViewBuilder
-    private func dayCell(_ day: Day) -> some View {
+    private func dayCell(_ day: Day, weekend: Bool) -> some View {
         if day.isOutsideMonth && !model.showsOutsideDays {
             // Pin the placeholder to the standard row height. A bare
             // `Color.clear` would absorb extra vertical space and make rows
@@ -133,7 +134,7 @@ struct MonthGridView: View {
             Text(verbatim: "\(day.number)")
                 .font(.system(size: metrics.day, weight: .semibold).monospacedDigit())
                 .foregroundStyle(day.isOutsideMonth ? .tertiary
-                                 : day.isWeekend ? .secondary : .primary)
+                                 : weekend ? .secondary : .primary)
                 .frame(maxWidth: .infinity, minHeight: metrics.rowHeight)
         }
     }

@@ -6,7 +6,7 @@ public struct MonthModelBuilder: Sendable {
     private let firstWeekday: Int
     private let monthTitles: [String]
     private let weekdayHeaders: [String]
-    private let weekendByWeekday: [Bool]
+    private let weekendColumns: [Bool]
 
     /// Whether this calendar can use a two-digit Gregorian year label.
     public let usesGregorianYearNumbering: Bool
@@ -41,7 +41,7 @@ public struct MonthModelBuilder: Sendable {
             probe = effective.date(byAdding: .day, value: 1, to: probe)
                 ?? probe.addingTimeInterval(86_400)
         }
-        self.weekendByWeekday = weekend
+        self.weekendColumns = (0..<7).map { weekend[(firstIndex + $0) % 7] }
     }
 
     public func model(containing date: Date, offset: Int, today: Date) -> MonthModel {
@@ -85,7 +85,6 @@ public struct MonthModelBuilder: Sendable {
                     : dayOffset - dayCount + 1
                 days.append(Day(number: number,
                                 isToday: !outside && number == todayNumber,
-                                isWeekend: weekendByWeekday[(firstWeekday - 1 + column) % 7],
                                 isOutsideMonth: outside))
             }
             weeks.append(days)
@@ -105,6 +104,7 @@ public struct MonthModelBuilder: Sendable {
                           monthNumberLabel: options.monthNumberStyle
                               .flatMap { $0.label(forMonth: month) },
                           weekdayHeaders: weekdayHeaders,
+                          weekendColumns: weekendColumns,
                           weeks: weeks,
                           weekNumbers: weekNumbers,
                           showsOutsideDays: options.showOutsideDays)

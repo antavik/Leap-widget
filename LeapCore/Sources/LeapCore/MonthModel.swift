@@ -37,13 +37,11 @@ public struct MonthOptions: Equatable, Sendable {
 public struct Day: Equatable, Sendable {
     public let number: Int
     public let isToday: Bool
-    public let isWeekend: Bool
     public let isOutsideMonth: Bool
 
-    init(number: Int, isToday: Bool, isWeekend: Bool, isOutsideMonth: Bool = false) {
+    init(number: Int, isToday: Bool, isOutsideMonth: Bool = false) {
         self.number = number
         self.isToday = isToday
-        self.isWeekend = isWeekend
         self.isOutsideMonth = isOutsideMonth
     }
 }
@@ -59,6 +57,8 @@ public struct MonthModel: Equatable, Sendable {
     public let monthNumberLabel: String?
     /// Very-short standalone weekday symbols rotated to the effective first weekday.
     public let weekdayHeaders: [String]
+    /// One flag per column, in display order, for the weekend days of the region.
+    public let weekendColumns: [Bool]
     /// Always six 7-column rows; leading/trailing cells hold adjacent-month
     /// days marked `isOutsideMonth`.
     public let weeks: [[Day]]
@@ -69,21 +69,16 @@ public struct MonthModel: Equatable, Sendable {
 
     init(title: String, year: Int, monthNumber: Int,
                 monthNumberLabel: String? = nil,
-                weekdayHeaders: [String], weeks: [[Day]],
+                weekdayHeaders: [String], weekendColumns: [Bool], weeks: [[Day]],
                 weekNumbers: [Int]?, showsOutsideDays: Bool = true) {
         self.title = title
         self.year = year
         self.monthNumber = monthNumber
         self.monthNumberLabel = monthNumberLabel
         self.weekdayHeaders = weekdayHeaders
+        self.weekendColumns = weekendColumns
         self.weeks = weeks
         self.weekNumbers = weekNumbers
         self.showsOutsideDays = showsOutsideDays
-    }
-
-    public var weekendColumns: [Bool] {
-        (0..<7).map { column in
-            weeks.first?[column].isWeekend ?? false
-        }
     }
 }
