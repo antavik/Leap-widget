@@ -108,7 +108,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         window.makeKeyAndOrderFront(nil)
-        NSApp.activate()
+
+        NSApp.activate(ignoringOtherApps: true)
     }
 
     private func makeMainWindow() -> NSWindow {
