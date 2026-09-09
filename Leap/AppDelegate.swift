@@ -16,6 +16,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             andSelector: #selector(handleGetURL(_:withReplyEvent:)),
             forEventClass: AEEventClass(kInternetEventClass),
             andEventID: AEEventID(kAEGetURL))
+    }
+
+    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
+        true
+    }
+
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        true
+    }
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        guard !relayedURL else {
+            NSApp.terminate(nil)
+            return
+        }
+
         buildMainMenu()
 
         NotificationCenter.default.addObserver(
@@ -29,26 +45,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // container defaults. Drop this call once 0.1.0 is out of circulation.
         UserDefaults.standard.removeObject(forKey: "NSWindow Frame LeapMainWindow")
 
-        // Reload every launch so chronod rebuilds archives for the
-        // environments in use now. Otherwise a gallery-added widget can get
+        // Reload on every launch that shows UI so chronod rebuilds archives for
+        // the environments in use now. Otherwise a gallery-added widget can get
         // stuck on its placeholder with "no matching environment".
         WidgetCenter.shared.reloadAllTimelines()
-    }
 
-    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
-        true
-    }
-
-    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        true
-    }
-
-    func applicationDidFinishLaunching(_ notification: Notification) {
-        if relayedURL {
-            NSApp.terminate(nil)
-        } else {
-            showMainWindow()
-        }
+        showMainWindow()
     }
 
     // MARK: - URL relay
