@@ -18,6 +18,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             andEventID: AEEventID(kAEGetURL))
         buildMainMenu()
 
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(screenParametersDidChange(_:)),
+            name: NSApplication.didChangeScreenParametersNotification,
+            object: nil)
+
+        // Up to 0.1.0 the window frame was autosaved under this key. Placement
+        // is computed on every open now, so the leftover is dead weight in the
+        // container defaults. Drop this call once 0.1.0 is out of circulation.
+        UserDefaults.standard.removeObject(forKey: "NSWindow Frame LeapMainWindow")
+
         // Reload every launch so chronod rebuilds archives for the
         // environments in use now. Otherwise a gallery-added widget can get
         // stuck on its placeholder with "no matching environment".
@@ -81,25 +92,71 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: - Window
 
-    private static let windowFrameAutosaveName = NSWindow.FrameAutosaveName("LeapMainWindow")
-
     private func showMainWindow() {
-        NSApp.setActivationPolicy(.regular)
+        if NSApp.activationPolicy() != .regular {
+            NSApp.setActivationPolicy(.regular)
+        }
+
         let window = self.window ?? {
-            let hosting = NSHostingController(rootView: MainView())
-            let newWindow = NSWindow(contentViewController: hosting)
-            newWindow.title = "Leap"
-            newWindow.styleMask = [.titled, .closable]
-            newWindow.isReleasedWhenClosed = false
-            if !newWindow.setFrameUsingName(Self.windowFrameAutosaveName) {
-                newWindow.center()
-            }
-            newWindow.setFrameAutosaveName(Self.windowFrameAutosaveName)
-            self.window = newWindow
-            return newWindow
+            let created = makeMainWindow()
+            self.window = created
+            return created
         }()
+
+        if !window.isVisible {
+            center(window, on: currentScreens())
+        }
+
         window.makeKeyAndOrderFront(nil)
         NSApp.activate()
+    }
+
+    private func makeMainWindow() -> NSWindow {
+        let hosting = NSHostingController(rootView: MainView())
+        let window = NSWindow(contentViewController: hosting)
+        window.title = "Leap"
+        window.styleMask = [.titled, .closable]
+        window.isReleasedWhenClosed = false
+
+        window.isRestorable = false
+
+        hosting.view.layoutSubtreeIfNeeded()
+        window.setContentSize(hosting.view.fittingSize)
+
+        return window
+    }
+
+    private func center(_ window: NSWindow, on screens: [ScreenGeometry]) {
+        guard let visibleFrame = WindowPlacement.activeVisibleFrame(
+            mouseLocation: NSEvent.mouseLocation,
+            screens: screens,
+            mainScreen: NSScreen.main.map(ScreenGeometry.init))
+        else {
+            window.center()
+            return
+        }
+
+        window.setFrameOrigin(
+            WindowPlacement.centeredOrigin(for: window.frame.size, in: visibleFrame))
+    }
+
+    private func currentScreens() -> [ScreenGeometry] {
+        NSScreen.screens.map(ScreenGeometry.init)
+    }
+
+    @objc private func screenParametersDidChange(_ notification: Notification) {
+        guard let window, window.isVisible else { return }
+
+        let screens = currentScreens()
+        guard !WindowPlacement.isOnScreen(window.frame, screens: screens) else { return }
+
+        center(window, on: screens)
+    }
+
+    func applicationShouldHandleReopen(_ sender: NSApplication,
+                                       hasVisibleWindows: Bool) -> Bool {
+        showMainWindow()
+        return true
     }
 
     // MARK: - Menu
@@ -157,5 +214,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let style = NSMutableParagraphStyle()
         style.alignment = .center
         return style
+    }
+}
+
+private extension ScreenGeometry {
+    init(_ screen: NSScreen) {
+        self.init(frame: screen.frame, visibleFrame: screen.visibleFrame)
     }
 }
