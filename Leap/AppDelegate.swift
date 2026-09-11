@@ -86,7 +86,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         if let calendarApp = NSWorkspace.shared.urlForApplication(
-            withBundleIdentifier: "com.apple.iCal") {
+            withBundleIdentifier: Constants.Bundles.appleCalendar) {
             NSWorkspace.shared.openApplication(at: calendarApp,
                                                configuration: NSWorkspace.OpenConfiguration())
         }
@@ -173,6 +173,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let appMenu = NSMenu()
         let fileItem = NSMenuItem()
         let fileMenu = NSMenu(title: "File")
+        let helpItem = NSMenuItem()
+        let helpMenu = NSMenu(title: "Help")
 
         appMenu.addItem(withTitle: "About Leap",
                         action: #selector(showAboutPanel),
@@ -192,8 +194,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         fileItem.submenu = fileMenu
         mainMenu.addItem(fileItem)
 
+        helpMenu.addItem(withTitle: "Donate…",
+                         action: #selector(openDonationPage),
+                         keyEquivalent: "")
+
+        helpItem.submenu = helpMenu
+        mainMenu.addItem(helpItem)
+
         // No Edit menu: the onboarding window holds no editable text.
         NSApp.mainMenu = mainMenu
+        // Marks the menu as the Help menu so macOS files it last and adds its
+        // own search item.
+        NSApp.helpMenu = helpMenu
+    }
+
+    @objc private func openDonationPage() {
+        NSWorkspace.shared.open(Constants.Links.donation)
     }
 
     @objc private func showAboutPanel() {

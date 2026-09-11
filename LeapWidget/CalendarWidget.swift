@@ -78,7 +78,7 @@ struct CalendarWidgetView: View {
 
 struct CalendarWidget: Widget {
     var body: some WidgetConfiguration {
-        AppIntentConfiguration(kind: WidgetKind.calendar,
+        AppIntentConfiguration(kind: Constants.Widgets.calendar,
                                intent: CalendarConfigIntent.self,
                                provider: Provider<CalendarConfigIntent>()) { entry in
             CalendarWidgetView(entry: entry)
@@ -94,7 +94,7 @@ struct CalendarWidget: Widget {
 
 struct SmallCalendarWidget: Widget {
     var body: some WidgetConfiguration {
-        AppIntentConfiguration(kind: WidgetKind.calendarSmall,
+        AppIntentConfiguration(kind: Constants.Widgets.calendarSmall,
                                intent: SmallCalendarConfigIntent.self,
                                provider: Provider<SmallCalendarConfigIntent>()) { entry in
             CalendarWidgetView(entry: entry)

@@ -1,4 +1,5 @@
 import SwiftUI
+import LeapCore
 
 struct MainView: View {
     var body: some View {
@@ -16,6 +17,7 @@ struct MainView: View {
                            symbol: "slider.horizontal.3",
                            title: "Configure",
                            text: "Right-click the placed widget and choose its “Edit” item to pick which months to show, first day of the week, week numbers, and which app a click opens. Each widget keeps its own settings.")
+            donation
         }
         .padding(24)
         .frame(width: 480)
@@ -30,6 +32,24 @@ struct MainView: View {
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
+    }
+
+    private var donation: some View {
+        VStack(spacing: 0) {
+            Divider()
+            Text(donationMessage)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.top, 12)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private var donationMessage: AttributedString {
+        let markdown = "If you find Leap satisfying, [buy me a coffee](\(Constants.Links.donation)) and share your thoughts."
+        return (try? AttributedString(markdown: markdown)) ?? AttributedString(markdown)
     }
 }
 
