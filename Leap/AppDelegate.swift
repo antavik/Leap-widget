@@ -195,7 +195,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         mainMenu.addItem(fileItem)
 
         helpMenu.addItem(withTitle: "Support & Feedback",
-                         action: #selector(openFeedbackMail),
+                         action: #selector(openSupportMail),
                          keyEquivalent: "")
         helpMenu.addItem(withTitle: "Donate",
                          action: #selector(openDonationPage),
@@ -204,10 +204,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         helpItem.submenu = helpMenu
         mainMenu.addItem(helpItem)
 
-        // No Edit menu: the onboarding window holds no editable text.
         NSApp.mainMenu = mainMenu
-        // Marks the menu as the Help menu so macOS files it last and adds its
-        // own search item.
         NSApp.helpMenu = helpMenu
     }
 
@@ -215,8 +212,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSWorkspace.shared.open(Constants.Links.donation)
     }
 
-    @objc private func openFeedbackMail() {
-        NSWorkspace.shared.open(Constants.Mail.feedback)
+    @objc private func openSupportMail() {
+        NSWorkspace.shared.open(Constants.Mail.support)
     }
 
     @objc private func showAboutPanel() {
