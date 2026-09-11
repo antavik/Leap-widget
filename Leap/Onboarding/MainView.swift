@@ -35,20 +35,21 @@ struct MainView: View {
     }
 
     private var donation: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 2) {
             Divider()
+                .padding(.bottom, 10)
             Text(donationMessage)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.top, 12)
+            Text("Thank you!")
         }
+        .font(.caption)
+        .foregroundStyle(.secondary)
+        .multilineTextAlignment(.center)
+        .fixedSize(horizontal: false, vertical: true)
         .frame(maxWidth: .infinity)
     }
 
     private var donationMessage: AttributedString {
-        let markdown = "If you find Leap satisfying, [buy me a coffee](\(Constants.Links.donation)) and share your thoughts."
+        let markdown = "If you find Leap satisfying, you can [buy me a coffee](\(Constants.Links.donation)) and [share your thoughts](\(Constants.Mail.feedback))."
         return (try? AttributedString(markdown: markdown)) ?? AttributedString(markdown)
     }
 }

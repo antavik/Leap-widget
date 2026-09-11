@@ -194,7 +194,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         fileItem.submenu = fileMenu
         mainMenu.addItem(fileItem)
 
-        helpMenu.addItem(withTitle: "Donate…",
+        helpMenu.addItem(withTitle: "Support & Feedback",
+                         action: #selector(openFeedbackMail),
+                         keyEquivalent: "")
+        helpMenu.addItem(withTitle: "Donate",
                          action: #selector(openDonationPage),
                          keyEquivalent: "")
 
@@ -210,6 +213,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func openDonationPage() {
         NSWorkspace.shared.open(Constants.Links.donation)
+    }
+
+    @objc private func openFeedbackMail() {
+        NSWorkspace.shared.open(Constants.Mail.feedback)
     }
 
     @objc private func showAboutPanel() {
