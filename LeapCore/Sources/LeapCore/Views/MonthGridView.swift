@@ -15,7 +15,6 @@ private extension HorizontalAlignment {
 
 struct MonthGridView: View {
     @Environment(\.colorScheme) private var colorScheme
-    // A-48 probe (Q1): does `colorSchemeContrast` flip inside a widget render?
     @Environment(\.colorSchemeContrast) private var colorSchemeContrast
 
     private let model: MonthModel
@@ -60,13 +59,9 @@ struct MonthGridView: View {
                 }
             }
         }
-        // A-48 probe (Q2/Q3): does the representation survive the render
-        // archive, and does the click surface flatten it? Expect 7 stops.
         .accessibilityRepresentation { probeRepresentation }
     }
 
-    /// A-48 probe: the Phase 1 shape with throwaway strings — one header plus
-    /// six week elements. Counting stops is the measurement; wording is not.
     private var probeRepresentation: some View {
         VStack {
             Text(verbatim: "\(model.title) \(model.year)")
@@ -85,8 +80,6 @@ struct MonthGridView: View {
 
     /// Month name and optional superscript month number in one `Text`.
     private var titleText: Text {
-        // A-48 probe (Q1): "HC" appears only if the widget render sees
-        // Increase Contrast. Nothing else in the view reports that.
         let probeMarker = colorSchemeContrast == .increased ? " HC" : " STD"
         let name = Text(verbatim: model.title + probeMarker)
             .font(.system(size: metrics.title, weight: .semibold))
