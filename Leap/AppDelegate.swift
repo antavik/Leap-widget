@@ -7,6 +7,9 @@ import LeapCore
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var relayedURL = false
     private var window: NSWindow?
+#if DEBUG
+    private var previewWindow: NSWindow?
+#endif
 
     func applicationWillFinishLaunching(_ notification: Notification) {
         // Registering here (not in didFinishLaunching) guarantees a launch-by-URL
@@ -195,6 +198,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         fileItem.submenu = fileMenu
         mainMenu.addItem(fileItem)
 
+#if DEBUG
+        let debugItem = NSMenuItem()
+        let debugMenu = NSMenu(title: "Debug")
+        debugMenu.addItem(withTitle: "Accessibility Preview",
+                          action: #selector(showAccessibilityPreview),
+                          keyEquivalent: "")
+        debugItem.submenu = debugMenu
+        mainMenu.addItem(debugItem)
+#endif
+
         helpMenu.addItem(withTitle: String(localized: "Support & Feedback", comment: "Help menu item"),
                          action: #selector(openSupportMail),
                          keyEquivalent: "")
@@ -216,6 +229,45 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func openSupportMail() {
         NSWorkspace.shared.open(Constants.Mail.support)
     }
+
+#if DEBUG
+    // MARK: - Accessibility preview
+
+    /// A placed widget is drawn from a render the system owns, so the process
+    /// Accessibility Inspector attaches to is not the app you built. This
+    /// window hosts the same view in-process, where its real accessibility
+    /// tree can be walked with the Inspector and VoiceOver.
+    @objc private func showAccessibilityPreview() {
+        let window = previewWindow ?? makeAccessibilityPreviewWindow()
+        previewWindow = window
+
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+
+    private func makeAccessibilityPreviewWindow() -> NSWindow {
+        let row = monthRow(containing: .now,
+                           offsets: [0, 1],
+                           showYear: true,
+                           builder: MonthModelBuilder(
+                               calendar: .autoupdatingCurrent,
+                               options: MonthOptions(showWeekNumbers: true)))
+        // The medium widget's content size, so the grid lays out as it ships.
+        let hosting = NSHostingController(
+            rootView: MultiMonthView(models: row.models, yearLabel: row.yearLabel)
+                .frame(width: 336, height: 146)
+                .padding(12))
+        hosting.sizingOptions = [.preferredContentSize]
+
+        let window = NSWindow(contentViewController: hosting)
+        window.title = "Accessibility Preview"
+        window.styleMask = [.titled, .closable, .miniaturizable]
+        window.isReleasedWhenClosed = false
+        window.center()
+
+        return window
+    }
+#endif
 
     @objc private func showAboutPanel() {
         let info = Bundle.main.infoDictionary

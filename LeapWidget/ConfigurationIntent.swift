@@ -74,10 +74,13 @@ enum ClickAction: String, AppEnum {
 
     static let typeDisplayRepresentation: TypeDisplayRepresentation = "Click Opens"
     static let caseDisplayRepresentations: [ClickAction: DisplayRepresentation] = [
-        .appleCalendar: "Default Calendar (ical://)",
-        .fantastical: "Fantastical (x-fantastical3://)",
-        .googleCalendar: "Google Calendar (web)",
-        .doNothing: "Nothing",
+        .appleCalendar: DisplayRepresentation(title: "Default Calendar",
+                                              subtitle: "ical://"),
+        .fantastical: DisplayRepresentation(title: "Fantastical",
+                                            subtitle: "x-fantastical3://"),
+        .googleCalendar: DisplayRepresentation(title: "Google Calendar",
+                                               subtitle: "calendar.google.com"),
+        .doNothing: DisplayRepresentation(title: "Nothing"),
     ]
 
     var preset: ClickPreset? {

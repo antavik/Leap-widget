@@ -142,11 +142,13 @@ struct MonthGridView: View {
                 .font(.system(size: metrics.weekNumber, weight: .medium).monospacedDigit())
                 .foregroundStyle(.secondary)
                 .frame(width: metrics.weekNumberColumnWidth, alignment: .trailing)
+                .accessibilityHidden(number == nil)
             Rectangle()
                 .fill(.tertiary)
                 .frame(width: 1)
                 .padding(.vertical, -metrics.rowSpacing / 2)
                 .opacity(showsSeparator ? 1 : 0)
+                .accessibilityHidden(true)
         }
         .padding(.trailing, Self.separatorGap)
     }

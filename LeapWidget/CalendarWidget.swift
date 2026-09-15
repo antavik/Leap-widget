@@ -44,10 +44,12 @@ private struct WidgetClickSurface<Content: View>: View {
             Button(intent: DoNothingIntent()) { content }
                 .buttonStyle(InertButtonStyle())
                 .accessibilityRemoveTraits(.isButton)
+                .accessibilityRespondsToUserInteraction(false)
         }
     }
 }
 
+#if DEBUG
 enum BuildStamp {
     static let current: String = {
         let info = Bundle.main.infoDictionary
@@ -59,10 +61,16 @@ enum BuildStamp {
 
         return "Version: \(marketing) (\(commit))."
     }()
+}
+#endif
 
-    static func stamped(_ text: String) -> LocalizedStringResource {
-        LocalizedStringResource(stringLiteral: "\(text)\n\(current)")
-    }
+private func galleryDescription(_ text: LocalizedStringResource) -> LocalizedStringResource {
+#if DEBUG
+    return LocalizedStringResource(
+        stringLiteral: "\(String(localized: text))\n\(BuildStamp.current)")
+#else
+    return text
+#endif
 }
 
 struct CalendarWidgetView: View {
@@ -87,7 +95,7 @@ struct CalendarWidget: Widget {
         }
         .contentMarginsDisabled()
         .configurationDisplayName("Two Months")
-        .description(BuildStamp.stamped("Two months at a glance – the current plus the previous or next."))
+        .description(galleryDescription("Two months at a glance – the current plus the previous or next."))
         .supportedFamilies([.systemMedium])
     }
 }
@@ -103,7 +111,7 @@ struct SmallCalendarWidget: Widget {
         }
         .contentMarginsDisabled()
         .configurationDisplayName("Month")
-        .description(BuildStamp.stamped("One month at a glance – the current, previous, or next."))
+        .description(galleryDescription("One month at a glance – the current, previous, or next."))
         .supportedFamilies([.systemSmall])
     }
 }
