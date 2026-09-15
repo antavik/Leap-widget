@@ -27,6 +27,12 @@ public struct MultiMonthView: View {
                     .padding(.trailing, metrics.yearLabelTrailingInset)
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: spokenLabel))
+    }
+
+    private var spokenLabel: String {
+        (models.first(where: \.containsToday) ?? models[0]).spokenSummary
     }
 
     private var sideBySideMonths: some View {

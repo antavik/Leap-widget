@@ -7,6 +7,8 @@ public struct MonthModelBuilder: Sendable {
     private let monthTitles: [String]
     private let weekdayHeaders: [String]
     private let weekendColumns: [Bool]
+    private let monthYearStyle: Date.FormatStyle
+    private let todayStyle: Date.FormatStyle
 
     /// Whether this calendar can use a two-digit Gregorian year label.
     public let usesGregorianYearNumbering: Bool
@@ -25,6 +27,13 @@ public struct MonthModelBuilder: Sendable {
         self.monthTitles = effective.standaloneMonthSymbols.map {
             $0.uppercased(with: locale)
         }
+
+        let baseStyle = Date.FormatStyle(date: .omitted, time: .omitted,
+                                         locale: locale ?? .autoupdatingCurrent,
+                                         calendar: effective,
+                                         timeZone: effective.timeZone)
+        self.monthYearStyle = baseStyle.year().month(.wide)
+        self.todayStyle = baseStyle.year().month(.wide).day().weekday(.wide)
 
         let weekdaySymbols = effective.veryShortStandaloneWeekdaySymbols
         let firstIndex = effective.firstWeekday - 1
@@ -107,7 +116,29 @@ public struct MonthModelBuilder: Sendable {
                           weekendColumns: weekendColumns,
                           weeks: weeks,
                           weekNumbers: weekNumbers,
-                          showsOutsideDays: options.showOutsideDays)
+                          showsOutsideDays: options.showOutsideDays,
+                          containsToday: todayNumber != nil,
+                          spokenSummary: spokenSummary(monthStart: monthStart,
+                                                       today: today,
+                                                       holdsToday: todayNumber != nil))
+    }
+}
+
+private extension MonthModelBuilder {
+    func spokenSummary(monthStart: Date, today: Date, holdsToday: Bool) -> String {
+        guard holdsToday else { return monthStart.formatted(monthYearStyle) }
+
+        let date = today.formatted(todayStyle)
+
+        guard options.showWeekNumbers else {
+            return String(localized: "Today is \(date)", bundle: .module,
+                          comment: "VoiceOver label for the month holding today")
+        }
+
+        let week = calendar.component(.weekOfYear, from: today)
+
+        return String(localized: "Today is \(date), week \(week)", bundle: .module,
+                      comment: "VoiceOver label for the month holding today, week numbers on")
     }
 }
 

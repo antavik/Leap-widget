@@ -1,0 +1,28 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Today is %@" : {
+      "comment" : "VoiceOver label for the month holding today",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today is %@"
+          }
+        }
+      }
+    },
+    "Today is %@, week %lld" : {
+      "comment" : "VoiceOver label for the month holding today, week numbers on",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today is %@, week %lld"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

@@ -66,11 +66,17 @@ public struct MonthModel: Equatable, Sendable {
     public let weekNumbers: [Int]?
     /// Whether `isOutsideMonth` days are drawn; off renders their cells blank.
     public let showsOutsideDays: Bool
+    /// Whether `today` falls inside this month.
+    public let containsToday: Bool
+    /// The whole month spoken as one VoiceOver label: today's date when this
+    /// month holds today, the month and year otherwise. Already localized.
+    public let spokenSummary: String
 
     init(title: String, year: Int, monthNumber: Int,
                 monthNumberLabel: String? = nil,
                 weekdayHeaders: [String], weekendColumns: [Bool], weeks: [[Day]],
-                weekNumbers: [Int]?, showsOutsideDays: Bool = true) {
+                weekNumbers: [Int]?, showsOutsideDays: Bool = true,
+                containsToday: Bool, spokenSummary: String) {
         self.title = title
         self.year = year
         self.monthNumber = monthNumber
@@ -80,5 +86,7 @@ public struct MonthModel: Equatable, Sendable {
         self.weeks = weeks
         self.weekNumbers = weekNumbers
         self.showsOutsideDays = showsOutsideDays
+        self.containsToday = containsToday
+        self.spokenSummary = spokenSummary
     }
 }

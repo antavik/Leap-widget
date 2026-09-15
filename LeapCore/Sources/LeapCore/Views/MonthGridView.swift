@@ -36,7 +36,6 @@ struct MonthGridView: View {
             titleText
                 .foregroundStyle(.red)
                 .alignmentGuide(.firstWeekdayColumn) { $0[.leading] }
-                .accessibilityLabel(monthAccessibilityLabel)
             Grid(horizontalSpacing: 0, verticalSpacing: metrics.rowSpacing) {
                 GridRow {
                     if model.weekNumbers != nil {
@@ -59,29 +58,11 @@ struct MonthGridView: View {
                 }
             }
         }
-        .accessibilityRepresentation { probeRepresentation }
-    }
-
-    private var probeRepresentation: some View {
-        VStack {
-            Text(verbatim: "\(model.title) \(model.year)")
-                .accessibilityAddTraits(.isHeader)
-            ForEach(0..<6, id: \.self) { row in
-                Text(verbatim: probeWeekLabel(row))
-            }
-        }
-    }
-
-    private func probeWeekLabel(_ row: Int) -> String {
-        let days = model.weeks[row].map { String($0.number) }.joined(separator: " ")
-
-        return "Week \(row + 1): \(days)"
     }
 
     /// Month name and optional superscript month number in one `Text`.
     private var titleText: Text {
-        let probeMarker = colorSchemeContrast == .increased ? " HC" : " STD"
-        let name = Text(verbatim: model.title + probeMarker)
+        let name = Text(verbatim: model.title)
             .font(.system(size: metrics.title, weight: .semibold))
 
         guard let label = model.monthNumberLabel else { return name }
@@ -94,13 +75,9 @@ struct MonthGridView: View {
     }
 
     private var monthNumberTint: AnyShapeStyle {
-        colorScheme == .dark ? AnyShapeStyle(.red) : AnyShapeStyle(.red.opacity(0.55))
-    }
-
-    private var monthAccessibilityLabel: Text {
-        model.monthNumberLabel == nil
-            ? Text(model.title)
-            : Text("\(model.title), month \(model.monthNumber)")
+        colorScheme == .dark || colorSchemeContrast == .increased
+            ? AnyShapeStyle(.red)
+            : AnyShapeStyle(.red.opacity(0.55))
     }
 
     /// Weekday header cell; the first column's glyph exports its leading edge
@@ -148,7 +125,6 @@ struct MonthGridView: View {
                         .fill(.red)
                         .frame(width: metrics.todayCircle, height: metrics.todayCircle)
                 }
-                .accessibilityLabel("\(day.number), today")
         } else {
             Text(verbatim: "\(day.number)")
                 .font(.system(size: metrics.day, weight: .semibold).monospacedDigit())

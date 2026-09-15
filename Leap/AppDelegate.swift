@@ -116,15 +116,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func makeMainWindow() -> NSWindow {
         let hosting = NSHostingController(rootView: MainView())
+        hosting.sizingOptions = [.preferredContentSize]
+
         let window = NSWindow(contentViewController: hosting)
-        window.title = "Leap"
-        window.styleMask = [.titled, .closable]
+        window.title = String(localized: "Leap", comment: "Main window title")
+        window.styleMask = [.titled, .closable, .miniaturizable]
         window.isReleasedWhenClosed = false
 
         window.isRestorable = false
 
         hosting.view.layoutSubtreeIfNeeded()
-        window.setContentSize(hosting.view.fittingSize)
 
         return window
     }
@@ -172,32 +173,32 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let appItem = NSMenuItem()
         let appMenu = NSMenu()
         let fileItem = NSMenuItem()
-        let fileMenu = NSMenu(title: "File")
+        let fileMenu = NSMenu(title: String(localized: "File", comment: "Menu bar title"))
         let helpItem = NSMenuItem()
-        let helpMenu = NSMenu(title: "Help")
+        let helpMenu = NSMenu(title: String(localized: "Help", comment: "Menu bar title"))
 
-        appMenu.addItem(withTitle: "About Leap",
+        appMenu.addItem(withTitle: String(localized: "About Leap", comment: "App menu item"),
                         action: #selector(showAboutPanel),
                         keyEquivalent: "")
         appMenu.addItem(.separator())
-        appMenu.addItem(withTitle: "Quit Leap",
+        appMenu.addItem(withTitle: String(localized: "Quit Leap", comment: "App menu item"),
                         action: #selector(NSApplication.terminate(_:)),
                         keyEquivalent: "q")
 
         appItem.submenu = appMenu
         mainMenu.addItem(appItem)
 
-        fileMenu.addItem(withTitle: "Close Window",
+        fileMenu.addItem(withTitle: String(localized: "Close Window", comment: "File menu item"),
                          action: #selector(NSWindow.performClose(_:)),
                          keyEquivalent: "w")
 
         fileItem.submenu = fileMenu
         mainMenu.addItem(fileItem)
 
-        helpMenu.addItem(withTitle: "Support & Feedback",
+        helpMenu.addItem(withTitle: String(localized: "Support & Feedback", comment: "Help menu item"),
                          action: #selector(openSupportMail),
                          keyEquivalent: "")
-        helpMenu.addItem(withTitle: "Donate",
+        helpMenu.addItem(withTitle: String(localized: "Donate", comment: "Help menu item"),
                          action: #selector(openDonationPage),
                          keyEquivalent: "")
 
@@ -226,7 +227,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             options[.version] = commit
         }
         options[.credits] = NSAttributedString(
-            string: "Created by Antavik",
+            string: String(localized: "Created by Antavik", comment: "About panel credits"),
             attributes: [
                 .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize),
                 .foregroundColor: NSColor.labelColor,
