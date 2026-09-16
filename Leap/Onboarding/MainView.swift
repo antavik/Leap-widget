@@ -2,7 +2,7 @@ import SwiftUI
 import LeapCore
 
 struct MainView: View {
-    private let steps: [OnboardingStep] = [
+    private static let steps: [OnboardingStep] = [
         OnboardingStep(symbol: "menubar.dock.rectangle",
                        title: "Add to the Desktop",
                        text: "Right-click the Desktop, choose “Edit Widgets…”, search for “Leap”, then drag the Two Months or Month widget anywhere on the Desktop."),
@@ -17,8 +17,10 @@ struct MainView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             header
-            ForEach(Array(steps.enumerated()), id: \.element.id) { index, step in
-                OnboardingStepView(step: step, number: index + 1, total: steps.count)
+            ForEach(Array(Self.steps.enumerated()), id: \.element.id) { index, step in
+                OnboardingStepView(step: step,
+                                   number: index + 1,
+                                   total: Self.steps.count)
             }
             donation
         }

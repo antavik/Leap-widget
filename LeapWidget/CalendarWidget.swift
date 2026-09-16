@@ -64,13 +64,14 @@ enum BuildStamp {
 }
 #endif
 
-private func galleryDescription(_ text: LocalizedStringResource) -> LocalizedStringResource {
+private extension WidgetConfiguration {
+    func galleryDescription(_ text: LocalizedStringResource) -> some WidgetConfiguration {
 #if DEBUG
-    return LocalizedStringResource(
-        stringLiteral: "\(String(localized: text))\n\(BuildStamp.current)")
+        description("\(String(localized: text))\n\(BuildStamp.current)")
 #else
-    return text
+        description(text)
 #endif
+    }
 }
 
 struct CalendarWidgetView: View {
@@ -95,7 +96,7 @@ struct CalendarWidget: Widget {
         }
         .contentMarginsDisabled()
         .configurationDisplayName("Two Months")
-        .description(galleryDescription("Two months at a glance – the current plus the previous or next."))
+        .galleryDescription("Two months at a glance – the current plus the previous or next.")
         .supportedFamilies([.systemMedium])
     }
 }
@@ -111,7 +112,7 @@ struct SmallCalendarWidget: Widget {
         }
         .contentMarginsDisabled()
         .configurationDisplayName("Month")
-        .description(galleryDescription("One month at a glance – the current, previous, or next."))
+        .galleryDescription("One month at a glance – the current, previous, or next.")
         .supportedFamilies([.systemSmall])
     }
 }

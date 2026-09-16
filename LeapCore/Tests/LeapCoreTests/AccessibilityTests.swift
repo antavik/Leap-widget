@@ -129,3 +129,32 @@ private func summary(_ year: Int, _ month: Int, _ day: Int,
     #expect(!month.containsToday)
     #expect(month.spokenSummary == "October 2026")
 }
+
+// MARK: - The whole row
+
+private func rowSummary(_ year: Int, _ month: Int, _ day: Int,
+                        offsets: [Int],
+                        calendar: Calendar,
+                        options: MonthOptions = MonthOptions()) -> String {
+    let today = date(year, month, day, in: calendar)
+    let row = monthRow(containing: today, offsets: offsets, showYear: true,
+                       builder: MonthModelBuilder(calendar: calendar, options: options))
+
+    return spokenSummary(of: row.models, locale: calendar.locale!)
+}
+
+@Test func aTwoMonthRowNamesBothMonths() {
+    #expect(rowSummary(2026, 9, 15, offsets: [0, 1], calendar: usSundayFirst)
+            == "Today is Tuesday, September 15, 2026 and October 2026")
+    #expect(rowSummary(2026, 9, 15, offsets: [-1, 0], calendar: usSundayFirst)
+            == "August 2026 and Today is Tuesday, September 15, 2026")
+}
+
+@Test func aSingleMonthRowSpeaksThatMonthAlone() {
+    #expect(rowSummary(2026, 9, 15, offsets: [1], calendar: usSundayFirst)
+            == "October 2026")
+}
+
+@Test func anEmptyRowSpeaksNothing() {
+    #expect(spokenSummary(of: [], locale: usSundayFirst.locale!).isEmpty)
+}

@@ -16,3 +16,8 @@ public func monthRow(containing date: Date,
 public func yearLabel(forYear year: Int) -> String {
     String(format: "\u{2019}%02d", year % 100)
 }
+
+public func spokenSummary(of models: [MonthModel],
+                          locale: Locale = .autoupdatingCurrent) -> String {
+    models.map(\.spokenSummary).formatted(.list(type: .and).locale(locale))
+}

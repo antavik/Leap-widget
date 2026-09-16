@@ -128,8 +128,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         window.isRestorable = false
 
-        hosting.view.layoutSubtreeIfNeeded()
-
         return window
     }
 

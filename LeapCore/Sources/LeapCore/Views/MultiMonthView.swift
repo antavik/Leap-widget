@@ -28,11 +28,7 @@ public struct MultiMonthView: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(verbatim: spokenLabel))
-    }
-
-    private var spokenLabel: String {
-        (models.first(where: \.containsToday) ?? models[0]).spokenSummary
+        .accessibilityLabel(Text(verbatim: spokenSummary(of: models)))
     }
 
     private var sideBySideMonths: some View {
