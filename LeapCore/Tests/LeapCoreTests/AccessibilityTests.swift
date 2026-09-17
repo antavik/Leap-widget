@@ -143,11 +143,11 @@ private func rowSummary(_ year: Int, _ month: Int, _ day: Int,
     return spokenSummary(of: row.models, locale: calendar.locale!)
 }
 
-@Test func aTwoMonthRowNamesBothMonths() {
+@Test func aTwoMonthRowNamesOnlyTheMonthHoldingToday() {
     #expect(rowSummary(2026, 9, 15, offsets: [0, 1], calendar: usSundayFirst)
-            == "Today is Tuesday, September 15, 2026 and October 2026")
+            == "Today is Tuesday, September 15, 2026")
     #expect(rowSummary(2026, 9, 15, offsets: [-1, 0], calendar: usSundayFirst)
-            == "August 2026 and Today is Tuesday, September 15, 2026")
+            == "Today is Tuesday, September 15, 2026")
 }
 
 @Test func aSingleMonthRowSpeaksThatMonthAlone() {

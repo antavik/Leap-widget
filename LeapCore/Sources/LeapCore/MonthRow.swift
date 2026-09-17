@@ -19,5 +19,7 @@ public func yearLabel(forYear year: Int) -> String {
 
 public func spokenSummary(of models: [MonthModel],
                           locale: Locale = .autoupdatingCurrent) -> String {
-    models.map(\.spokenSummary).formatted(.list(type: .and).locale(locale))
+    if let today = models.first(where: \.containsToday) { return today.spokenSummary }
+
+    return models.map(\.spokenSummary).formatted(.list(type: .and).locale(locale))
 }
