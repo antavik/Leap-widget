@@ -45,6 +45,105 @@
         }
       }
     },
+    "Cancel" : {
+      "comment" : "Uninstall confirmation button",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
+    },
+    "Drag Leap to the Trash instead. The Uninstalling section of the read-me lists the remaining files." : {
+      "comment" : "Uninstall failure recovery suggestion",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drag Leap to the Trash instead. The Uninstalling section of the read-me lists the remaining files."
+          }
+        }
+      }
+    },
+    "Leap and its settings will be moved to the Trash, and its widgets will disappear from the Desktop and Notification Center." : {
+      "comment" : "Uninstall confirmation message",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leap and its settings will be moved to the Trash, and its widgets will disappear from the Desktop and Notification Center."
+          }
+        }
+      }
+    },
+    "Leap could not hand the uninstall over to Homebrew. %@" : {
+      "comment" : "Uninstall failure message",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leap could not hand the uninstall over to Homebrew. %@"
+          }
+        }
+      }
+    },
+    "Leap could not move “%@” to the Trash. %@" : {
+      "comment" : "Uninstall failure message",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leap could not move “%@” to the Trash. %@"
+          }
+        }
+      }
+    },
+    "Run “brew uninstall --cask --zap leap” in Terminal instead." : {
+      "comment" : "Uninstall failure recovery suggestion",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Run “brew uninstall --cask --zap leap” in Terminal instead."
+          }
+        }
+      }
+    },
+    "Uninstall" : {
+      "comment" : "Uninstall confirmation button",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uninstall"
+          }
+        }
+      }
+    },
+    "Uninstall Leap?" : {
+      "comment" : "Uninstall confirmation title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uninstall Leap?"
+          }
+        }
+      }
+    },
+    "Uninstall Leap…" : {
+      "comment" : "Help menu item",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uninstall Leap…"
+          }
+        }
+      }
+    },
     "You can buy me a coffee" : {
       "comment" : "Donation link",
       "localizations" : {

@@ -43,11 +43,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             name: NSApplication.didChangeScreenParametersNotification,
             object: nil)
 
-        // Up to 0.1.0 the window frame was autosaved under this key. Placement
-        // is computed on every open now, so the leftover is dead weight in the
-        // container defaults. Drop this call once 0.1.0 is out of circulation.
-        UserDefaults.standard.removeObject(forKey: "NSWindow Frame LeapMainWindow")
-
         // Reload on every launch that shows UI so chronod rebuilds archives for
         // the environments in use now. Otherwise a gallery-added widget can get
         // stuck on its placeholder with "no matching environment".
@@ -212,6 +207,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         helpMenu.addItem(withTitle: String(localized: "Donate", comment: "Help menu item"),
                          action: #selector(openDonationPage),
                          keyEquivalent: "")
+        helpMenu.addItem(.separator())
+        helpMenu.addItem(withTitle: String(localized: "Uninstall Leap…", comment: "Help menu item"),
+                         action: #selector(confirmUninstall),
+                         keyEquivalent: "")
 
         helpItem.submenu = helpMenu
         mainMenu.addItem(helpItem)
@@ -226,6 +225,38 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func openSupportMail() {
         NSWorkspace.shared.open(Constants.Mail.support)
+    }
+
+    // MARK: - Uninstall
+
+    @objc private func confirmUninstall() {
+        let alert = NSAlert()
+        alert.alertStyle = .warning
+        alert.messageText = String(localized: "Uninstall Leap?",
+                                   comment: "Uninstall confirmation title")
+        alert.informativeText = String(
+            localized: "Leap and its settings will be moved to the Trash, and its widgets will disappear from the Desktop and Notification Center.",
+            comment: "Uninstall confirmation message")
+
+        let uninstall = alert.addButton(
+            withTitle: String(localized: "Uninstall", comment: "Uninstall confirmation button"))
+        let cancel = alert.addButton(
+            withTitle: String(localized: "Cancel", comment: "Uninstall confirmation button"))
+
+        uninstall.hasDestructiveAction = true
+        uninstall.keyEquivalent = ""
+        cancel.keyEquivalent = "\u{1b}"
+
+        NSApp.activate(ignoringOtherApps: true)
+
+        guard alert.runModal() == .alertFirstButtonReturn else { return }
+
+        do {
+            try Uninstaller.perform()
+            NSApp.terminate(nil)
+        } catch {
+            NSAlert(error: error).runModal()
+        }
     }
 
 #if DEBUG

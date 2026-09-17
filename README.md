@@ -63,6 +63,42 @@ other signing configuration is needed.
 The app's window guides you through these steps. The app doesn't stay running —
 widgets are rendered by the system.
 
+## Uninstalling
+
+Open Leap and choose **Help ▸ Uninstall Leap…**. Leap moves itself and everything
+it has written to the Trash and quits; the widgets disappear on their own. If Leap
+was installed with Homebrew it hands the job to `brew` instead, so Homebrew's own
+records stay correct.
+
+From the terminal, a Homebrew install comes out with:
+
+```sh
+brew uninstall --cask --zap leap
+```
+
+Without `--zap` the app goes but its settings stay — that is Homebrew's
+convention, not Leap's.
+
+Dragging Leap to the Trash also works and leaves a few megabytes behind. To clear
+those out by hand:
+
+```sh
+rm -rf ~/Library/Preferences/com.antavik.leap.plist \
+       ~/Library/Containers/com.antavik.leap \
+       ~/Library/Containers/com.antavik.leap.widget \
+       "$HOME/Library/Application Scripts/com.antavik.leap" \
+       "$HOME/Library/Application Scripts/com.antavik.leap.widget" \
+       "$HOME/Library/Saved Application State/com.antavik.leap.savedState" \
+       ~/Library/Caches/com.antavik.leap
+```
+
+The two `Containers` entries are sandbox leftovers: the widget still uses its
+container, and `com.antavik.leap` is left over from versions up to 0.1.0, when
+the app was sandboxed too.
+
+On a development machine, `make uninstall` clears the same paths for the copy in
+`/Applications`, deleting them outright rather than moving them to the Trash.
+
 ## Project layout
 
 | Path | Contents |

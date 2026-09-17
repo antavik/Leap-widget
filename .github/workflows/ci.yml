@@ -11,6 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Uninstall paths agree everywhere
+        run: ./scripts/check-uninstall-paths.sh
+
       - name: Unit tests (LeapCore)
         run: swift test --package-path LeapCore
 
