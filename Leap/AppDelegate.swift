@@ -252,11 +252,36 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard alert.runModal() == .alertFirstButtonReturn else { return }
 
         do {
-            try Uninstaller.perform()
+            report(leftovers: try Uninstaller.perform())
             NSApp.terminate(nil)
         } catch {
             NSAlert(error: error).runModal()
         }
+    }
+
+    private func report(leftovers: [URL]) {
+        guard !leftovers.isEmpty else { return }
+
+        let list = leftovers
+            .map { "  " + NSString(string: $0.path(percentEncoded: false)).abbreviatingWithTildeInPath }
+            .joined(separator: "\n")
+
+        let alert = NSAlert()
+        alert.alertStyle = .informational
+        alert.messageText = String(localized: "Leap is gone, but a few of its files are not.",
+                                   comment: "Uninstall leftovers title")
+        alert.informativeText = String(
+            localized: "macOS keeps these out of reach of every app but Finder:\n\n\(list)\n\nDrag them to the Trash to finish up.",
+            comment: "Uninstall leftovers message")
+
+        alert.addButton(withTitle: String(localized: "Show in Finder",
+                                          comment: "Uninstall leftovers button"))
+        alert.addButton(withTitle: String(localized: "OK",
+                                          comment: "Uninstall leftovers button"))
+
+        guard alert.runModal() == .alertFirstButtonReturn else { return }
+
+        NSWorkspace.shared.activateFileViewerSelecting(leftovers)
     }
 
 #if DEBUG

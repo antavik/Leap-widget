@@ -65,10 +65,15 @@ widgets are rendered by the system.
 
 ## Uninstalling
 
-Open Leap and choose **Help ▸ Uninstall Leap…**. Leap moves itself and everything
-it has written to the Trash and quits; the widgets disappear on their own. If Leap
-was installed with Homebrew it hands the job to `brew` instead, so Homebrew's own
-records stay correct.
+Open Leap and choose **Help ▸ Uninstall Leap…**. Leap moves itself and its settings
+to the Trash and quits; the widgets disappear on their own. If Leap was installed
+with Homebrew it hands the job to `brew` instead, so Homebrew's own records stay
+correct.
+
+macOS keeps `~/Library/Containers` out of reach of every app but Finder, so the two
+sandbox containers survive. Leap names them on the way out and offers to reveal them
+in Finder, where dragging them to the Trash finishes the job. No password lifts this
+— it is Full Disk Access, not a privilege `sudo` can grant.
 
 From the terminal, a Homebrew install comes out with:
 
@@ -92,9 +97,11 @@ rm -rf ~/Library/Preferences/com.antavik.leap.plist \
        ~/Library/Caches/com.antavik.leap
 ```
 
-The two `Containers` entries are sandbox leftovers: the widget still uses its
-container, and `com.antavik.leap` is left over from versions up to 0.1.0, when
-the app was sandboxed too.
+The two `Containers` entries need Full Disk Access on whichever terminal runs this
+(System Settings ▸ Privacy & Security ▸ Full Disk Access); without it they refuse
+to go, `sudo` included. Finder removes them with no setup. They are sandbox
+leftovers: the widget still uses its container, and `com.antavik.leap` is left over
+from versions up to 0.1.0, when the app was sandboxed too.
 
 On a development machine, `make uninstall` clears the same paths for the copy in
 `/Applications`, deleting them outright rather than moving them to the Trash.

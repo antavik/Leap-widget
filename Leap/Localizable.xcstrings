@@ -56,17 +56,6 @@
         }
       }
     },
-    "Drag Leap to the Trash instead. The Uninstalling section of the read-me lists the remaining files." : {
-      "comment" : "Uninstall failure recovery suggestion",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Drag Leap to the Trash instead. The Uninstalling section of the read-me lists the remaining files."
-          }
-        }
-      }
-    },
     "Leap and its settings will be moved to the Trash, and its widgets will disappear from the Desktop and Notification Center." : {
       "comment" : "Uninstall confirmation message",
       "localizations" : {
@@ -89,13 +78,24 @@
         }
       }
     },
-    "Leap could not move “%@” to the Trash. %@" : {
-      "comment" : "Uninstall failure message",
+    "Leap is gone, but a few of its files are not." : {
+      "comment" : "Uninstall leftovers title",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Leap could not move “%@” to the Trash. %@"
+            "value" : "Leap is gone, but a few of its files are not."
+          }
+        }
+      }
+    },
+    "OK" : {
+      "comment" : "Uninstall leftovers button",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
           }
         }
       }
@@ -107,6 +107,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Run “brew uninstall --cask --zap leap” in Terminal instead."
+          }
+        }
+      }
+    },
+    "Show in Finder" : {
+      "comment" : "Uninstall leftovers button",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show in Finder"
           }
         }
       }
@@ -327,6 +338,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Thank you!"
+          }
+        }
+      }
+    },
+    "macOS keeps these out of reach of every app but Finder:\n\n%@\n\nDrag them to the Trash to finish up." : {
+      "comment" : "Uninstall leftovers message",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS keeps these out of reach of every app but Finder:\n\n%@\n\nDrag them to the Trash to finish up."
           }
         }
       }

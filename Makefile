@@ -45,7 +45,7 @@ uninstall:
 	-pkill -f '$(INSTALL_DIR)/$(APP_NAME)/Contents/PlugIns/LeapWidget.appex'
 	-pluginkit -r $(INSTALL_DIR)/$(APP_NAME)/Contents/PlugIns/LeapWidget.appex
 	-$(LSREGISTER) -u $(INSTALL_DIR)/$(APP_NAME)
-	rm -rf "$(HOME)/Library/Preferences/com.antavik.leap.plist" \
+	-rm -rf "$(HOME)/Library/Preferences/com.antavik.leap.plist" \
 	       "$(HOME)/Library/Containers/com.antavik.leap" \
 	       "$(HOME)/Library/Containers/com.antavik.leap.widget" \
 	       "$(HOME)/Library/Application Scripts/com.antavik.leap" \

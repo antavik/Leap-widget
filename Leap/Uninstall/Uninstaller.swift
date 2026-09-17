@@ -2,14 +2,10 @@ import AppKit
 import LeapCore
 
 enum UninstallError: LocalizedError {
-    case trashFailed(URL, underlying: any Error)
     case handoffFailed(underlying: any Error)
 
     var errorDescription: String? {
         switch self {
-        case .trashFailed(let url, let underlying):
-            String(localized: "Leap could not move “\(url.lastPathComponent)” to the Trash. \(underlying.localizedDescription)",
-                   comment: "Uninstall failure message")
         case .handoffFailed(let underlying):
             String(localized: "Leap could not hand the uninstall over to Homebrew. \(underlying.localizedDescription)",
                    comment: "Uninstall failure message")
@@ -18,9 +14,6 @@ enum UninstallError: LocalizedError {
 
     var recoverySuggestion: String? {
         switch self {
-        case .trashFailed:
-            String(localized: "Drag Leap to the Trash instead. The Uninstalling section of the read-me lists the remaining files.",
-                   comment: "Uninstall failure recovery suggestion")
         case .handoffFailed:
             String(localized: "Run “brew uninstall --cask --zap leap” in Terminal instead.",
                    comment: "Uninstall failure recovery suggestion")
@@ -31,14 +24,15 @@ enum UninstallError: LocalizedError {
 @MainActor
 enum Uninstaller {
 
-    static func perform() throws {
+    static func perform() throws -> [URL] {
         deregister()
 
         switch Uninstall.channel(exists: exists) {
         case .homebrew(let brew):
             try handOver(to: brew)
+            return []
         case .direct:
-            try removeEverything()
+            return removeEverything()
         }
     }
 
@@ -58,21 +52,19 @@ enum Uninstaller {
 
     // MARK: - Direct install
 
-    private static func removeEverything() throws {
+    private static func removeEverything() -> [URL] {
         // cfprefsd owns this domain and writes it back out when Leap quits, so
         // trashing the plist on its own would leave an empty one behind.
         if let bundleID = Bundle.main.bundleIdentifier {
             UserDefaults.standard.removePersistentDomain(forName: bundleID)
         }
 
-        for url in Uninstall.removalPaths(home: FileManager.default.homeDirectoryForCurrentUser,
-                                          bundle: Bundle.main.bundleURL) where exists(url) {
-            do {
-                try FileManager.default.trashItem(at: url, resultingItemURL: nil)
-            } catch {
-                throw UninstallError.trashFailed(url, underlying: error)
+        return Uninstall.removalPaths(home: FileManager.default.homeDirectoryForCurrentUser,
+                                      bundle: Bundle.main.bundleURL)
+            .filter { url in
+                guard exists(url) else { return false }
+                return (try? FileManager.default.trashItem(at: url, resultingItemURL: nil)) == nil
             }
-        }
     }
 
     // MARK: - Homebrew install
