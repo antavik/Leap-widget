@@ -45,7 +45,8 @@ enum Uninstaller {
             run("/usr/bin/pluginkit", ["-r", widget.path(percentEncoded: false)])
             // A live extension would recreate the container once it is trashed.
             run("/usr/bin/pkill", ["-U", String(getuid()),
-                                   "-f", regexEscaped(widget.path(percentEncoded: false))])
+                                   "-f", Uninstall.regexEscaped(
+                                       widget.path(percentEncoded: false))])
         }
         run(lsregister, ["-u", Bundle.main.bundleURL.path(percentEncoded: false)])
     }
@@ -74,7 +75,12 @@ enum Uninstaller {
     /// reporting Leap as installed.
     private static func handOver(to brew: URL) throws {
         do {
-            try trampoline(brew: brew).write(to: scriptURL, atomically: true, encoding: .utf8)
+            let script = Uninstall.trampoline(
+                brew: brew,
+                script: scriptURL,
+                log: logURL,
+                processIdentifier: ProcessInfo.processInfo.processIdentifier)
+            try script.write(to: scriptURL, atomically: true, encoding: .utf8)
 
             let process = Process()
             process.executableURL = URL(filePath: "/bin/sh")
@@ -83,25 +89,6 @@ enum Uninstaller {
         } catch {
             throw UninstallError.handoffFailed(underlying: error)
         }
-    }
-
-    /// Waits for this process to exit, then lets Homebrew take over. The wait
-    /// is bounded: `brew` copes with a still-running app on its own.
-    private static func trampoline(brew: URL) -> String {
-        """
-        #!/bin/sh
-        exec >'\(shellEscaped(logURL.path(percentEncoded: false)))' 2>&1
-
-        pid=\(ProcessInfo.processInfo.processIdentifier)
-        waited=0
-        while kill -0 "$pid" 2>/dev/null && [ "$waited" -lt 150 ]; do
-            sleep 0.2
-            waited=$((waited + 1))
-        done
-
-        rm -f '\(shellEscaped(scriptURL.path(percentEncoded: false)))'
-        exec '\(shellEscaped(brew.path(percentEncoded: false)))' uninstall --cask --zap \(Uninstall.caskToken)
-        """
     }
 
     private static var scriptURL: URL {
@@ -137,17 +124,5 @@ enum Uninstaller {
 
         guard (try? process.run()) != nil else { return }
         process.waitUntilExit()
-    }
-
-    /// For single-quoted shell literals: an apostrophe in a path must not
-    /// break out of the string.
-    private static func shellEscaped(_ path: String) -> String {
-        path.replacingOccurrences(of: "'", with: "'\\''")
-    }
-
-    /// `pkill -f` takes an extended regular expression, not a literal, so a
-    /// bundle at `~/Downloads/Leap (1).app` would match nothing.
-    private static func regexEscaped(_ path: String) -> String {
-        path.map { #".[]{}()\*+?^$|"#.contains($0) ? "\\\($0)" : String($0) }.joined()
     }
 }

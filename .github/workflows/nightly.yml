@@ -1,0 +1,42 @@
+name: Nightly
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  goldens-and-budgets:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Pin Xcode
+        run: sudo xcode-select -switch /Applications/Xcode_26.3.app
+
+      - name: Record the toolchain
+        run: |
+          sw_vers
+          xcodebuild -version
+
+      - name: Goldens and budgets
+        env:
+          LEAP_BUDGETS: "1"
+        run: make report
+
+      - name: The golden layer must not have skipped
+        run: |
+          if grep -q 'golden layer reported skipped' reports/latest/summary.md; then
+            echo "::error::the snapshot suite skipped on a pinned runner"
+            exit 1
+          fi
+
+      - name: Upload the report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-report
+          path: reports/
+          retention-days: 30

@@ -29,10 +29,8 @@ default calendar application.
 ## Building
 
 ```sh
-# Unit tests (calendar math, rendering, performance)
 make test
 
-# Generate Leap.xcodeproj, then build app + widget extension
 make release
 ```
 
@@ -106,13 +104,60 @@ from versions up to 0.1.0, when the app was sandboxed too.
 On a development machine, `make uninstall` clears the same paths for the copy in
 `/Applications`, deleting them outright rather than moving them to the Trash.
 
+## Testing
+
+Five layers, fastest first. `make test` runs L0–L3 in a few seconds; L4 needs
+Xcode and a logged-in GUI session.
+
+| Layer | What it proves | Where |
+|---|---|---|
+| L0 | Facts duplicated across files still agree — uninstall paths, localized keys and their bundle spelling, the widget's option enums, the scheme/test-plan wiring and its safe-mode interlock | `scripts/check-*.sh` |
+| L1 | Pure logic: calendar math, spoken labels, widget options, the `leap://` relay, uninstall escaping, the timeline | `LeapCore/Tests/LeapCoreTests` |
+| L2 | Properties measured off a render: full opacity, clipping, the today marker, the week-number footprint, six rows, RTL | `LayoutInvariantTests` |
+| L3 | Golden snapshots — 23 PNGs, the change detector for anything nobody thought to assert | `SnapshotTests`, images under `LeapCore/Tests/LeapCoreTests/__Goldens__/<os>-<xcode>/` |
+| L4 | The app through a real accessibility client: menus, the About panel, the uninstall alert, `performAccessibilityAudit` — and the `leap://` relay a widget click sends, delivered as a real Apple Event | `LeapUITests`, driven by `Leap.xctestplan` |
+
+```sh
+make test                                                  # L0-L3
+make report                                                # the same, plus reports/<stamp>-<hash>/
+make snapshots-record                                      # regenerate goldens that moved
+LEAP_SKIP_SNAPSHOTS=1 swift test --package-path LeapCore   # tightest loop
+LEAP_BUDGETS=1 swift test --package-path LeapCore --filter BudgetTests
+
+xcodebuild -project Leap.xcodeproj -scheme Leap -configuration Debug \
+    -derivedDataPath build build-for-testing CODE_SIGN_IDENTITY="-" CODE_SIGN_STYLE=Manual
+xcodebuild test-without-building -project Leap.xcodeproj -scheme Leap \
+    -configuration Debug -derivedDataPath build -testPlan Leap \
+    CODE_SIGN_IDENTITY="-" CODE_SIGN_STYLE=Manual
+```
+
+A golden diff means "look at this", not "this is wrong": inspect the expected,
+actual and amplified-diff PNGs written to `reports/latest/screenshots/diff/`,
+then fix the code or re-record. Goldens are committed *inputs*; everything
+under `reports/` is a run's output and is git-ignored.
+
+The UI tests move the mouse and take over the keyboard. Two of them reach
+outside the test — the uninstall alert and the widget-click relay — and are
+safe only because `Leap.xctestplan` sets `LEAP_UI_TEST_SAFE_MODE`, which
+`LeapApp.launched()` forwards to the app. Under it `confirmUninstall` removes
+nothing and says so before the destructive button can be clicked, and
+`openCalendar` writes the resolved target to a file instead of opening it.
+
+Two behaviours stay manual: that `widgetURL` is attached to the surface at all
+(WidgetKit renders in another process, so no test host can click it), and that
+a *cold* launch by URL relays and then quits (a sandboxed runner cannot arm the
+interlock on one). The relay tests deliver the same Apple Event to a running
+instance instead.
+
 ## Project layout
 
 | Path | Contents |
 |---|---|
 | `Leap/` | Host app: onboarding, `leap://` → calendar URL relay |
 | `LeapWidget/` | Widget extension: intent, timeline provider, widget declaration |
-| `LeapCore/` | Local Swift package: calendar math, models, theming, month views + all unit tests |
+| `LeapCore/` | Local Swift package: calendar math, models, theming, widget options, the relay and the views — plus L0-L3 tests and the golden images |
+| `LeapUITests/` | XCUITest target (L4), run through `Leap.xctestplan` |
+| `scripts/` | L0 consistency checks and the report harness |
 
 ## License
 

@@ -10,7 +10,7 @@ LSREGISTER   := /System/Library/Frameworks/CoreServices.framework/Versions/Curre
 RELEASE_APP  := $(BUILD_DIR)/Build/Products/Release/$(APP_NAME)
 DEBUG_APP    := $(BUILD_DIR)/Build/Products/Debug/$(APP_NAME)
 
-.PHONY: all project release debug test install uninstall clean
+.PHONY: all project release debug test report reports-prune snapshots-record install uninstall clean
 
 all: test release
 
@@ -32,7 +32,23 @@ debug: project
 	-$(LSREGISTER) -u $(DEBUG_APP)
 
 test:
+	./scripts/check-uninstall-paths.sh
+	./scripts/check-localization.sh
+	./scripts/check-widget-options.sh
+	./scripts/check-test-plan.sh
 	swift test --package-path LeapCore
+
+report:
+	./scripts/run-tests.sh
+
+reports-prune:
+	@ls -1d reports/*/ 2>/dev/null | sort | \
+		awk '{ kept[NR] = $$0 } END { for (i = 1; i <= NR - 20; i++) print kept[i] }' | \
+		xargs rm -rf
+	@echo "reports-prune: $$(ls -1d reports/*/ 2>/dev/null | wc -l | tr -d ' ') runs kept"
+
+snapshots-record:
+	LEAP_RECORD_SNAPSHOTS=1 swift test --package-path LeapCore --filter SnapshotTests
 
 install: release
 	rm -rf $(INSTALL_DIR)/$(APP_NAME)

@@ -1,0 +1,53 @@
+{
+  "configurations": [
+    {
+      "id": "8C1C2E10-0000-4000-8000-000000000001",
+      "name": "en_US",
+      "options": {
+        "language": "en",
+        "region": "US"
+      }
+    }
+  ],
+  "defaultOptions": {
+    "codeCoverage": {
+      "targets": [
+        {
+          "containerPath": "container:Leap.xcodeproj",
+          "identifier": "Leap",
+          "name": "Leap"
+        },
+        {
+          "containerPath": "container:Leap.xcodeproj",
+          "identifier": "LeapWidget",
+          "name": "LeapWidget"
+        }
+      ]
+    },
+    "environmentVariableEntries": [
+      {
+        "key": "LEAP_UI_TEST_SAFE_MODE",
+        "value": "1"
+      }
+    ],
+    "targetForVariableExpansion": {
+      "containerPath": "container:Leap.xcodeproj",
+      "identifier": "Leap",
+      "name": "Leap"
+    },
+    "testExecutionOrdering": "random",
+    "testRepetitionMode": "retryOnFailure",
+    "maximumTestRepetitions": 2
+  },
+  "testTargets": [
+    {
+      "parallelizable": false,
+      "target": {
+        "containerPath": "container:Leap.xcodeproj",
+        "identifier": "LeapUITests",
+        "name": "LeapUITests"
+      }
+    }
+  ],
+  "version": 1
+}

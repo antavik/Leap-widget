@@ -12,6 +12,7 @@ let package = Package(
     targets: [
         .target(name: "LeapCore",
                 resources: [.process("Localizable.xcstrings")]),
-        .testTarget(name: "LeapCoreTests", dependencies: ["LeapCore"]),
+        .testTarget(name: "LeapCoreTests", dependencies: ["LeapCore"],
+                    exclude: ["__Goldens__"]),
     ]
 )

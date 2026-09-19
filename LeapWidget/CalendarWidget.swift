@@ -3,22 +3,8 @@ import SwiftUI
 import AppIntents
 import LeapCore
 
-/// Relay URL for a click, or `nil` when a click should do nothing. The relay
-/// names calendars only by opaque `ClickPreset` token, never by URL, so
-/// `leap://` cannot be talked into opening something arbitrary from outside.
-func calendarRelayURL(for preset: ClickPreset?) -> URL? {
-    guard let preset else { return nil }
-
-    var components = URLComponents()
-    components.scheme = "leap"
-    components.host = "open-calendar"
-    components.queryItems = [URLQueryItem(name: "action", value: preset.rawValue)]
-
-    return components.url
-}
-
-/// In-process no-op for the "Nothing" click action.
-/// Avoids launching the host app, though WidgetKit still reloads the timeline.
+/// In-process no-op for the "Nothing" click action: avoids launching the host
+/// app, though WidgetKit still reloads the timeline.
 struct DoNothingIntent: AppIntent {
     static let title: LocalizedStringResource = "Do Nothing"
     static let isDiscoverable = false
@@ -38,7 +24,7 @@ private struct WidgetClickSurface<Content: View>: View {
     @ViewBuilder let content: Content
 
     var body: some View {
-        if let relayURL = calendarRelayURL(for: target) {
+        if let relayURL = CalendarRelay.url(for: target) {
             content.widgetURL(relayURL)
         } else {
             Button(intent: DoNothingIntent()) { content }
@@ -79,7 +65,7 @@ struct CalendarWidgetView: View {
 
     var body: some View {
         WidgetClickSurface(target: entry.clickTarget) {
-            MultiMonthView(models: entry.models, yearLabel: entry.yearLabel)
+            CalendarSurface(models: entry.models, yearLabel: entry.yearLabel)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         }
     }
@@ -91,7 +77,6 @@ struct CalendarWidget: Widget {
                                intent: CalendarConfigIntent.self,
                                provider: Provider<CalendarConfigIntent>()) { entry in
             CalendarWidgetView(entry: entry)
-                .padding(12)
                 .containerBackground(.background, for: .widget)
         }
         .contentMarginsDisabled()
@@ -107,7 +92,6 @@ struct SmallCalendarWidget: Widget {
                                intent: SmallCalendarConfigIntent.self,
                                provider: Provider<SmallCalendarConfigIntent>()) { entry in
             CalendarWidgetView(entry: entry)
-                .padding(12)
                 .containerBackground(.background, for: .widget)
         }
         .contentMarginsDisabled()

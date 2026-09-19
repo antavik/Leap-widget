@@ -32,6 +32,17 @@ targets:
       - target: LeapWidget
         embed: true
 
+  LeapUITests:
+    type: bundle.ui-testing
+    platform: macOS
+    sources:
+      - path: LeapUITests
+    configFiles:
+      Debug: Config/LeapUITests.xcconfig
+      Release: Config/LeapUITests.xcconfig
+    dependencies:
+      - target: Leap
+
   LeapWidget:
     type: app-extension
     platform: macOS
@@ -53,6 +64,11 @@ schemes:
       config: Debug
     test:
       config: Debug
+      testPlans:
+        - path: Leap.xctestplan
+          defaultPlan: true
+      targets:
+        - LeapUITests
     profile:
       config: Release
     analyze:

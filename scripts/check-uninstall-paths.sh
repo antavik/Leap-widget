@@ -1,12 +1,9 @@
 #!/bin/sh
-# Every copy of the uninstall path list must say the same thing. Nothing else
-# would catch a path dropped from one of them — the app, the read-me and the
-# Makefile are exercised in completely different ways.
+# Every copy of the uninstall path list must say the same thing; the app, the
+# read-me and the Makefile are exercised in completely different ways.
 #
-# Uninstall.swift is canonical. Only the paths under ~/Library are compared:
+# Uninstall.swift is canonical. Only the paths under ~/Library are compared —
 # the app bundle is spelled differently in each source.
-#
-# A-53 adds Casks/leap.rb as a fourth source: append it to SOURCES then.
 
 set -eu
 
@@ -15,7 +12,7 @@ cd "$(dirname "$0")/.."
 CANONICAL=LeapCore/Sources/LeapCore/Uninstall.swift
 SOURCES="README.md Makefile"
 
-# `library.appending(components: "Preferences", "…plist"),` becomes
+# `library.appending(components: "Preferences", "…plist")` becomes
 # `Library/Preferences/…plist`.
 canonical_paths() {
     sed -n 's/.*library\.appending(components: \(.*\)).*/\1/p' "$CANONICAL" |

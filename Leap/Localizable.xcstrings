@@ -1,17 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "A calendar widget for the Desktop and Notification Center. macOS places widgets itself – the three steps below take about a minute." : {
-      "comment" : "Onboarding window subtitle",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A calendar widget for the Desktop and Notification Center. macOS places widgets itself – the three steps below take about a minute."
-          }
-        }
-      }
-    },
     "About Leap" : {
       "comment" : "App menu item",
       "localizations" : {
@@ -19,28 +8,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "About Leap"
-          }
-        }
-      }
-    },
-    "Add to Notification Center" : {
-      "comment" : "Onboarding step title",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add to Notification Center"
-          }
-        }
-      }
-    },
-    "Add to the Desktop" : {
-      "comment" : "Onboarding step title",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add to the Desktop"
           }
         }
       }
@@ -56,127 +23,6 @@
         }
       }
     },
-    "Leap and its settings will be moved to the Trash, and its widgets will disappear from the Desktop and Notification Center." : {
-      "comment" : "Uninstall confirmation message",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Leap and its settings will be moved to the Trash, and its widgets will disappear from the Desktop and Notification Center."
-          }
-        }
-      }
-    },
-    "Leap could not hand the uninstall over to Homebrew. %@" : {
-      "comment" : "Uninstall failure message",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Leap could not hand the uninstall over to Homebrew. %@"
-          }
-        }
-      }
-    },
-    "Leap is gone, but a few of its files are not." : {
-      "comment" : "Uninstall leftovers title",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Leap is gone, but a few of its files are not."
-          }
-        }
-      }
-    },
-    "OK" : {
-      "comment" : "Uninstall leftovers button",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OK"
-          }
-        }
-      }
-    },
-    "Run “brew uninstall --cask --zap leap” in Terminal instead." : {
-      "comment" : "Uninstall failure recovery suggestion",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Run “brew uninstall --cask --zap leap” in Terminal instead."
-          }
-        }
-      }
-    },
-    "Show in Finder" : {
-      "comment" : "Uninstall leftovers button",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Show in Finder"
-          }
-        }
-      }
-    },
-    "Uninstall" : {
-      "comment" : "Uninstall confirmation button",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uninstall"
-          }
-        }
-      }
-    },
-    "Uninstall Leap?" : {
-      "comment" : "Uninstall confirmation title",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uninstall Leap?"
-          }
-        }
-      }
-    },
-    "Uninstall Leap…" : {
-      "comment" : "Help menu item",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uninstall Leap…"
-          }
-        }
-      }
-    },
-    "You can buy me a coffee" : {
-      "comment" : "Donation link",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You can buy me a coffee"
-          }
-        }
-      }
-    },
-    "Click the clock in the menu bar, scroll to the bottom, choose “Edit Widgets”, and add either widget there." : {
-      "comment" : "Onboarding step body",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Click the clock in the menu bar, scroll to the bottom, choose “Edit Widgets”, and add either widget there."
-          }
-        }
-      }
-    },
     "Close Window" : {
       "comment" : "File menu item",
       "localizations" : {
@@ -184,17 +30,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Close Window"
-          }
-        }
-      }
-    },
-    "Configure" : {
-      "comment" : "Onboarding step title",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Configure"
           }
         }
       }
@@ -243,17 +78,6 @@
         }
       }
     },
-    "Enjoy Leap?" : {
-      "comment" : "Lead-in above the donation and feedback links",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enjoy Leap?"
-          }
-        }
-      }
-    },
     "Leap" : {
       "comment" : "Main window title",
       "localizations" : {
@@ -261,6 +85,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Leap"
+          }
+        }
+      }
+    },
+    "Leap and its settings will be moved to the Trash, and its widgets will disappear from the Desktop and Notification Center." : {
+      "comment" : "Uninstall confirmation message",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leap and its settings will be moved to the Trash, and its widgets will disappear from the Desktop and Notification Center."
+          }
+        }
+      }
+    },
+    "Leap could not hand the uninstall over to Homebrew. %@" : {
+      "comment" : "Uninstall failure message",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leap could not hand the uninstall over to Homebrew. %@"
+          }
+        }
+      }
+    },
+    "Leap is gone, but a few of its files are not." : {
+      "comment" : "Uninstall leftovers title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leap is gone, but a few of its files are not."
+          }
+        }
+      }
+    },
+    "OK" : {
+      "comment" : "Uninstall leftovers button",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
           }
         }
       }
@@ -276,46 +144,24 @@
         }
       }
     },
-    "Right-click the Desktop, choose “Edit Widgets…”, search for “Leap”, then drag the Two Months or Month widget anywhere on the Desktop." : {
-      "comment" : "Onboarding step body",
+    "Run “brew uninstall --cask --zap leap” in Terminal instead." : {
+      "comment" : "Uninstall failure recovery suggestion",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Right-click the Desktop, choose “Edit Widgets…”, search for “Leap”, then drag the Two Months or Month widget anywhere on the Desktop."
+            "value" : "Run “brew uninstall --cask --zap leap” in Terminal instead."
           }
         }
       }
     },
-    "Right-click the placed widget and choose its “Edit” item to pick which months to show, first day of the week, week numbers, and which app a click opens. Each widget keeps its own settings." : {
-      "comment" : "Onboarding step body",
+    "Show in Finder" : {
+      "comment" : "Uninstall leftovers button",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Right-click the placed widget and choose its “Edit” item to pick which months to show, first day of the week, week numbers, and which app a click opens. Each widget keeps its own settings."
-          }
-        }
-      }
-    },
-    "Share your thoughts" : {
-      "comment" : "Feedback link",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Share your thoughts"
-          }
-        }
-      }
-    },
-    "Step %lld of %lld. %@. %@" : {
-      "comment" : "VoiceOver label for one onboarding step",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Step %lld of %lld. %@. %@"
+            "value" : "Show in Finder"
           }
         }
       }
@@ -331,13 +177,35 @@
         }
       }
     },
-    "Thank you!" : {
-      "comment" : "Closing line under the donation links",
+    "Uninstall" : {
+      "comment" : "Uninstall confirmation button",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thank you!"
+            "value" : "Uninstall"
+          }
+        }
+      }
+    },
+    "Uninstall Leap?" : {
+      "comment" : "Uninstall confirmation title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uninstall Leap?"
+          }
+        }
+      }
+    },
+    "Uninstall Leap…" : {
+      "comment" : "Help menu item",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uninstall Leap…"
           }
         }
       }

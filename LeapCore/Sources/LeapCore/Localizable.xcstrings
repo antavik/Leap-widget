@@ -1,6 +1,138 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "A calendar widget for the Desktop and Notification Center. macOS places widgets itself – the three steps below take about a minute." : {
+      "comment" : "Onboarding window subtitle",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A calendar widget for the Desktop and Notification Center. macOS places widgets itself – the three steps below take about a minute."
+          }
+        }
+      }
+    },
+    "Add to Notification Center" : {
+      "comment" : "Onboarding step title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add to Notification Center"
+          }
+        }
+      }
+    },
+    "Add to the Desktop" : {
+      "comment" : "Onboarding step title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add to the Desktop"
+          }
+        }
+      }
+    },
+    "Click the clock in the menu bar, scroll to the bottom, choose “Edit Widgets”, and add either widget there." : {
+      "comment" : "Onboarding step body",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Click the clock in the menu bar, scroll to the bottom, choose “Edit Widgets”, and add either widget there."
+          }
+        }
+      }
+    },
+    "Configure" : {
+      "comment" : "Onboarding step title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configure"
+          }
+        }
+      }
+    },
+    "Enjoy Leap?" : {
+      "comment" : "Lead-in above the donation and feedback links",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enjoy Leap?"
+          }
+        }
+      }
+    },
+    "Leap" : {
+      "comment" : "Main window title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leap"
+          }
+        }
+      }
+    },
+    "Right-click the Desktop, choose “Edit Widgets…”, search for “Leap”, then drag the Two Months or Month widget anywhere on the Desktop." : {
+      "comment" : "Onboarding step body",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Right-click the Desktop, choose “Edit Widgets…”, search for “Leap”, then drag the Two Months or Month widget anywhere on the Desktop."
+          }
+        }
+      }
+    },
+    "Right-click the placed widget and choose its “Edit” item to pick which months to show, first day of the week, week numbers, and which app a click opens. Each widget keeps its own settings." : {
+      "comment" : "Onboarding step body",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Right-click the placed widget and choose its “Edit” item to pick which months to show, first day of the week, week numbers, and which app a click opens. Each widget keeps its own settings."
+          }
+        }
+      }
+    },
+    "Share your thoughts" : {
+      "comment" : "Feedback link",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share your thoughts"
+          }
+        }
+      }
+    },
+    "Step %lld of %lld. %@. %@" : {
+      "comment" : "VoiceOver label for one onboarding step",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Step %lld of %lld. %@. %@"
+          }
+        }
+      }
+    },
+    "Thank you!" : {
+      "comment" : "Closing line under the donation links",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thank you!"
+          }
+        }
+      }
+    },
     "Today is %@" : {
       "comment" : "VoiceOver label for the month holding today",
       "localizations" : {
@@ -19,6 +151,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Today is %@, week %lld"
+          }
+        }
+      }
+    },
+    "You can buy me a coffee" : {
+      "comment" : "Donation link",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can buy me a coffee"
           }
         }
       }

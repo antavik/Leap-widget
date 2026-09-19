@@ -1,21 +1,43 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
 
 jobs:
-  test-and-build:
+  fast:
+    name: L0–L3 + build
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
 
-      - name: Uninstall paths agree everywhere
-        run: ./scripts/check-uninstall-paths.sh
+      - name: Pin Xcode
+        run: sudo xcode-select -switch /Applications/Xcode_26.3.app
 
-      - name: Unit tests (LeapCore)
-        run: swift test --package-path LeapCore
+      - name: Tests and report
+        run: make report
+
+      - name: The golden layer must not have skipped
+        run: |
+          if grep -q 'golden layer reported skipped' reports/latest/summary.md; then
+            echo "::error::the snapshot suite skipped on a pinned runner"
+            exit 1
+          fi
+
+      - name: Coverage
+        run: |
+          echo '## LeapCore coverage' >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          tail -20 reports/latest/coverage/summary.txt >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo '`Leap` and `LeapWidget` are measured by the UI job, not here.' \
+            >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload the report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: report
+          path: reports/
 
       - name: Generate Xcode project
         run: |
@@ -27,3 +49,38 @@ jobs:
           xcodebuild -project Leap.xcodeproj -scheme Leap
           -configuration Release build CODE_SIGNING_ALLOWED=NO
           LEAP_BUILD_COMMIT=$(git rev-parse --short=8 HEAD)
+
+  ui:
+    name: L4 host-app UI
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pin Xcode
+        run: sudo xcode-select -switch /Applications/Xcode_26.3.app
+
+      - name: Generate Xcode project
+        run: |
+          brew install xcodegen
+          xcodegen generate --spec project.yml
+
+      - name: Build for testing
+        run: >
+          xcodebuild -project Leap.xcodeproj -scheme Leap -configuration Debug
+          -derivedDataPath build build-for-testing
+          CODE_SIGN_IDENTITY="-" CODE_SIGN_STYLE=Manual
+
+      - name: UI tests
+        run: >
+          xcodebuild test-without-building
+          -project Leap.xcodeproj -scheme Leap -configuration Debug
+          -derivedDataPath build -testPlan Leap
+          -resultBundlePath build/LeapUITests.xcresult
+          CODE_SIGN_IDENTITY="-" CODE_SIGN_STYLE=Manual
+
+      - name: Upload the result bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-results
+          path: build/LeapUITests.xcresult

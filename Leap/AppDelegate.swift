@@ -61,25 +61,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func handle(urls: [URL]) {
-        guard let relay = urls.first(where: { $0.host == "open-calendar" }) else { return }
+        guard let relay = urls.first(where: CalendarRelay.isRelay) else { return }
         relayedURL = true
-        openCalendar(presetURL(from: relay))
-    }
-
-    /// `leap://` is system-wide, so only known `ClickPreset` tokens map to
-    /// calendar URLs. `nil` means the token was missing or unknown.
-    private func presetURL(from relay: URL) -> URL? {
-        guard let components = URLComponents(url: relay, resolvingAgainstBaseURL: false),
-              let token = components.queryItems?.first(where: { $0.name == "action" })?.value,
-              let preset = ClickPreset(rawValue: token)
-        else { return nil }
-
-        return URL(string: preset.url)
+        openCalendar(CalendarRelay.target(forRelay: relay))
     }
 
     private func openCalendar(_ url: URL?) {
         // An unrecognised relay falls back to the default calendar.
-        if let target = url ?? URL(string: "ical://"), NSWorkspace.shared.open(target) {
+        let target = url ?? URL(string: "ical://")
+
+        if let record = Self.relayRecordURL {
+            try? (target?.absoluteString ?? "none")
+                .appending("\n")
+                .write(to: record, atomically: true, encoding: .utf8)
+            return
+        }
+
+        if let target, NSWorkspace.shared.open(target) {
             return
         }
 
@@ -229,14 +227,38 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: - Uninstall
 
+    /// Set by `Leap.xctestplan`, never by a per-test launch argument.
+    static var isUITestSafeMode: Bool {
+        ProcessInfo.processInfo.environment["LEAP_UI_TEST_SAFE_MODE"] == "1"
+    }
+
+    /// Where a relay's resolved calendar URL is written instead of opened.
+    /// Read only in safe mode, so a stray environment variable on a real
+    /// machine cannot silently stop clicks from working.
+    static var relayRecordURL: URL? {
+        guard isUITestSafeMode,
+              let path = ProcessInfo.processInfo.environment["LEAP_UI_TEST_RELAY_RECORD"]
+        else { return nil }
+
+        return URL(filePath: path)
+    }
+
+    /// Deliberately unlocalized: they are test fixtures, never shipped copy.
+    static let safeModeArmedMessage = "UI test safe mode is on — nothing will be removed."
+    static let safeModeMessage = "Uninstall skipped — UI test safe mode."
+
     @objc private func confirmUninstall() {
         let alert = NSAlert()
         alert.alertStyle = .warning
         alert.messageText = String(localized: "Uninstall Leap?",
                                    comment: "Uninstall confirmation title")
-        alert.informativeText = String(
+        let message = String(
             localized: "Leap and its settings will be moved to the Trash, and its widgets will disappear from the Desktop and Notification Center.",
             comment: "Uninstall confirmation message")
+
+        alert.informativeText = Self.isUITestSafeMode
+            ? "\(message)\n\n\(Self.safeModeArmedMessage)"
+            : message
 
         let uninstall = alert.addButton(
             withTitle: String(localized: "Uninstall", comment: "Uninstall confirmation button"))
@@ -250,6 +272,33 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.activate(ignoringOtherApps: true)
 
         guard alert.runModal() == .alertFirstButtonReturn else { return }
+
+        // `Uninstaller.perform()` is not sandboxed to a test's copy of the app:
+        // it trashes the real user's preferences and containers, and on a cask
+        // machine runs `brew uninstall --cask --zap`. Safe mode comes from the
+        // test plan, so no future UI test can forget it.
+        guard !Self.isUITestSafeMode else {
+            let paths = Uninstall.removalPaths(
+                home: FileManager.default.homeDirectoryForCurrentUser,
+                bundle: Bundle.main.bundleURL)
+            NSLog("LEAP_UI_TEST_SAFE_MODE: skipped uninstall of %d paths", paths.count)
+            for path in paths {
+                NSLog("LEAP_UI_TEST_SAFE_MODE: would remove %@",
+                      path.path(percentEncoded: false))
+            }
+
+            // Surfaced, not just logged: an XCUITest can read a window.
+            let skipped = NSAlert()
+            skipped.alertStyle = .informational
+            skipped.messageText = Self.safeModeMessage
+            skipped.informativeText = paths
+                .map { $0.path(percentEncoded: false) }
+                .joined(separator: "\n")
+            skipped.addButton(withTitle: "OK")
+            skipped.runModal()
+
+            return
+        }
 
         do {
             report(leftovers: try Uninstaller.perform())
@@ -287,10 +336,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 #if DEBUG
     // MARK: - Accessibility preview
 
-    /// A placed widget is drawn from a render the system owns, so the process
-    /// Accessibility Inspector attaches to is not the app you built. This
-    /// window hosts the same view in-process, where its real accessibility
-    /// tree can be walked with the Inspector and VoiceOver.
+    /// A placed widget is drawn by WidgetKit in another process, so the
+    /// Inspector never attaches to the app you built. This hosts the same view
+    /// in-process, where its accessibility tree can be walked.
     @objc private func showAccessibilityPreview() {
         let window = previewWindow ?? makeAccessibilityPreviewWindow()
         previewWindow = window
@@ -306,11 +354,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                            builder: MonthModelBuilder(
                                calendar: .autoupdatingCurrent,
                                options: MonthOptions(showWeekNumbers: true)))
-        // The medium widget's content size, so the grid lays out as it ships.
+        // The medium widget's tile, so the grid lays out as it ships.
         let hosting = NSHostingController(
-            rootView: MultiMonthView(models: row.models, yearLabel: row.yearLabel)
-                .frame(width: 336, height: 146)
-                .padding(12))
+            rootView: CalendarSurface(models: row.models, yearLabel: row.yearLabel)
+                .frame(width: WidgetGeometry.medium.tile.width,
+                       height: WidgetGeometry.medium.tile.height))
         hosting.sizingOptions = [.preferredContentSize]
 
         let window = NSWindow(contentViewController: hosting)

@@ -5,6 +5,7 @@ DerivedData/
 xcuserdata/
 *.xcuserstate
 .swiftpm/
+reports/
 
 Leap.xcodeproj/
 

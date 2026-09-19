@@ -27,6 +27,34 @@ public enum Uninstall {
         return .direct
     }
 
+    public static func shellEscaped(_ path: String) -> String {
+        path.replacingOccurrences(of: "'", with: "'\\''")
+    }
+
+    public static func regexEscaped(_ path: String) -> String {
+        path.map { #".[]{}()\*+?^$|"#.contains($0) ? "\\\($0)" : String($0) }.joined()
+    }
+
+    public static func trampoline(brew: URL,
+                                  script: URL,
+                                  log: URL,
+                                  processIdentifier: Int32) -> String {
+        """
+        #!/bin/sh
+        exec >'\(shellEscaped(log.path(percentEncoded: false)))' 2>&1
+
+        pid=\(processIdentifier)
+        waited=0
+        while kill -0 "$pid" 2>/dev/null && [ "$waited" -lt 150 ]; do
+            sleep 0.2
+            waited=$((waited + 1))
+        done
+
+        rm -f '\(shellEscaped(script.path(percentEncoded: false)))'
+        exec '\(shellEscaped(brew.path(percentEncoded: false)))' uninstall --cask --zap \(caskToken)
+        """
+    }
+
     public static func removalPaths(home: URL, bundle: URL) -> [URL] {
         let library = home.appending(component: "Library")
 

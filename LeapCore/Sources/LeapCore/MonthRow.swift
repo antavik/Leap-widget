@@ -5,8 +5,10 @@ public func monthRow(containing date: Date,
                      showYear: Bool,
                      builder: MonthModelBuilder) -> (models: [MonthModel], yearLabel: String?) {
     let models = offsets.map { builder.model(containing: date, offset: $0, today: date) }
-    let current = models[offsets.firstIndex(of: 0) ?? 0]
-    guard showYear else { return (models, nil) }
+    let currentIndex = offsets.firstIndex(of: 0) ?? 0
+    guard showYear, models.indices.contains(currentIndex) else { return (models, nil) }
+
+    let current = models[currentIndex]
 
     return (models, builder.usesGregorianYearNumbering
         ? yearLabel(forYear: current.year)

@@ -75,9 +75,7 @@ struct MonthGridView: View {
     }
 
     private var monthNumberTint: AnyShapeStyle {
-        colorScheme == .dark || colorSchemeContrast == .increased
-            ? AnyShapeStyle(.red)
-            : AnyShapeStyle(.red.opacity(0.55))
+        Theme.monthNumberTint(colorScheme: colorScheme, contrast: colorSchemeContrast)
     }
 
     /// Weekday header cell; the first column's glyph exports its leading edge

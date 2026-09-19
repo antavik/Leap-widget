@@ -1,6 +1,12 @@
 import AppIntents
 import LeapCore
 
+// Case lists and display names only; every mapping lives in
+// `LeapCore.CalendarSettings`. Each is the twin of a plain enum in
+// `LeapCore.WidgetOptions`, bridged by raw value through `core` — see that
+// file for why. `scripts/check-widget-options.sh` pins the two lists together.
+
+/// The second month the two-month (medium) widget shows.
 enum Companion: String, AppEnum {
     case next, previous
 
@@ -9,6 +15,10 @@ enum Companion: String, AppEnum {
         .next: "Next",
         .previous: "Previous",
     ]
+
+    var core: LeapCore.Companion {
+        LeapCore.Companion(rawValue: rawValue) ?? .next
+    }
 }
 
 /// Which month the single-month (small) widget renders, relative to today.
@@ -22,12 +32,8 @@ enum DisplayedMonth: String, AppEnum {
         .previous: "Previous",
     ]
 
-    var offset: Int {
-        switch self {
-        case .previous: -1
-        case .current: 0
-        case .next: 1
-        }
+    var core: LeapCore.DisplayedMonth {
+        LeapCore.DisplayedMonth(rawValue: rawValue) ?? .current
     }
 }
 
@@ -41,13 +47,7 @@ enum FirstWeekday: String, AppEnum {
         .sunday: "Sunday",
     ]
 
-    var calendarWeekday: Int? {
-        switch self {
-        case .system: nil
-        case .sunday: 1
-        case .monday: 2
-        }
-    }
+    var core: LeapCore.FirstWeekday { LeapCore.FirstWeekday(rawValue: rawValue) ?? .system }
 }
 
 enum MonthNumberDisplay: String, AppEnum {
@@ -60,12 +60,8 @@ enum MonthNumberDisplay: String, AppEnum {
         .roman: "Roman (VI)",
     ]
 
-    var style: MonthNumberStyle? {
-        switch self {
-        case .off: nil
-        case .arabic: .arabic
-        case .roman: .roman
-        }
+    var core: LeapCore.MonthNumberDisplay {
+        LeapCore.MonthNumberDisplay(rawValue: rawValue) ?? .off
     }
 }
 
@@ -83,33 +79,8 @@ enum ClickAction: String, AppEnum {
         .doNothing: DisplayRepresentation(title: "Nothing"),
     ]
 
-    var preset: ClickPreset? {
-        switch self {
-        case .appleCalendar: .appleCalendar
-        case .fantastical: .fantastical
-        case .googleCalendar: .googleCalendar
-        case .doNothing: nil
-        }
-    }
-}
-
-protocol CalendarConfiguration {
-    /// Months to show relative to today, in display order.
-    var monthOffsets: [Int] { get }
-    var firstWeekday: FirstWeekday { get }
-    var showWeekNumbers: Bool { get }
-    var showOutsideDays: Bool { get }
-    var showYear: Bool { get }
-    var monthNumber: MonthNumberDisplay { get }
-    var clickAction: ClickAction { get }
-}
-
-extension CalendarConfiguration {
-    var monthOptions: MonthOptions {
-        MonthOptions(firstWeekday: firstWeekday.calendarWeekday,
-                     showWeekNumbers: showWeekNumbers,
-                     showOutsideDays: showOutsideDays,
-                     monthNumberStyle: monthNumber.style)
+    var core: LeapCore.ClickAction {
+        LeapCore.ClickAction(rawValue: rawValue) ?? .appleCalendar
     }
 }
 
@@ -118,8 +89,6 @@ struct CalendarConfigIntent: WidgetConfigurationIntent, CalendarConfiguration {
 
     @Parameter(title: "Second Month", default: .next)
     var companion: Companion
-
-    var monthOffsets: [Int] { companion == .previous ? [-1, 0] : [0, 1] }
 
     @Parameter(title: "First Day of Week", default: .system)
     var firstWeekday: FirstWeekday
@@ -139,6 +108,16 @@ struct CalendarConfigIntent: WidgetConfigurationIntent, CalendarConfiguration {
     @Parameter(title: "Click Opens", default: .appleCalendar)
     var clickAction: ClickAction
 
+    var settings: CalendarSettings {
+        CalendarSettings(monthOffsets: companion.core.monthOffsets,
+                         firstWeekday: firstWeekday.core,
+                         showWeekNumbers: showWeekNumbers,
+                         showOutsideDays: showOutsideDays,
+                         showYear: showYear,
+                         monthNumber: monthNumber.core,
+                         clickAction: clickAction.core)
+    }
+
     static var parameterSummary: some ParameterSummary {
         Summary("Show current and \(\.$companion) month") {
             \.$firstWeekday
@@ -157,8 +136,6 @@ struct SmallCalendarConfigIntent: WidgetConfigurationIntent, CalendarConfigurati
     @Parameter(title: "Month", default: .current)
     var month: DisplayedMonth
 
-    var monthOffsets: [Int] { [month.offset] }
-
     @Parameter(title: "First Day of Week", default: .system)
     var firstWeekday: FirstWeekday
 
@@ -176,6 +153,16 @@ struct SmallCalendarConfigIntent: WidgetConfigurationIntent, CalendarConfigurati
 
     @Parameter(title: "Click Opens", default: .appleCalendar)
     var clickAction: ClickAction
+
+    var settings: CalendarSettings {
+        CalendarSettings(monthOffsets: month.core.monthOffsets,
+                         firstWeekday: firstWeekday.core,
+                         showWeekNumbers: showWeekNumbers,
+                         showOutsideDays: showOutsideDays,
+                         showYear: showYear,
+                         monthNumber: monthNumber.core,
+                         clickAction: clickAction.core)
+    }
 
     static var parameterSummary: some ParameterSummary {
         Summary("Show the \(\.$month) month") {
