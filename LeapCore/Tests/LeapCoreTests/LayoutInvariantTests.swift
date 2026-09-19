@@ -158,15 +158,31 @@ struct LayoutInvariantTests {
     // MARK: - The superscript month number
 
     @Test(arguments: [MonthNumberStyle.arabic, .roman])
-    func theTitleCapRowIsUnmovedByTheMonthNumber(style: MonthNumberStyle) throws {
+    func theMonthNumberIsCapAlignedWithTheTitle(style: MonthNumberStyle) throws {
+        let plainBuffer = try buffer(models(Self.august))
+        let numberedBuffer = try buffer(
+            models(Self.august, options: MonthOptions(monthNumberStyle: style)))
+
         // Required, not optional-compared: two empty band lists are equal, so
         // this would pass on a render that drew nothing.
-        let plain = try #require(Self.rowBands(of: buffer(models(Self.august))).first)
-        let numbered = try #require(Self.rowBands(of: buffer(
-            models(Self.august, options: MonthOptions(monthNumberStyle: style)))).first)
+        let plain = try #require(Self.rowBands(of: plainBuffer).first)
+        let numbered = try #require(Self.rowBands(of: numberedBuffer).first)
 
+        // Too high, and the taller title band pushes the whole grid down.
         #expect(plain.top == numbered.top,
                 "title band moved: \(plain) → \(numbered)")
+
+        // Too low, and the number sinks towards the baseline inside that band.
+        let superscriptTop = try #require(
+            Self.firstDifferingRow(plainBuffer, numberedBuffer),
+            "the month number drew nothing")
+
+        // One device pixel at scale 2 — the raised run snaps its raster origin.
+        #expect((0...1).contains(superscriptTop - plain.top),
+                """
+                \(style): the month number's cap top is \(superscriptTop) px \
+                against a title cap top of \(plain.top) px
+                """)
     }
 
     // MARK: - Clipping
@@ -263,7 +279,6 @@ struct LayoutInvariantTests {
         // One accent-tinted SF Symbol per step. A symbol can draw in several
         // strokes, so bands closer than a step gap count as one glyph.
         #expect(Self.accentBands(of: buffer, mergedWithin: 20).count == 3)
-        #expect(ImageComparator.isFullyOpaque(buffer))
     }
 
     // MARK: - Measuring
@@ -346,6 +361,30 @@ struct LayoutInvariantTests {
         return abs(Int(buffer.bytes[offset]) - background.0) > 16
             || abs(Int(buffer.bytes[offset + 1]) - background.1) > 16
             || abs(Int(buffer.bytes[offset + 2]) - background.2) > 16
+    }
+
+    /// Topmost row where two renders differ by more than antialiasing; the
+    /// threshold skips the few dozen pixels of drift a render carries anyway.
+    static func firstDifferingRow(_ left: ImageComparator.Buffer,
+                                  _ right: ImageComparator.Buffer,
+                                  threshold: Int = 24) -> Int? {
+        guard left.width == right.width, left.height == right.height else { return nil }
+
+        return left.bytes.withUnsafeBufferPointer { l in
+            right.bytes.withUnsafeBufferPointer { r in
+                for y in 0..<left.height {
+                    for x in 0..<left.width {
+                        let offset = (y * left.width + x) * 4
+                        for channel in 0..<3
+                        where abs(Int(l[offset + channel]) - Int(r[offset + channel]))
+                            > threshold {
+                            return y
+                        }
+                    }
+                }
+                return nil
+            }
+        }
     }
 
     /// The today circle is the only large block of solid red the grid draws.

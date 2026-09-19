@@ -65,9 +65,13 @@ enum RenderHarness {
 
     /// Measured without a proposed frame — what the L2 clipping invariant
     /// compares against a tile's content box.
-    static func intrinsicSize(_ view: some View, scheme: ColorScheme) -> CGSize? {
+    /// Without `layoutDirection` the right-to-left case measured its mirror.
+    static func intrinsicSize(_ view: some View,
+                              scheme: ColorScheme,
+                              layoutDirection: LayoutDirection = .leftToRight) -> CGSize? {
         let renderer = ImageRenderer(content: view.tint(accent)
-            .environment(\.colorScheme, scheme))
+            .environment(\.colorScheme, scheme)
+            .environment(\.layoutDirection, layoutDirection))
         renderer.scale = 1
 
         return renderer.nsImage?.size

@@ -11,12 +11,17 @@ enum ImageComparator {
     static let pixelFraction = 0.001
     static let channelTolerance = 8
 
-    struct Buffer: Sendable {
+    /// `description` is load-bearing: swift-testing expands a failed
+    /// `#expect`'s sub-expressions, and the synthesised one for `bytes` ran to
+    /// 21 MB of log per failing matrix.
+    struct Buffer: Sendable, CustomStringConvertible {
         let bytes: [UInt8]
         let width: Int
         let height: Int
 
         var pixelCount: Int { width * height }
+
+        var description: String { "\(width)x\(height) sRGB buffer" }
     }
 
     struct Difference: Sendable {

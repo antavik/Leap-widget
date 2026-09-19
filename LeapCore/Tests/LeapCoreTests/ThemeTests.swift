@@ -8,7 +8,8 @@ import SwiftUI
 /// opacity rather than repeating the condition.
 ///
 /// `monthNumberBaseline` is deliberately absent: restating its formula would
-/// be a change detector with no independent truth. L2 measures its effect.
+/// be a change detector with no independent truth.
+/// `LayoutInvariantTests.theMonthNumberIsCapAlignedWithTheTitle` measures it.
 @Suite("Theme")
 struct ThemeTests {
     @Test(arguments: [(ColorScheme.light, ColorSchemeContrast.standard, 0.55),

@@ -112,6 +112,13 @@ extension GoldenCase {
         // tile is its own case; 08 covers only the single-month overlay.
         GoldenCase("24-medium-year-label-off",
                    widget(.medium, offsets: [0, 1], showYear: false)),
+        // The only case reaching `MonthGridView.rowHasVisibleDays`: February
+        // 2026 Sunday-first ends in two all-adjacent-month rows, blanked here.
+        GoldenCase("25-small-week-numbers-outside-days-hidden",
+                   widget(.small, calendar: sundayFirst,
+                          reference: DateComponents(year: 2026, month: 2, day: 10, hour: 12),
+                          options: MonthOptions(showWeekNumbers: true,
+                                                showOutsideDays: false))),
     ]
 
     /// The app's only real UI surface.
@@ -180,12 +187,14 @@ extension GoldenCase {
 
             return try #require(RenderHarness.intrinsicSize(
                 MultiMonthView(models: row.models, yearLabel: row.yearLabel),
-                scheme: scheme))
+                scheme: scheme,
+                layoutDirection: layoutDirection))
 
         case let .onboarding(locale):
             return try #require(RenderHarness.intrinsicSize(
                 OnboardingView().environment(\.locale, locale),
-                scheme: scheme))
+                scheme: scheme,
+                layoutDirection: layoutDirection))
         }
     }
 
