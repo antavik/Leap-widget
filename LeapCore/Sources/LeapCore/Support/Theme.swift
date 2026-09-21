@@ -33,6 +33,8 @@ enum Theme {
                                todayCircle: 18, rowHeight: 16, rowSpacing: 2,
                                yearLabelTrailingInset: 6)
 
+    static let secondaryText = Color.primary.opacity(0.7)
+
     static func monthNumberTintOpacity(colorScheme: ColorScheme,
                                        contrast: ColorSchemeContrast) -> Double {
         colorScheme == .dark || contrast == .increased ? 1 : 0.55

@@ -3,7 +3,7 @@ import CoreGraphics
 import ImageIO
 import UniformTypeIdentifiers
 
-/// Compares two renders as decoded sRGB RGBA8 buffers — never PNG bytes or
+/// Compares two renders as decoded sRGB RGBA8 buffers – never PNG bytes or
 /// `NSImage`s, whose encoders and colour spaces say nothing about pixels.
 enum ImageComparator {
     /// Measured steady-state difference is 0 %, so this is drift headroom
@@ -140,7 +140,7 @@ enum ImageComparator {
         }
     }
 
-    /// A flat render — the blank-render failure class — has one RGB value.
+    /// A flat render – the blank-render failure class – has one RGB value.
     static func isFlat(_ buffer: Buffer) -> Bool {
         guard buffer.pixelCount > 0 else { return true }
 
@@ -169,7 +169,7 @@ enum ImageComparator {
 
         // The context owns its bitmap (`data: nil`). Backing it with a Swift
         // `Array` would hand `CGContext` memory that dies at the end of the
-        // closure — on the one path that must work when all else has failed.
+        // closure – on the one path that must work when all else has failed.
         guard let context = CGContext(data: nil,
                                       width: expected.width,
                                       height: expected.height,

@@ -1,6 +1,6 @@
 import XCTest
 
-/// The accessibility tree and the automated audit — the two things no
+/// The accessibility tree and the automated audit – the two things no
 /// in-process render can reach. SwiftUI builds the tree lazily for an attached
 /// assistive client; XCUITest is one, `swift test` is not.
 @MainActor
@@ -9,7 +9,7 @@ final class AccessibilityAuditUITests: XCTestCase {
 
     override func setUp() async throws {
         continueAfterFailure = false
-        app = LeapApp.launched()
+        app = AppDriver.launched()
     }
 
     override func tearDown() async throws {
@@ -42,6 +42,10 @@ final class AccessibilityAuditUITests: XCTestCase {
 
         let preview = app.windows["Accessibility Preview"]
         XCTAssertTrue(preview.waitForExistence(timeout: 5))
+
+        let onboarding = app.windows["Leap"]
+        onboarding.buttons[XCUIIdentifierCloseWindow].click()
+        XCTAssertTrue(onboarding.waitForNonExistence(timeout: 5))
 
         // `accessibilityElement(children: .ignore)`: no day cell and no week
         // number may leak as a child.
@@ -90,17 +94,10 @@ final class AccessibilityAuditUITests: XCTestCase {
             && (label.hasPrefix("Today is") || label.hasPrefix("Step ")):
             return true
 
-        // 2b. The donation row's links and AppKit's Touch Bar proxy carry no
-        //     description of their own. Neither is a thing this app draws.
+        // 3. The donation row's links and AppKit's Touch Bar proxy carry no
+        //    description of their own. Neither is a thing this app draws.
         case .sufficientElementDescription
             where elementType == .link || elementType == .touchBar:
-            return true
-
-        // 3. KNOWN PRODUCT ISSUE — the only filter hiding a real defect. The
-        //    onboarding subtitle and captions use `.secondary` and `.caption`
-        //    and fail contrast on white. Filtered so the rest of the audit
-        //    keeps reporting; needs its own ticket. Delete this when fixed.
-        case .contrast where elementType == .staticText:
             return true
 
         default:

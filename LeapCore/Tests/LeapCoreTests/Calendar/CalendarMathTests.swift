@@ -137,7 +137,7 @@ struct CalendarMathTests {
     }
 
     @Test func outsideDayMatchingTodayIsNotMarked() throws {
-        // Today Aug 1 2026 appears as a trailing day in July's grid — no marker there.
+        // Today Aug 1 2026 appears as a trailing day in July's grid – no marker there.
         let july = try date(2026, 7, 15, in: mondayFirst)
         let today = try date(2026, 8, 1, in: mondayFirst)
         let month = monthModel(containing: july, offset: 0,
@@ -198,7 +198,7 @@ struct CalendarMathTests {
     }
 
     @Test func fridaySaturdayWeekendRegion() throws {
-        // Aug 14 2026 is a Friday — weekend in Saudi Arabia, weekday in the US.
+        // Aug 14 2026 is a Friday – weekend in Saudi Arabia, weekday in the US.
         let friday = try date(2026, 8, 14, in: fridaySaturdayWeekend)
         #expect(fridaySaturdayWeekend.isDateInWeekend(friday))
         let august = try model(2026, 8, 12, calendar: fridaySaturdayWeekend)
@@ -263,7 +263,7 @@ struct CalendarMathTests {
 
     @Test func timelineDatesAlignToMidnightAcrossDST() throws {
         let calendar = Fixtures.calendar(locale: "en_US", timeZone: "America/New_York")
-        // Springs forward on Mar 8 2026 — both following midnights must stay 00:00.
+        // Springs forward on Mar 8 2026 – both following midnights must stay 00:00.
         let beforeTransition = try Fixtures.date(2026, 3, 7, hour: 15, in: calendar)
         let dates = timelineDates(from: beforeTransition, calendar: calendar)
         #expect(dates.count == 3)

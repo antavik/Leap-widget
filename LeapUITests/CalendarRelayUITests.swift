@@ -1,10 +1,10 @@
 import XCTest
 import AppKit
 
-/// L4 — the half of the widget click this project owns.
+/// L4 – the half of the widget click this project owns.
 ///
 /// The wire format is pinned at L1 (`URLRelayTests`); what no unit test can
-/// reach is the delivery — the `kAEGetURL` handler, the scheme-and-host match,
+/// reach is the delivery – the `kAEGetURL` handler, the scheme-and-host match,
 /// and the fallback chain when the token means nothing to this build.
 ///
 /// **Nothing here launches a calendar.** In safe mode the app resolves the
@@ -12,7 +12,7 @@ import AppKit
 ///
 /// Two neighbouring behaviours stay on the release checklist:
 ///
-/// - **That `widgetURL` is attached at all** — a widget is rendered by
+/// - **That `widgetURL` is attached at all** – a widget is rendered by
 ///   WidgetKit in another process and no test host can click it.
 /// - **That a *cold* launch by URL relays and then quits.** A sandboxed runner
 ///   cannot arm safe mode on a cold launch (LaunchServices drops its
@@ -28,7 +28,7 @@ final class CalendarRelayUITests: XCTestCase {
 
         record = FileManager.default.temporaryDirectory
             .appending(component: "leap-relay-\(UUID().uuidString).txt")
-        app = LeapApp.launched(environment: [Self.recordKey: recordPath])
+        app = AppDriver.launched(environment: [Self.recordKey: recordPath])
     }
 
     override func tearDown() async throws {

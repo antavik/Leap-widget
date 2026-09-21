@@ -3,7 +3,7 @@ import LeapCore
 
 // Case lists and display names only; every mapping lives in
 // `LeapCore.CalendarSettings`. Each is the twin of a plain enum in
-// `LeapCore.WidgetOptions`, bridged by raw value through `core` — see that
+// `LeapCore.WidgetOptions`, bridged by raw value through `core` – see that
 // file for why. `scripts/check-widget-options.sh` pins the two lists together.
 
 /// The second month the two-month (medium) widget shows.

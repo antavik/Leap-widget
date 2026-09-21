@@ -11,7 +11,7 @@ let package = Package(
     dependencies: [],  // G11: zero third-party dependencies
     targets: [
         .target(name: "LeapCore",
-                resources: [.process("Localizable.xcstrings")]),
+                resources: [.process("Resources/Localizable.xcstrings")]),
         .testTarget(name: "LeapCoreTests", dependencies: ["LeapCore"],
                     exclude: ["__Goldens__"]),
     ]

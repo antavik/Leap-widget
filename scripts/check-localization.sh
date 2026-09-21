@@ -1,6 +1,6 @@
 #!/bin/sh
 # Inside a package, a localized literal resolves against `Bundle.main` unless
-# told otherwise — compiling, rendering correct English, and silently no longer
+# told otherwise – compiling, rendering correct English, and silently no longer
 # localising. Three spellings, one per type:
 #   String(localized:)        -> bundle: .module
 #   Text("…") / Link("…")     -> bundle: .module
@@ -13,7 +13,7 @@ set -eu
 cd "$(dirname "$0")/.."
 
 SOURCES=LeapCore/Sources/LeapCore
-CATALOGUE=$SOURCES/Localizable.xcstrings
+CATALOGUE=$SOURCES/Resources/Localizable.xcstrings
 
 if [ ! -f "$CATALOGUE" ]; then
     echo "check-localization: no catalogue at $CATALOGUE" >&2

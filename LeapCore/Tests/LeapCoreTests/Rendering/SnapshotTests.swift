@@ -6,7 +6,7 @@ import Foundation
 /// L3 – golden snapshots. A change detector, not a correctness oracle: a diff
 /// means "look at this", and a human decides.
 ///
-/// On by default, opted *out* with `LEAP_SKIP_SNAPSHOTS` — a net that needs a
+/// On by default, opted *out* with `LEAP_SKIP_SNAPSHOTS` – a net that needs a
 /// remembered variable only catches regressions you already suspected.
 @Suite("Snapshots",
        .tags(.golden),
@@ -33,7 +33,7 @@ struct SnapshotTests {
 
         try #require(GoldenStore.exists(id: golden.id),
                      """
-                     no golden recorded for \(golden.id) — \
+                     no golden recorded for \(golden.id) – \
                      run `make snapshots-record`
                      """)
 
@@ -64,7 +64,7 @@ struct SnapshotTests {
         try GoldenStore.write(rendered, id: golden.id)
     }
 
-    /// Expected, actual and an amplified diff, as attachments and as files —
+    /// Expected, actual and an amplified diff, as attachments and as files –
     /// the one filesystem write the fast loop is allowed, and only on failure.
     private func attachFailure(golden: GoldenCase,
                                expected: ImageComparator.Buffer,

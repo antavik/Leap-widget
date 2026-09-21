@@ -1,7 +1,7 @@
 import XCTest
 
 @MainActor
-enum LeapApp {
+enum AppDriver {
     static let safeModeKey = "LEAP_UI_TEST_SAFE_MODE"
 
     /// `environment` adds values beside the interlock, never instead of it:
@@ -18,7 +18,7 @@ enum LeapApp {
         environment.forEach { app.launchEnvironment[$0.key] = $0.value }
         // Unconditional: an uninstall confirmation must never be reachable
         // without the guard. This is also the only way a test gets an
-        // environment into the app — LaunchServices drops
+        // environment into the app – LaunchServices drops
         // `NSWorkspace.OpenConfiguration.environment` from a sandboxed caller.
         app.launchEnvironment[safeModeKey] = "1"
         app.launch()

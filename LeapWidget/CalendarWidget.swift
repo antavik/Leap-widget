@@ -12,7 +12,7 @@ struct DoNothingIntent: AppIntent {
     func perform() async throws -> some IntentResult { .result() }
 }
 
-/// No press feedback — the surface should feel inert, not interactive.
+/// No press feedback – the surface should feel inert, not interactive.
 private struct InertButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label

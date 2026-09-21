@@ -3,7 +3,7 @@ import Foundation
 @testable import LeapCore
 
 /// A plain string built in `MonthModelBuilder`, so it tests like the rest of
-/// the model — no view, no accessibility harness. Most of these assert
+/// the model – no view, no accessibility harness. Most of these assert
 /// `spokenSummary` in `CalendarMath.swift`; only the row three reach
 /// `MonthRow.swift`.
 @Suite("Spoken labels")

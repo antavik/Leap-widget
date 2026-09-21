@@ -6,7 +6,7 @@ import SwiftUI
 ///
 /// `containerBackground` is a no-op under `ImageRenderer`, so the harness
 /// stands in with `.background` applied **after** `.frame`. The other order
-/// leaves a transparent margin, and only on some fixtures — which is why the
+/// leaves a transparent margin, and only on some fixtures – which is why the
 /// opacity invariant runs on every case, not a representative one.
 @MainActor
 enum RenderHarness {
@@ -15,12 +15,12 @@ enum RenderHarness {
     /// macOS's *default* accent, `#007AFF`. Unpinned, `.tint` resolves to the
     /// machine's System Settings accent and every onboarding golden fails on a
     /// runner that picked pink. Measured, not guessed: `Color.blue` is not the
-    /// same — SwiftUI darkens it to `#0A84FF` in dark mode.
+    /// same – SwiftUI darkens it to `#0A84FF` in dark mode.
     static let accent = Color(.sRGB, red: 0, green: 0.478431, blue: 1, opacity: 1)
 
     /// The first render in a process differs by ±1 on ~0.07 % of pixels while
     /// font and colour caches warm up. A lazy static runs once, whoever gets
-    /// there first — unlike a per-suite `init`, unordered across suites.
+    /// there first – unlike a per-suite `init`, unordered across suites.
     static let warmedUp: Void = {
         _ = render(Text(verbatim: "warm-up").padding(),
                    size: WidgetGeometry.small.tile,
@@ -63,7 +63,7 @@ enum RenderHarness {
         return renderer.cgImage
     }
 
-    /// Measured without a proposed frame — what the L2 clipping invariant
+    /// Measured without a proposed frame – what the L2 clipping invariant
     /// compares against a tile's content box.
     /// Without `layoutDirection` the right-to-left case measured its mirror.
     static func intrinsicSize(_ view: some View,

@@ -2,7 +2,7 @@ import Testing
 import Foundation
 @testable import LeapCore
 
-/// ISO vs US numbering and the override between them — their own rules, so
+/// ISO vs US numbering and the override between them – their own rules, so
 /// their own suite rather than hiding inside the grid tests.
 @Suite("Week numbering")
 struct WeekNumberingTests {

@@ -244,8 +244,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     /// Deliberately unlocalized: they are test fixtures, never shipped copy.
-    static let safeModeArmedMessage = "UI test safe mode is on — nothing will be removed."
-    static let safeModeMessage = "Uninstall skipped — UI test safe mode."
+    static let safeModeArmedMessage = "UI test safe mode is on – nothing will be removed."
+    static let safeModeMessage = "Uninstall skipped – UI test safe mode."
 
     @objc private func confirmUninstall() {
         let alert = NSAlert()

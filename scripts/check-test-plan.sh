@@ -73,7 +73,7 @@ if [ "$scheme_plans" != "$PLAN" ]; then
     status=1
 fi
 
-# Same targets, or they run under no plan options — safe mode included.
+# Same targets, or they run under no plan options – safe mode included.
 for target in $declared; do
     if ! grep -q "\"name\" *: *\"$target\"" "$PLAN"; then
         echo "check-test-plan: $PLAN does not list the test target $target" >&2
@@ -83,7 +83,7 @@ done
 
 # The interlock itself: the key, and the value the app compares against.
 if ! grep -q "\"$SAFE_MODE_KEY\"" "$PLAN"; then
-    echo "check-test-plan: $PLAN no longer sets $SAFE_MODE_KEY — the uninstall UI test would run unguarded" >&2
+    echo "check-test-plan: $PLAN no longer sets $SAFE_MODE_KEY – the uninstall UI test would run unguarded" >&2
     status=1
 elif ! grep -A1 "\"$SAFE_MODE_KEY\"" "$PLAN" | grep -q '"value" *: *"1"'; then
     echo "check-test-plan: $PLAN sets $SAFE_MODE_KEY to something other than \"1\"" >&2

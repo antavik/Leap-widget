@@ -54,7 +54,7 @@ public struct OnboardingView: View {
             Text("A calendar widget for the Desktop and Notification Center. macOS places widgets itself – the three steps below take about a minute.",
                  bundle: .module)
                 .font(.callout)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Theme.secondaryText)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
@@ -64,7 +64,7 @@ public struct OnboardingView: View {
             Divider()
                 .padding(.bottom, 8)
             Text("Enjoy Leap?", bundle: .module)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Theme.secondaryText)
             HStack(spacing: 14) {
                 Link(destination: donationURL) {
                     Text("You can buy me a coffee", bundle: .module)
@@ -75,7 +75,7 @@ public struct OnboardingView: View {
             }
             .buttonStyle(.link)
             Text("Thank you!", bundle: .module)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Theme.secondaryText)
         }
         .font(.caption)
         .multilineTextAlignment(.center)
@@ -103,13 +103,12 @@ struct OnboardingStepView: View {
                 .font(.title2)
                 .foregroundStyle(.tint)
                 .frame(width: 28)
-                .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text(verbatim: headline)
                     .font(.headline)
                 Text(step.text)
                     .font(.callout)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.secondaryText)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }

@@ -59,24 +59,11 @@ jobs:
       - name: Pin Xcode
         run: sudo xcode-select -switch /Applications/Xcode_26.3.app
 
-      - name: Generate Xcode project
-        run: |
-          brew install xcodegen
-          xcodegen generate --spec project.yml
-
-      - name: Build for testing
-        run: >
-          xcodebuild -project Leap.xcodeproj -scheme Leap -configuration Debug
-          -derivedDataPath build build-for-testing
-          CODE_SIGN_IDENTITY="-" CODE_SIGN_STYLE=Manual
+      - name: Install xcodegen
+        run: brew install xcodegen
 
       - name: UI tests
-        run: >
-          xcodebuild test-without-building
-          -project Leap.xcodeproj -scheme Leap -configuration Debug
-          -derivedDataPath build -testPlan Leap
-          -resultBundlePath build/LeapUITests.xcresult
-          CODE_SIGN_IDENTITY="-" CODE_SIGN_STYLE=Manual
+        run: make ui-test
 
       - name: Upload the result bundle
         if: always()

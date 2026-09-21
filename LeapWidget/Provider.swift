@@ -17,7 +17,7 @@ struct CalendarEntry: TimelineEntry {
         self.model = model
     }
 
-    /// A one-off entry — placeholder, snapshot, preview.
+    /// A one-off entry – placeholder, snapshot, preview.
     init<Configuration: CalendarConfiguration>(date: Date,
                                                config: Configuration,
                                                calendar: Calendar = .autoupdatingCurrent) {

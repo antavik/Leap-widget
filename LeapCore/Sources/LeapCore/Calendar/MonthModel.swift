@@ -49,7 +49,7 @@ public struct Day: Equatable, Sendable {
 public struct MonthModel: Equatable, Sendable {
     /// Uppercased standalone month symbol, e.g. "AUGUST".
     public let title: String
-    /// Calendar year of the month — the small widget's year label follows it.
+    /// Calendar year of the month – the small widget's year label follows it.
     public let year: Int
     /// Month of the year, 1…12; always set, whatever the number option is.
     public let monthNumber: Int

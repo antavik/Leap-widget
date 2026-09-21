@@ -30,7 +30,7 @@ enum GoldenStore {
 
     /// `<repo>/LeapCore/Tests/LeapCoreTests`.
     static let testsDirectory = URL(filePath: #filePath)
-        .deletingLastPathComponent()      // Support/
+        .deletingLastPathComponent()      // Harness/
         .deletingLastPathComponent()      // LeapCoreTests/
 
     /// OS **and** Xcode major: the OS alone misses the rasteriser, so a
@@ -47,11 +47,11 @@ enum GoldenStore {
     }
 
     /// On a pinned runner a skip means the key is wrong, not that the layer is
-    /// unavailable — CI fails when this suite skips.
+    /// unavailable – CI fails when this suite skips.
     static var unavailableReason: Comment {
         """
         no goldens recorded for toolchain \(toolchainKey) \
-        (\(Toolchain.description)) — record them with `make snapshots-record`
+        (\(Toolchain.description)) – record them with `make snapshots-record`
         """
     }
 
@@ -94,7 +94,7 @@ enum GoldenStore {
         .deletingLastPathComponent()      // <repo>/
 
     /// Diff output for the inner loop; nobody opens an xUnit attachment
-    /// mid-edit. Outside a report run these go to a plain `reports/diff/` —
+    /// mid-edit. Outside a report run these go to a plain `reports/diff/` –
     /// never `reports/latest`, which is a symlink the harness maintains, and
     /// which creating as a real directory here silently broke.
     static var diffDirectory: URL {

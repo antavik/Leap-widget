@@ -67,58 +67,56 @@ extension GoldenCase {
                    widget(.small, options: MonthOptions(showWeekNumbers: true))),
         GoldenCase("04-small-outside-days-hidden",
                    widget(.small, options: MonthOptions(showOutsideDays: false))),
-        GoldenCase("05-small-month-number-arabic",
+        GoldenCase("05-small-week-numbers-outside-days-hidden",
+                   widget(.small, calendar: sundayFirst,
+                          reference: DateComponents(year: 2026, month: 2, day: 10, hour: 12),
+                          options: MonthOptions(showWeekNumbers: true,
+                                                showOutsideDays: false))),
+        GoldenCase("06-small-month-number-arabic",
                    widget(.small, options: MonthOptions(monthNumberStyle: .arabic))),
-        GoldenCase("06-small-month-number-roman",
+        GoldenCase("07-small-month-number-roman",
                    widget(.small, options: MonthOptions(monthNumberStyle: .roman))),
-        GoldenCase("07-small-roman-week-numbers",
+        GoldenCase("08-small-roman-week-numbers",
                    widget(.small, options: MonthOptions(showWeekNumbers: true,
                                                         monthNumberStyle: .roman))),
-        GoldenCase("08-small-year-label-off", widget(.small, showYear: false)),
-        GoldenCase("09-small-sunday-first", widget(.small, calendar: sundayFirst)),
-        GoldenCase("10-small-february-two-blank-rows",
+        GoldenCase("09-small-year-label-off", widget(.small, showYear: false)),
+        GoldenCase("10-small-sunday-first", widget(.small, calendar: sundayFirst)),
+        GoldenCase("11-small-february-two-blank-rows",
                    widget(.small, calendar: sundayFirst,
                           reference: DateComponents(year: 2026, month: 2, day: 10, hour: 12),
                           options: MonthOptions(showOutsideDays: false))),
-        GoldenCase("11-small-december-from-january",
+        GoldenCase("12-small-december-from-january",
                    widget(.small,
                           reference: DateComponents(year: 2027, month: 1, day: 10, hour: 12),
                           offsets: [-1])),
         // The measured tightest shipping case: 143×164 pt inside a 170×170 tile.
-        GoldenCase("12-small-de-december-roman-week-numbers",
+        GoldenCase("13-small-de-december-roman-week-numbers",
                    widget(.small, calendar: deDE, reference: december,
                           options: MonthOptions(showWeekNumbers: true,
                                                 monthNumberStyle: .roman))),
         // Locale is a model input, not an environment value: the Arabic symbols
         // only appear because the *calendar* is ar_SA.
-        GoldenCase("13-small-arabic-calendar-ltr", widget(.small, calendar: arSA)),
-        GoldenCase("14-small-right-to-left", widget(.small),
+        GoldenCase("14-small-arabic-calendar-ltr", widget(.small, calendar: arSA)),
+        GoldenCase("15-small-right-to-left", widget(.small),
                    layoutDirection: .rightToLeft),
-        GoldenCase("15-medium-default-light", widget(.medium, offsets: [0, 1])),
-        GoldenCase("16-medium-default-dark", widget(.medium, offsets: [0, 1]),
+        GoldenCase("16-medium-default-light", widget(.medium, offsets: [0, 1])),
+        GoldenCase("17-medium-default-dark", widget(.medium, offsets: [0, 1]),
                    scheme: .dark),
-        GoldenCase("17-medium-previous-companion", widget(.medium, offsets: [-1, 0])),
-        GoldenCase("18-medium-week-numbers",
+        GoldenCase("18-medium-previous-companion", widget(.medium, offsets: [-1, 0])),
+        GoldenCase("19-medium-week-numbers",
                    widget(.medium, offsets: [0, 1],
                           options: MonthOptions(showWeekNumbers: true))),
-        GoldenCase("19-medium-december-week-numbers",
+        GoldenCase("20-medium-december-week-numbers",
                    widget(.medium, reference: december, offsets: [0, 1],
                           options: MonthOptions(showWeekNumbers: true))),
-        GoldenCase("20-medium-roman-week-numbers",
+        GoldenCase("21-medium-roman-week-numbers",
                    widget(.medium, offsets: [0, 1],
                           options: MonthOptions(showWeekNumbers: true,
                                                 monthNumberStyle: .roman))),
         // The year label overlays the *row*, not one month, so the two-month
-        // tile is its own case; 08 covers only the single-month overlay.
-        GoldenCase("24-medium-year-label-off",
+        // tile is its own case; 09 covers only the single-month overlay.
+        GoldenCase("22-medium-year-label-off",
                    widget(.medium, offsets: [0, 1], showYear: false)),
-        // The only case reaching `MonthGridView.rowHasVisibleDays`: February
-        // 2026 Sunday-first ends in two all-adjacent-month rows, blanked here.
-        GoldenCase("25-small-week-numbers-outside-days-hidden",
-                   widget(.small, calendar: sundayFirst,
-                          reference: DateComponents(year: 2026, month: 2, day: 10, hour: 12),
-                          options: MonthOptions(showWeekNumbers: true,
-                                                showOutsideDays: false))),
     ]
 
     /// The app's only real UI surface.
@@ -127,13 +125,13 @@ extension GoldenCase {
     /// donation row's two `Link`s record as SwiftUI's placeholder. Geometry is
     /// still pinned; their text and colour stay a release-checklist item.
     ///
-    /// No `de_DE` case: both catalogues ship `en` only, so the recorded
-    /// `23-onboarding-de.png` was byte-identical to 21 and could only fail when
-    /// 21 already had. The wrapping it was meant to cover is asserted by
+    /// No `de_DE` case: both catalogues ship `en` only, so a recorded German
+    /// onboarding image was byte-identical to 23 and could only fail when 23
+    /// already had. The wrapping it was meant to cover is asserted by
     /// `LayoutInvariantTests.longerStepTextGrowsTheStepInsteadOfClipping`.
     static let onboardingCases: [GoldenCase] = [
-        GoldenCase("21-onboarding-light", .onboarding(locale: Locale(identifier: "en_US"))),
-        GoldenCase("22-onboarding-dark", .onboarding(locale: Locale(identifier: "en_US")),
+        GoldenCase("23-onboarding-light", .onboarding(locale: Locale(identifier: "en_US"))),
+        GoldenCase("24-onboarding-dark", .onboarding(locale: Locale(identifier: "en_US")),
                    scheme: .dark),
     ]
 
@@ -174,7 +172,7 @@ extension GoldenCase {
         }
     }
 
-    /// Without the tile frame or the content padding — what the clipping
+    /// Without the tile frame or the content padding – what the clipping
     /// invariant compares against `WidgetGeometry.contentBox`.
     @MainActor
     func intrinsicContentSize() throws -> CGSize {

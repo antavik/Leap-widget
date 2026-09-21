@@ -4,7 +4,7 @@ import SwiftUI
 
 /// `monthNumberTintOpacity` is the only way the increased-contrast branch can
 /// be checked: no in-process render reaches it. `monthNumberTint` is not
-/// asserted — `AnyShapeStyle` is opaque, and the tint derives from this
+/// asserted – `AnyShapeStyle` is opaque, and the tint derives from this
 /// opacity rather than repeating the condition.
 ///
 /// `monthNumberBaseline` is deliberately absent: restating its formula would

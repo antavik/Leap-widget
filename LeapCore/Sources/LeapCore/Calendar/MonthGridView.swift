@@ -140,24 +140,22 @@ struct MonthGridView: View {
                 .font(.system(size: metrics.weekNumber, weight: .medium).monospacedDigit())
                 .foregroundStyle(.secondary)
                 .frame(width: metrics.weekNumberColumnWidth, alignment: .trailing)
-                .accessibilityHidden(number == nil)
             Rectangle()
                 .fill(.tertiary)
                 .frame(width: 1)
                 .padding(.vertical, -metrics.rowSpacing / 2)
                 .opacity(showsSeparator ? 1 : 0)
-                .accessibilityHidden(true)
         }
         .padding(.trailing, Self.separatorGap)
     }
 }
 
-#Preview("August 2026 — Monday first", traits: .fixedLayout(width: 170, height: 170)) {
+#Preview("August 2026 – Monday first", traits: .fixedLayout(width: 170, height: 170)) {
     MonthGridView(model: previewModel(firstWeekday: 2))
         .padding(12)
 }
 
-#Preview("Week numbers — dark", traits: .fixedLayout(width: 170, height: 170)) {
+#Preview("Week numbers – dark", traits: .fixedLayout(width: 170, height: 170)) {
     MonthGridView(model: previewModel(firstWeekday: 2, showWeekNumbers: true))
         .padding(12)
         .preferredColorScheme(.dark)

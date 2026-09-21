@@ -79,7 +79,7 @@ public struct MonthModelBuilder: Sendable {
 
         // Always six full rows: leading/trailing cells carry adjacent-month
         // days so 5- and 6-week months keep identical geometry. Day numbers
-        // derive from the two month lengths — no per-cell `Date`.
+        // derive from the two month lengths – no per-cell `Date`.
         var weeks: [[Day]] = []
         weeks.reserveCapacity(6)
         var weekNumbers: [Int]? = options.showWeekNumbers ? [] : nil

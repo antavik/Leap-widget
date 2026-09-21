@@ -2,14 +2,14 @@
 # Every copy of the uninstall path list must say the same thing; the app, the
 # read-me and the Makefile are exercised in completely different ways.
 #
-# Uninstall.swift is canonical. Only the paths under ~/Library are compared —
+# Uninstall.swift is canonical. Only the paths under ~/Library are compared –
 # the app bundle is spelled differently in each source.
 
 set -eu
 
 cd "$(dirname "$0")/.."
 
-CANONICAL=LeapCore/Sources/LeapCore/Uninstall.swift
+CANONICAL=LeapCore/Sources/LeapCore/Uninstall/Uninstall.swift
 SOURCES="README.md Makefile"
 
 # `library.appending(components: "Preferences", "…plist")` becomes
@@ -29,7 +29,7 @@ documented_paths() {
 expected=$(canonical_paths)
 
 if [ -z "$expected" ]; then
-    echo "check-uninstall-paths: found no paths in $CANONICAL — has removalPaths changed shape?" >&2
+    echo "check-uninstall-paths: found no paths in $CANONICAL – has removalPaths changed shape?" >&2
     exit 1
 fi
 

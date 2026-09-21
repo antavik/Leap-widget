@@ -4,7 +4,7 @@ import Foundation
 ///
 /// `leap://` is system-wide, so this parses input any process can send. Only
 /// opaque `ClickPreset` tokens are carried, never URLs, so the output is always
-/// `nil` or one of three constants — nothing supplied externally reaches
+/// `nil` or one of three constants – nothing supplied externally reaches
 /// `NSWorkspace.open`.
 public enum CalendarRelay {
     public static let scheme = "leap"

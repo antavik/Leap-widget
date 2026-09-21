@@ -11,9 +11,9 @@ set -eu
 
 cd "$(dirname "$0")/.."
 
-CORE=LeapCore/Sources/LeapCore/WidgetOptions.swift
+CORE=LeapCore/Sources/LeapCore/Widget/WidgetOptions.swift
 WIDGET=LeapWidget/ConfigurationIntent.swift
-PRESETS=LeapCore/Sources/LeapCore/ClickPreset.swift
+PRESETS=LeapCore/Sources/LeapCore/Widget/ClickPreset.swift
 
 # Case names of `enum <name>`, in declaration order, one per line.
 cases() {

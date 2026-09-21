@@ -150,7 +150,7 @@ struct LayoutInvariantTests {
         let added = Self.redPixelsPerHalf(withToday)
         let baseline = Self.redPixelsPerHalf(withoutToday)
 
-        // The circle is 18 pt at scale 2 — over 800 pixels of solid red.
+        // The circle is 18 pt at scale 2 – over 800 pixels of solid red.
         #expect(added.leading - baseline.leading > 800)
         #expect(added.trailing == baseline.trailing)
     }
@@ -177,7 +177,7 @@ struct LayoutInvariantTests {
             Self.firstDifferingRow(plainBuffer, numberedBuffer),
             "the month number drew nothing")
 
-        // One device pixel at scale 2 — the raised run snaps its raster origin.
+        // One device pixel at scale 2 – the raised run snaps its raster origin.
         #expect((0...1).contains(superscriptTop - plain.top),
                 """
                 \(style): the month number's cap top is \(superscriptTop) px \
@@ -265,7 +265,7 @@ struct LayoutInvariantTests {
         #expect(short.width == OnboardingView.width)
         #expect(long.width == OnboardingView.width)
         #expect(long.height > short.height,
-                "\(long.height) pt is not taller than \(short.height) pt — the text truncated")
+                "\(long.height) pt is not taller than \(short.height) pt – the text truncated")
     }
 
     @Test func onboardingDrawsThreeSteps() throws {

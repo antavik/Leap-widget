@@ -10,7 +10,12 @@ LSREGISTER   := /System/Library/Frameworks/CoreServices.framework/Versions/Curre
 RELEASE_APP  := $(BUILD_DIR)/Build/Products/Release/$(APP_NAME)
 DEBUG_APP    := $(BUILD_DIR)/Build/Products/Debug/$(APP_NAME)
 
-.PHONY: all project release debug test report reports-prune snapshots-record install uninstall clean
+TEST_PLAN    := Leap
+UI_RESULTS   := $(BUILD_DIR)/LeapUITests.xcresult
+UI_SIGNING   := CODE_SIGN_IDENTITY="-" CODE_SIGN_STYLE=Manual
+ONLY         ?=
+
+.PHONY: all project release debug test ui-test report reports-prune snapshots-record install uninstall clean
 
 all: test release
 
@@ -37,6 +42,16 @@ test:
 	./scripts/check-widget-options.sh
 	./scripts/check-test-plan.sh
 	swift test --package-path LeapCore
+
+ui-test: project
+	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration Debug \
+		-derivedDataPath $(BUILD_DIR) build-for-testing $(UI_SIGNING)
+	rm -rf $(UI_RESULTS)
+	xcodebuild test-without-building \
+		-project $(PROJECT) -scheme $(SCHEME) -configuration Debug \
+		-derivedDataPath $(BUILD_DIR) -testPlan $(TEST_PLAN) \
+		-resultBundlePath $(UI_RESULTS) \
+		$(if $(ONLY),-only-testing:$(ONLY)) $(UI_SIGNING)
 
 report:
 	./scripts/run-tests.sh

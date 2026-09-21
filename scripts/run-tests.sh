@@ -68,7 +68,7 @@ results=$(ls "$report"/results/*.xml 2>/dev/null | tr '\n' ' ')
 skipped=$(grep -c 'Test .* skipped' "$test_log" 2>/dev/null || true)
 
 # On a pinned toolchain a skip means the key is wrong, not that the layer is
-# unavailable — so it has to be loud.
+# unavailable – so it has to be loud.
 snapshot_skipped=no
 if grep -q 'Suite "Snapshots".*skipped' "$test_log" 2>/dev/null; then
     snapshot_skipped=yes
@@ -120,7 +120,7 @@ fi
 renders=$(ls "$report"/screenshots/*.png 2>/dev/null | wc -l | tr -d ' ')
 
 {
-    echo "# Leap test report — $stamp-$hash"
+    echo "# Leap test report – $stamp-$hash"
     echo
     if [ "$status" -eq 0 ]; then
         echo "**Result: passed.**"
@@ -129,7 +129,7 @@ renders=$(ls "$report"/screenshots/*.png 2>/dev/null | wc -l | tr -d ' ')
     fi
     if [ "$snapshot_skipped" = yes ]; then
         echo
-        echo "**The golden layer reported skipped — this run has no UI net.**"
+        echo "**The golden layer reported skipped – this run has no UI net.**"
     fi
     echo
     echo '| Layer | Result |'
@@ -147,7 +147,7 @@ renders=$(ls "$report"/screenshots/*.png 2>/dev/null | wc -l | tr -d ' ')
     echo
     echo '## Coverage'
     echo
-    echo 'Scope: `LeapCore` only. `Leap` and `LeapWidget` are **not measured** here —'
+    echo 'Scope: `LeapCore` only. `Leap` and `LeapWidget` are **not measured** here –'
     echo 'they have no SwiftPM test target; the L4 plan measures them under `xcodebuild`.'
     echo
     echo '```'

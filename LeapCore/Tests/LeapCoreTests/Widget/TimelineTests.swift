@@ -3,7 +3,7 @@ import Foundation
 @testable import LeapCore
 
 /// The reload shape. Entry dates are literal dates from a fixed `now`, never
-/// compared against `timelineDates` — that is the implementation, and it is
+/// compared against `timelineDates` – that is the implementation, and it is
 /// covered by `CalendarMathTests.timelineDatesAlignToMidnightAcrossDST`.
 @Suite("Timeline")
 struct TimelineTests {

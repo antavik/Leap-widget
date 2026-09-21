@@ -1,6 +1,6 @@
 import XCTest
 
-/// L4 — the app through a real accessibility client.
+/// L4 – the app through a real accessibility client.
 ///
 /// Deliberately shallow: the only layer that can read an accessibility *tree*
 /// or run `performAccessibilityAudit`. What a label *says* stays at L1, pixels
@@ -11,7 +11,7 @@ final class OnboardingUITests: XCTestCase {
 
     override func setUp() async throws {
         continueAfterFailure = false
-        app = LeapApp.launched()
+        app = AppDriver.launched()
     }
 
     override func tearDown() async throws {
@@ -120,13 +120,13 @@ final class OnboardingUITests: XCTestCase {
         // this fails, the plan's environment did not reach the app.
         let armed = alert.staticTexts.containing(
             NSPredicate(format: "value CONTAINS %@", "UI test safe mode is on")).firstMatch
-        XCTAssertTrue(armed.exists, "safe mode is NOT armed — refusing to confirm")
+        XCTAssertTrue(armed.exists, "safe mode is NOT armed – refusing to confirm")
 
         alert.buttons["Uninstall"].click()
 
-        let skipped = app.dialogs.staticTexts["Uninstall skipped — UI test safe mode."]
+        let skipped = app.dialogs.staticTexts["Uninstall skipped – UI test safe mode."]
         XCTAssertTrue(skipped.waitForExistence(timeout: 5),
-                      "safe mode did not stop the uninstall — STOP and check the plan")
+                      "safe mode did not stop the uninstall – STOP and check the plan")
 
         app.dialogs.firstMatch.buttons["OK"].click()
         XCTAssertEqual(app.state, .runningForeground)
