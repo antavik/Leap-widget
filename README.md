@@ -104,6 +104,24 @@ from versions up to 0.1.0, when the app was sandboxed too.
 On a development machine, `make uninstall` clears the same paths for the copy in
 `/Applications`, deleting them outright rather than moving them to the Trash.
 
+## The manual
+
+The user manual lives in `docs/manual` as Markdown, with its screenshots in
+`docs/manual/assets`. `scripts/build-help.sh` renders it into an Apple Help
+Book – `build/help/Leap.help` – which the app target copies into
+`Leap.app/Contents/Resources`, so **Help ▸ Leap Manual** (⌘?) opens it in Help
+Viewer with no network. The search field AppKit puts at the top of the Help
+menu searches the book's text, because `hiutil` indexes it at build time.
+
+`make project` builds the book first: the generated project references it as a
+resource, so it has to exist on disk. After editing a page, run `make project`
+(or `make help-book`) before building, or Xcode keeps shipping the last one.
+
+Markdown is rendered by `scripts/md2help.py`, a small subset renderer written
+against the system Python – no packages to install. Write pages against what it
+understands: headings, paragraphs, lists, pipe tables, fenced code,
+blockquotes, and inline code, links, images, bold and italic.
+
 ## Testing
 
 Five layers, fastest first. `make test` runs L0–L3 in a few seconds; L4 needs
@@ -111,7 +129,7 @@ Xcode and a logged-in GUI session.
 
 | Layer | What it proves | Where |
 |---|---|---|
-| L0 | Facts duplicated across files still agree – uninstall paths, localized keys and their bundle spelling, the widget's option enums, the scheme/test-plan wiring and its safe-mode interlock | `scripts/check-*.sh` |
+| L0 | Facts duplicated across files still agree – uninstall paths, localized keys and their bundle spelling, the widget's option enums, the scheme/test-plan wiring and its safe-mode interlock, the manual's links and screenshot list | `scripts/check-*.sh` |
 | L1 | Pure logic: calendar math, spoken labels, widget options, the `leap://` relay, uninstall escaping, the timeline | `LeapCore/Tests/LeapCoreTests` |
 | L2 | Properties measured off a render: full opacity, clipping, the today marker, the week-number footprint, six rows, RTL | `LayoutInvariantTests` |
 | L3 | Golden snapshots – 24 PNGs, the change detector for anything nobody thought to assert | `SnapshotTests`, images under `LeapCore/Tests/LeapCoreTests/__Goldens__/<os>-<xcode>/` |
@@ -159,7 +177,8 @@ instance instead.
 | `LeapWidget/` | Widget extension: intent, timeline provider, widget declaration |
 | `LeapCore/` | Local Swift package: calendar math, models, theming, widget options, the relay and the views – plus L0-L3 tests and the golden images |
 | `LeapUITests/` | XCUITest target (L4), run through `Leap.xctestplan` |
-| `scripts/` | L0 consistency checks and the report harness |
+| `docs/manual/` | The user manual in Markdown, plus its screenshots |
+| `scripts/` | L0 consistency checks, the help-book build and the report harness |
 
 ## License
 

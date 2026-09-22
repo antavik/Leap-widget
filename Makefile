@@ -15,11 +15,14 @@ UI_RESULTS   := $(BUILD_DIR)/LeapUITests.xcresult
 UI_SIGNING   := CODE_SIGN_IDENTITY="-" CODE_SIGN_STYLE=Manual
 ONLY         ?=
 
-.PHONY: all project release debug test ui-test report reports-prune snapshots-record install uninstall clean
+.PHONY: all project help-book release debug test ui-test report reports-prune snapshots-record install uninstall clean
 
 all: test release
 
-project:
+help-book:
+	./scripts/build-help.sh
+
+project: help-book
 	xcodegen generate --spec project.yml
 
 release: project
@@ -38,6 +41,7 @@ debug: project
 
 test:
 	./scripts/check-uninstall-paths.sh
+	./scripts/check-help.sh
 	./scripts/check-localization.sh
 	./scripts/check-widget-options.sh
 	./scripts/check-test-plan.sh

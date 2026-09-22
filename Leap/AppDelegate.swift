@@ -199,6 +199,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         mainMenu.addItem(debugItem)
 #endif
 
+        helpMenu.addItem(withTitle: String(localized: "Leap Manual", comment: "Help menu item"),
+                         action: #selector(NSApplication.showHelp(_:)),
+                         keyEquivalent: "?")
+        helpMenu.addItem(.separator())
         helpMenu.addItem(withTitle: String(localized: "Support & Feedback", comment: "Help menu item"),
                          action: #selector(openSupportMail),
                          keyEquivalent: "")

@@ -89,6 +89,17 @@
         }
       }
     },
+    "Leap Manual" : {
+      "comment" : "Help menu item",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leap Manual"
+          }
+        }
+      }
+    },
     "Leap and its settings will be moved to the Trash, and its widgets will disappear from the Desktop and Notification Center." : {
       "comment" : "Uninstall confirmation message",
       "localizations" : {

@@ -31,3 +31,10 @@ widgets for you.
 3. Right-click the widget you placed and choose its **Edit** item to configure it.
 
 You can close Leap afterwards. The widgets keep working.
+
+## Opening this manual again
+
+Open Leap and choose **Help ▸ Leap Manual**, or press Command-? while Leap is
+in front. The manual is inside the app, so it works without a network
+connection. The search field at the top of the Help menu searches these pages
+by name and by their text.

@@ -4,6 +4,10 @@
 <dict>
 	<key>CFBundleDisplayName</key>
 	<string>Leap</string>
+	<key>CFBundleHelpBookFolder</key>
+	<string>Leap.help</string>
+	<key>CFBundleHelpBookName</key>
+	<string>com.antavik.leap.help</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

@@ -23,6 +23,9 @@ targets:
     platform: macOS
     sources:
       - path: Leap
+      - path: build/help/Leap.help
+        type: folder
+        buildPhase: resources
     configFiles:
       Debug: Config/Leap.xcconfig
       Release: Config/Leap.xcconfig
