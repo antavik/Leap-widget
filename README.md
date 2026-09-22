@@ -48,6 +48,13 @@ the generated `.xcodeproj`, which the next `make project` throws away.
 Before signing for distribution, set your development team on both targets – no
 other signing configuration is needed.
 
+`make hooks` points Git at `scripts/hooks` (once per clone). The `post-commit`
+hook then asks after every commit whether to bump `MARKETING_VERSION` in
+`Config/Base.xcconfig` – patch, minor, major, a custom number, or skip – and
+records the answer as its own `chore: bump version` commit. It stays quiet
+without a terminal and during rebase, cherry-pick and merge;
+`LEAP_SKIP_VERSION_BUMP=1 git commit` skips a single commit.
+
 ## Using
 
 1. Launch Leap once – that registers the widget with macOS.

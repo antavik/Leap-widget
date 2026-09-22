@@ -15,9 +15,12 @@ UI_RESULTS   := $(BUILD_DIR)/LeapUITests.xcresult
 UI_SIGNING   := CODE_SIGN_IDENTITY="-" CODE_SIGN_STYLE=Manual
 ONLY         ?=
 
-.PHONY: all project help-book release debug test ui-test report reports-prune snapshots-record install uninstall clean
+.PHONY: all hooks project help-book release debug test ui-test report reports-prune snapshots-record install uninstall clean
 
 all: test release
+
+hooks:
+	git config core.hooksPath scripts/hooks
 
 help-book:
 	./scripts/build-help.sh

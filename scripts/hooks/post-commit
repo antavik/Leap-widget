@@ -1,0 +1,103 @@
+#!/bin/sh
+# MARKETING_VERSION in Config/Base.xcconfig is the only place the released
+# version lives, so it is easy to forget it while committing. Ask right after
+# the commit, while the change is still fresh, and record the bump as its own
+# "chore: bump version" commit.
+#
+# Enable once per clone:  make hooks
+# Skip a single commit:   LEAP_SKIP_VERSION_BUMP=1 git commit ...
+
+set -eu
+
+# The bump commit below re-enters this hook – stop the recursion.
+[ "${LEAP_SKIP_VERSION_BUMP:-}" = "1" ] && exit 0
+
+cd "$(git rev-parse --show-toplevel)"
+
+CONFIG=Config/Base.xcconfig
+KEY=MARKETING_VERSION
+
+# X.Y.Z and nothing else: the fields are fed to $(( )) below, and to sed.
+is_version() {
+	case "$1" in
+		*[!0-9.]* | *..* | .* | *.) return 1 ;;
+	esac
+	[ "$(printf '%s' "$1" | tr -d 0-9)" = ".." ]
+}
+
+# Rebase and cherry-pick replay commits in bulk; prompting there would stall the
+# operation and rewrite versions that were already decided. A merge leaves no
+# marker behind by the time this runs – it is the second parent that gives it
+# away.
+for marker in rebase-merge rebase-apply CHERRY_PICK_HEAD BISECT_LOG; do
+	[ -e "$(git rev-parse --git-path "$marker")" ] && exit 0
+done
+git rev-parse --verify --quiet HEAD^2 >/dev/null && exit 0
+
+# No terminal (CI, GUI clients, scripts) – nothing to ask. The hook runs with
+# stdin closed, so talk to the controlling terminal instead, which also keeps
+# the prompt visible when the commit output is redirected.
+( : < /dev/tty ) 2>/dev/null || exit 0
+exec < /dev/tty > /dev/tty 2>&1
+
+# Uncommitted edits in the file would be swept into the bump commit.
+if ! git diff --quiet -- "$CONFIG"; then
+	echo "post-commit: $CONFIG has uncommitted changes – skipping version bump." >&2
+	exit 0
+fi
+
+current=$(sed -n "s/^$KEY = *//p" "$CONFIG" | head -1)
+if ! is_version "$current"; then
+	echo "post-commit: cannot read $KEY from $CONFIG – skipping version bump." >&2
+	exit 0
+fi
+
+major=${current%%.*}
+rest=${current#*.}
+minor=${rest%%.*}
+patch=${rest##*.}
+
+next_major="$((major + 1)).0.0"
+next_minor="$major.$((minor + 1)).0"
+next_patch="$major.$minor.$((patch + 1))"
+
+printf '\nCurrent version: %s\n' "$current"
+printf '  [p] patch  -> %s\n' "$next_patch"
+printf '  [m] minor  -> %s\n' "$next_minor"
+printf '  [M] major  -> %s\n' "$next_major"
+printf '  [c] custom\n'
+printf '  [s] skip (default)\n'
+printf 'Bump version? [p/m/M/c/s] '
+read -r answer || answer=s
+
+case "$answer" in
+	p|P) new=$next_patch ;;
+	m) new=$next_minor ;;
+	M) new=$next_major ;;
+	c|C)
+		printf 'New version: '
+		read -r new || new=
+		if ! is_version "$new"; then
+			echo "post-commit: '$new' is not an X.Y.Z version – skipping." >&2
+			exit 0
+		fi
+		;;
+	*) exit 0 ;;
+esac
+
+[ "$new" = "$current" ] && exit 0
+
+# Write through the original file so its mode and any other xcconfig edits
+# staged alongside it are left alone.
+tmp=$(mktemp)
+trap 'rm -f "$tmp"' EXIT
+sed "s/^$KEY = .*/$KEY = $new/" "$CONFIG" > "$tmp"
+cat "$tmp" > "$CONFIG"
+
+if ! (git add "$CONFIG" &&
+	LEAP_SKIP_VERSION_BUMP=1 git commit --no-verify -m "chore: bump version to $new"); then
+	echo "post-commit: bump commit failed – $CONFIG is left at $new, commit it yourself." >&2
+	exit 0
+fi
+
+printf 'Version bumped: %s -> %s\n' "$current" "$new"
