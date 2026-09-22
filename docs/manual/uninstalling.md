@@ -12,9 +12,9 @@
 Leap moves itself and its settings to the Trash and quits. The widgets vanish
 from the Desktop and Notification Center on their own, within a minute.
 
-If Leap was installed with Homebrew, it hands the job to `brew` instead, so
-Homebrew's own records stay correct. You do not have to do anything different —
-Leap works out how it was installed.
+If you installed Leap with Homebrew, it hands the job to `brew` instead, so
+Homebrew's own records stay correct. You do not have to do anything
+differently - Leap works out how it was installed.
 
 ## The two folders macOS will not let Leap delete
 
@@ -24,11 +24,11 @@ two sandbox folders survive the uninstall:
 - `~/Library/Containers/com.antavik.leap`
 - `~/Library/Containers/com.antavik.leap.widget`
 
-Leap names them on the way out and offers **Show in Finder**. Drag them to the
+Leap lists them on the way out and offers **Show in Finder**. Drag them to the
 Trash there and you are done. They hold a few megabytes and nothing personal.
 
-No password lifts this restriction — it needs Full Disk Access, which is not
-something `sudo` can grant.
+Entering a password does not lift this restriction: it takes Full Disk Access,
+which `sudo` cannot grant.
 
 ![The leftovers dialog with Show in Finder](assets/uninstall-leftovers.png)
 <!-- SHOT: the informational alert listing the two container paths -->
@@ -41,7 +41,7 @@ If you installed with Homebrew:
 brew uninstall --cask --zap leap
 ```
 
-Without `--zap`, the app goes but its settings stay — that is Homebrew's
+Without `--zap`, the app goes but its settings stay - that is Homebrew's
 convention, not Leap's.
 
 For a downloaded copy, drag Leap to the Trash, then clear the rest:
@@ -62,12 +62,14 @@ removes them with no setup at all.
 
 ## Just dragging it to the Trash
 
-That works too. It leaves a few megabytes of settings behind, which the commands
-above clear out.
+That works too. It leaves a few megabytes of settings behind, which the
+commands above clear out.
 
 ## A widget that stays behind
 
 A widget whose app is gone shows an empty placeholder until macOS notices.
-Right-click it and choose **Remove Widget** to be rid of it immediately.
+Control-click it and choose **Remove Widget** to be rid of it immediately.
 
-Next: [Support and Feedback](support.md).
+---
+
+Previous: [Accessibility](accessibility.md) · Next: [Support and Feedback](support.md)

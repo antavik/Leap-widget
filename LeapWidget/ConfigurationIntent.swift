@@ -99,7 +99,7 @@ struct CalendarConfigIntent: WidgetConfigurationIntent, CalendarConfiguration {
     @Parameter(title: "Adjacent Month Days", default: true)
     var showOutsideDays: Bool
 
-    @Parameter(title: "Show Current Year", default: true)
+    @Parameter(title: "Show Year", default: true)
     var showYear: Bool
 
     @Parameter(title: "Month Number", default: .off)

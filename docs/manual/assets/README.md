@@ -1,7 +1,7 @@
 # Manual screenshots
 
 Every image the manual references lives here. Until a real capture replaces it,
-the file is missing on purpose and the page shows a broken image — the HTML
+the file is missing on purpose and the page shows a broken image - the HTML
 comment next to each reference says what the shot has to contain.
 
 ## Capture rules
