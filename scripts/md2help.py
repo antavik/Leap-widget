@@ -17,22 +17,22 @@ import re
 import sys
 from pathlib import Path
 
-COMMENT = re.compile(r"<!--.*?-->", re.DOTALL)
-FENCE = re.compile(r"^```\s*(\w*)\s*$")
-HEADING = re.compile(r"^(#{1,6})\s+(.*?)\s*#*$")
-LIST_ITEM = re.compile(r"^(\s*)(?:[-*]|(\d+)\.)\s+(.*)$")
-THEMATIC_BREAK = re.compile(r"^ {0,3}([-*_])(?:\s*\1){2,}\s*$")
-DIVIDER_CELL = re.compile(r"^:?-+:?$")
-CODE_SPAN = re.compile(r"`([^`]+)`")
-IMAGE = re.compile(r"!\[([^\]]*)\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)")
-LINK = re.compile(r"\[([^\]]+)\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)")
-AUTOLINK = re.compile(r"&lt;(https?://[^&\s]+)&gt;")
-BOLD = re.compile(r"\*\*(.+?)\*\*")
-ITALIC = re.compile(r"(?<![\*\w])\*([^*]+)\*(?!\*)")
-SLUG_STRIP = re.compile(r"[^a-z0-9\s-]")
-PAGE_LINK = re.compile(r"\]\(([a-z0-9-]+)\.md(?:#[^)\s]*)?\)")
-ONLY_IMAGE = re.compile(r'^<img [^>]*alt="([^"]*)">$')
-PARKED = re.compile("\x00(\\d+)\x00")
+COMMENT_RE = re.compile(r"<!--.*?-->", re.DOTALL)
+FENCE_RE = re.compile(r"^```\s*(\w*)\s*$")
+HEADING_RE = re.compile(r"^(#{1,6})\s+(.*?)\s*#*$")
+LIST_ITEM_RE = re.compile(r"^(\s*)(?:[-*]|(\d+)\.)\s+(.*)$")
+THEMATIC_BREAK_RE = re.compile(r"^ {0,3}([-*_])(?:\s*\1){2,}\s*$")
+DIVIDER_CELL_RE = re.compile(r"^:?-+:?$")
+CODE_SPAN_RE = re.compile(r"`([^`]+)`")
+IMAGE_RE = re.compile(r"!\[([^\]]*)\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)")
+LINK_RE = re.compile(r"\[([^\]]+)\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)")
+AUTOLINK_RE = re.compile(r"&lt;(https?://[^&\s]+)&gt;")
+BOLD_RE = re.compile(r"\*\*(.+?)\*\*")
+ITALIC_RE = re.compile(r"(?<![\*\w])\*([^*]+)\*(?!\*)")
+SLUG_STRIP_RE = re.compile(r"[^a-z0-9\s-]")
+PAGE_LINK_RE = re.compile(r"\]\(([a-z0-9-]+)\.md(?:#[^)\s]*)?\)")
+ONLY_IMAGE_RE = re.compile(r'^<img [^>]*alt="([^"]*)">$')
+PARKED_RE = re.compile("\x00(\\d+)\x00")
 
 PAGE = """<!DOCTYPE html>
 <html lang="en">
@@ -60,7 +60,7 @@ PAGE = """<!DOCTYPE html>
 
 
 def slug(text: str) -> str:
-    return re.sub(r"\s+", "-", SLUG_STRIP.sub("", text.lower()).strip())
+    return re.sub(r"\s+", "-", SLUG_STRIP_RE.sub("", text.lower()).strip())
 
 
 def attribute(value: str) -> str:
@@ -102,15 +102,15 @@ def inline(text: str) -> str:
     def autolink(match: re.Match) -> str:
         return f'<a href="{attribute(match.group(1))}">{match.group(1)}</a>'
 
-    text = CODE_SPAN.sub(park, text)
+    text = CODE_SPAN_RE.sub(park, text)
     text = html.escape(text, quote=False)
-    text = IMAGE.sub(image, text)
-    text = LINK.sub(link, text)
-    text = AUTOLINK.sub(autolink, text)
-    text = BOLD.sub(r"<strong>\1</strong>", text)
-    text = ITALIC.sub(r"<em>\1</em>", text)
+    text = IMAGE_RE.sub(image, text)
+    text = LINK_RE.sub(link, text)
+    text = AUTOLINK_RE.sub(autolink, text)
+    text = BOLD_RE.sub(r"<strong>\1</strong>", text)
+    text = ITALIC_RE.sub(r"<em>\1</em>", text)
 
-    return PARKED.sub(lambda m: parked[int(m.group(1))], text)
+    return PARKED_RE.sub(lambda m: parked[int(m.group(1))], text)
 
 
 def rewrite_href(href: str) -> str:
@@ -122,7 +122,7 @@ def rewrite_href(href: str) -> str:
     if path.endswith(".md"):
         path = path[:-3] + ".html"
 
-    return path + ("#" + fragment or "")
+    return path + ("#" + fragment if fragment else "")
 
 
 class Renderer:
@@ -150,16 +150,16 @@ class Renderer:
 
             if not line.strip():
                 self.index += 1
-            elif FENCE.match(line):
+            elif FENCE_RE.match(line):
                 self.code_block()
-            elif HEADING.match(line):
+            elif HEADING_RE.match(line):
                 self.heading()
-            elif THEMATIC_BREAK.match(line):
+            elif THEMATIC_BREAK_RE.match(line):
                 self.index += 1
                 self.out.append("<hr>")
             elif self.is_table():
                 self.table()
-            elif LIST_ITEM.match(line):
+            elif LIST_ITEM_RE.match(line):
                 self.out.append(self.list_block())
             elif line.startswith(">"):
                 self.quote()
@@ -169,11 +169,11 @@ class Renderer:
         return "\n".join(self.out), self.title
 
     def code_block(self) -> None:
-        language = FENCE.match(self.lines[self.index]).group(1)
+        language = FENCE_RE.match(self.lines[self.index]).group(1)
 
         self.index += 1
         lines = []
-        while self.index < len(self.lines) and not FENCE.match(self.lines[self.index]):
+        while self.index < len(self.lines) and not FENCE_RE.match(self.lines[self.index]):
             lines.append(self.lines[self.index])
             self.index += 1
 
@@ -187,7 +187,7 @@ class Renderer:
         self.out.append(f"<pre><code{attributes}>{body}</code></pre>")
 
     def heading(self) -> None:
-        level, text = HEADING.match(self.lines[self.index]).groups()
+        level, text = HEADING_RE.match(self.lines[self.index]).groups()
         self.index += 1
         depth = len(level)
         if depth == 1 and self.title is None:
@@ -215,7 +215,7 @@ class Renderer:
         # A rule under a line that merely contains a pipe is not a table: the
         # divider has to describe every one of the header's columns.
         return (len(divider) == len(cells(line))
-                and all(DIVIDER_CELL.match(cell) for cell in divider))
+                and all(DIVIDER_CELL_RE.match(cell) for cell in divider))
 
     def table(self) -> None:
         header = cells(self.lines[self.index])
@@ -243,7 +243,7 @@ class Renderer:
         self.out.append("</tbody></table>")
 
     def list_block(self, indent: int | None = None) -> str:
-        first = LIST_ITEM.match(self.lines[self.index])
+        first = LIST_ITEM_RE.match(self.lines[self.index])
         ordered = first.group(2) is not None
         if indent is None:
             indent = len(first.group(1))
@@ -265,10 +265,10 @@ class Renderer:
                 continue
 
             # `* * *` reads as a bullet, so the break has to win here too.
-            if THEMATIC_BREAK.match(line):
+            if THEMATIC_BREAK_RE.match(line):
                 break
 
-            match = LIST_ITEM.match(line)
+            match = LIST_ITEM_RE.match(line)
 
             if match:
                 depth = len(match.group(1))
@@ -305,11 +305,11 @@ class Renderer:
         while index < len(self.lines) and not self.lines[index].strip():
             index += 1
 
-        if index >= len(self.lines) or THEMATIC_BREAK.match(self.lines[index]):
+        if index >= len(self.lines) or THEMATIC_BREAK_RE.match(self.lines[index]):
             return None
 
         line = self.lines[index]
-        match = LIST_ITEM.match(line)
+        match = LIST_ITEM_RE.match(line)
         depth = len(match.group(1)) if match else len(line) - len(line.lstrip())
 
         # A paragraph level with the list is prose after it, not part of it.
@@ -331,10 +331,10 @@ class Renderer:
         lines = []
         while self.index < len(self.lines) and self.lines[self.index].strip():
             line = self.lines[self.index]
-            if HEADING.match(line) or FENCE.match(line) or self.is_table():
+            if HEADING_RE.match(line) or FENCE_RE.match(line) or self.is_table():
                 break
 
-            if LIST_ITEM.match(line) or THEMATIC_BREAK.match(line):
+            if LIST_ITEM_RE.match(line) or THEMATIC_BREAK_RE.match(line):
                 break
 
             if line.startswith(">"):
@@ -346,7 +346,7 @@ class Renderer:
         body = inline(" ".join(lines))
         # A paragraph that is only a screenshot becomes a figure, so the alt
         # text is visible as a caption in Help Viewer while the shot is missing.
-        only_image = ONLY_IMAGE.match(body)
+        only_image = ONLY_IMAGE_RE.match(body)
         if only_image:
             caption = only_image.group(1)
             self.out.append(f"<figure>{body}<figcaption>{caption}</figcaption></figure>")
@@ -372,7 +372,7 @@ def reading_order(index: str, sources: list[str]) -> list[str]:
     """The landing page first, then whatever it links to, then anything it
     forgot – so the page list matches the manual's own contents. A page linked
     twice is still listed once."""
-    linked = [f"{name}.md" for name in PAGE_LINK.findall(index)]
+    linked = [f"{name}.md" for name in PAGE_LINK_RE.findall(index)]
     order = ["index.md"] + [name for name in linked if name in sources]
 
     return list(dict.fromkeys(order + sources))
@@ -406,7 +406,7 @@ def main() -> int:
 
     rendered = []
     for name in reading_order(pages_source["index.md"], sources):
-        text = COMMENT.sub("", pages_source[name])
+        text = COMMENT_RE.sub("", pages_source[name])
         body, title = Renderer(text.splitlines(), name).render()
         stem = name[:-3]
         rendered.append((stem, title or stem, body))
