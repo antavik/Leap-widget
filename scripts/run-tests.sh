@@ -36,8 +36,11 @@ status=0
 
 l0_log="$report/results/l0.txt"
 l0_status=0
-for check in scripts/check-uninstall-paths.sh scripts/check-localization.sh \
-             scripts/check-widget-options.sh scripts/check-test-plan.sh; do
+# Same list as the Makefile's `test` target: CI runs `make report`, never
+# `make test`, so a check missing here is a check that never runs on a PR.
+for check in scripts/check-uninstall-paths.sh scripts/check-help.sh \
+             scripts/check-localization.sh scripts/check-widget-options.sh \
+             scripts/check-test-plan.sh; do
     if ! "./$check" >> "$l0_log" 2>&1; then
         l0_status=1
     fi

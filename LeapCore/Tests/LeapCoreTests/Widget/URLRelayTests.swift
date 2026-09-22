@@ -55,6 +55,8 @@ struct URLRelayTests {
         ("leap://open-calendar?action=appleCalendar", true),
         ("leap://open-calendar", true),                    // ours, token or not
         ("LEAP://open-calendar?action=appleCalendar", true),
+        ("leap://Open-Calendar?action=appleCalendar", true),
+        ("LEAP://OPEN-CALENDAR?action=appleCalendar", true),
         ("notleap://open-calendar?action=appleCalendar", false),
         ("https://open-calendar?action=appleCalendar", false),
         ("file://open-calendar", false),
@@ -79,8 +81,12 @@ struct URLRelayTests {
         #expect(CalendarRelay.preset(forRelay: unknown) == nil)
     }
 
-    @Test func aMixedCaseSchemeStillParses() throws {
-        let url = try #require(URL(string: "LEAP://open-calendar?action=appleCalendar"))
+    /// Scheme and host are case-insensitive; only the token is not.
+    @Test(arguments: ["LEAP://open-calendar?action=appleCalendar",
+                      "leap://Open-Calendar?action=appleCalendar",
+                      "LEAP://OPEN-CALENDAR?action=appleCalendar"])
+    func aMixedCaseSchemeOrHostStillParses(string: String) throws {
+        let url = try #require(URL(string: string))
         #expect(CalendarRelay.preset(forRelay: url) == .appleCalendar)
     }
 

@@ -54,8 +54,10 @@ fi
 pages=$(ls -1 "$MANUAL"/*.md | sed 's|.*/||' | sort)
 
 # 3. Every page link resolves, and every page is reachable from index.md.
+# `grep -o`, never `sed`: a greedy `.*](` keeps only the *last* link on a line,
+# so a broken one beside a good one went unreported.
 for page in $pages; do
-    targets=$(sed -n 's/.*](\([a-z0-9-]*\)\.md[^)]*).*/\1.md/p' "$MANUAL/$page" | sort -u)
+    targets=$(grep -oE '\]\([a-z0-9-]+\.md' "$MANUAL/$page" | sed 's/^](//' | sort -u)
 
     for target in $targets; do
         if [ ! -f "$MANUAL/$target" ]; then
@@ -64,7 +66,7 @@ for page in $pages; do
     done
 done
 
-linked=$(sed -n 's/.*](\([a-z0-9-]*\)\.md).*/\1.md/p' "$INDEX" | sort -u)
+linked=$(grep -oE '\]\([a-z0-9-]+\.md\)' "$INDEX" | sed 's/^](//; s/)$//' | sort -u)
 
 for page in $pages; do
     if [ "$page" != "index.md" ] && ! contains "$page" "$linked"; then

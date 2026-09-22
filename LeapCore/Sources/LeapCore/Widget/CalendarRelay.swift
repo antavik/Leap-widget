@@ -34,7 +34,7 @@ public enum CalendarRelay {
     private static func components(of url: URL) -> URLComponents? {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
               components.scheme?.lowercased() == scheme,
-              components.host == host
+              components.host?.lowercased() == host
         else { return nil }
 
         return components
