@@ -30,6 +30,10 @@ public enum Constants {
         public static let calendarSmall = "com.antavik.leap.calendar.small"
     }
 
+    public enum Defaults {
+        public static let widgetBuild = "LeapWidgetBuild"
+    }
+
     public enum Bundles {
         public static let appleCalendar = "com.apple.iCal"
     }

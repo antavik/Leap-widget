@@ -15,7 +15,7 @@ UI_RESULTS   := $(BUILD_DIR)/LeapUITests.xcresult
 UI_SIGNING   := CODE_SIGN_IDENTITY="-" CODE_SIGN_STYLE=Manual
 ONLY         ?=
 
-.PHONY: all hooks project help-book release debug test ui-test report reports-prune snapshots-record install uninstall clean
+.PHONY: all hooks project help-book release debug test ui-test report reports-prune snapshots-record uninstall clean
 
 all: test release
 
@@ -71,12 +71,6 @@ reports-prune:
 
 snapshots-record:
 	LEAP_RECORD_SNAPSHOTS=1 swift test --package-path LeapCore --filter SnapshotTests
-
-install: release
-	rm -rf $(INSTALL_DIR)/$(APP_NAME)
-	ditto $(RELEASE_APP) $(INSTALL_DIR)/$(APP_NAME)
-	$(LSREGISTER) -f -R -trusted $(INSTALL_DIR)/$(APP_NAME)
-	pluginkit -a $(INSTALL_DIR)/$(APP_NAME)/Contents/PlugIns/LeapWidget.appex
 
 uninstall:
 	-osascript -e 'if application "Leap" is running then tell application "Leap" to quit'
