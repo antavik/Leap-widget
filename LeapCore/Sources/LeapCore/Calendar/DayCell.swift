@@ -22,10 +22,11 @@ struct DayCell: View {
                 .foregroundStyle(numberStyle)
                 .frame(maxWidth: .infinity, minHeight: metrics.rowHeight)
                 .background {
-                    Circle()
-                        .fill(.red)
-                        .frame(width: metrics.todayCircle, height: metrics.todayCircle)
-                        .opacity(day.isToday ? 1 : 0)
+                    if day.isToday {
+                        Circle()
+                            .fill(.red)
+                            .frame(width: metrics.todayCircle, height: metrics.todayCircle)
+                    }
                 }
         }
     }
