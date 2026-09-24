@@ -16,7 +16,10 @@ public func monthRow(containing date: Date,
 }
 
 public func yearLabel(forYear year: Int) -> String {
-    String(format: "\u{2019}%02d", year % 100)
+    "\u{2019}" + (year % 100).formatted(.number
+        .precision(.integerLength(2))
+        .grouping(.never)
+        .locale(Locale(identifier: "en_US_POSIX")))
 }
 
 public func spokenSummary(of models: [MonthModel],

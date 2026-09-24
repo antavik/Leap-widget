@@ -1,10 +1,5 @@
 import Foundation
 
-public enum InstallChannel: Equatable, Sendable {
-    case homebrew(brew: URL)
-    case direct
-}
-
 public enum Uninstall {
 
     public static let homebrewPrefixes = [
@@ -28,7 +23,7 @@ public enum Uninstall {
     }
 
     public static func shellEscaped(_ path: String) -> String {
-        path.replacingOccurrences(of: "'", with: "'\\''")
+        path.replacing("'", with: "'\\''")
     }
 
     public static func regexEscaped(_ path: String) -> String {

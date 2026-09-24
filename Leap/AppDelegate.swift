@@ -6,6 +6,7 @@ import LeapCore
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var relayedURL = false
+    private var isUninstalling = false
     private var window: NSWindow?
 #if DEBUG
     private var previewWindow: NSWindow?
@@ -107,7 +108,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         window.makeKeyAndOrderFront(nil)
 
-        NSApp.activate(ignoringOtherApps: true)
+        NSApp.activate()
     }
 
     private func makeMainWindow() -> NSWindow {
@@ -252,6 +253,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     static let safeModeMessage = "Uninstall skipped – UI test safe mode."
 
     @objc private func confirmUninstall() {
+        guard !isUninstalling else { return }
+
         let alert = NSAlert()
         alert.alertStyle = .warning
         alert.messageText = String(localized: "Uninstall Leap?",
@@ -273,7 +276,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         uninstall.keyEquivalent = ""
         cancel.keyEquivalent = "\u{1b}"
 
-        NSApp.activate(ignoringOtherApps: true)
+        NSApp.activate()
 
         guard alert.runModal() == .alertFirstButtonReturn else { return }
 
@@ -304,11 +307,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
 
-        do {
-            report(leftovers: try Uninstaller.perform())
-            NSApp.terminate(nil)
-        } catch {
-            NSAlert(error: error).runModal()
+        isUninstalling = true
+        Task {
+            defer { isUninstalling = false }
+            do {
+                report(leftovers: try await Uninstaller.perform())
+                NSApp.terminate(nil)
+            } catch {
+                NSAlert(error: error).runModal()
+            }
         }
     }
 
@@ -348,7 +355,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         previewWindow = window
 
         window.makeKeyAndOrderFront(nil)
-        NSApp.activate(ignoringOtherApps: true)
+        NSApp.activate()
     }
 
     private func makeAccessibilityPreviewWindow() -> NSWindow {

@@ -2,10 +2,10 @@ import Testing
 import SwiftUI
 @testable import LeapCore
 
-/// `monthNumberTintOpacity` is the only way the increased-contrast branch can
-/// be checked: no in-process render reaches it. `monthNumberTint` is not
-/// asserted – `AnyShapeStyle` is opaque, and the tint derives from this
-/// opacity rather than repeating the condition.
+/// The `…Opacity` functions are the only way the increased-contrast branches
+/// can be checked: no in-process render reaches them. The colours themselves
+/// are not asserted – they derive from these opacities rather than repeating
+/// the condition.
 ///
 /// `monthNumberBaseline` is deliberately absent: restating its formula would
 /// be a change detector with no independent truth.
@@ -21,6 +21,11 @@ struct ThemeTests {
                                                  opacity: Double) {
         #expect(Theme.monthNumberTintOpacity(colorScheme: scheme,
                                              contrast: contrast) == opacity)
+    }
+
+    @Test(arguments: [(ColorSchemeContrast.standard, 0.7), (.increased, 1.0)])
+    func secondaryTextFollowsContrast(contrast: ColorSchemeContrast, opacity: Double) {
+        #expect(Theme.secondaryTextOpacity(contrast: contrast) == opacity)
     }
 
     /// The L2 invariant measures `weekNumberColumnWidth + 7` off a render, so

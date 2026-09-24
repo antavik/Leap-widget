@@ -1,15 +1,5 @@
 import CoreGraphics
 
-public struct ScreenGeometry: Sendable, Equatable {
-    public let frame: CGRect
-    public let visibleFrame: CGRect
-
-    public init(frame: CGRect, visibleFrame: CGRect) {
-        self.frame = frame
-        self.visibleFrame = visibleFrame
-    }
-}
-
 public enum WindowPlacement {
 
     public static func centeredOrigin(for size: CGSize, in visibleFrame: CGRect) -> CGPoint {

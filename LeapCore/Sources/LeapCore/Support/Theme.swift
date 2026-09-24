@@ -33,7 +33,13 @@ enum Theme {
                                todayCircle: 18, rowHeight: 16, rowSpacing: 2,
                                yearLabelTrailingInset: 6)
 
-    static let secondaryText = Color.primary.opacity(0.7)
+    static func secondaryTextOpacity(contrast: ColorSchemeContrast) -> Double {
+        contrast == .increased ? 1 : 0.7
+    }
+
+    static func secondaryText(contrast: ColorSchemeContrast) -> Color {
+        .primary.opacity(secondaryTextOpacity(contrast: contrast))
+    }
 
     static func monthNumberTintOpacity(colorScheme: ColorScheme,
                                        contrast: ColorSchemeContrast) -> Double {
@@ -41,9 +47,8 @@ enum Theme {
     }
 
     static func monthNumberTint(colorScheme: ColorScheme,
-                                contrast: ColorSchemeContrast) -> AnyShapeStyle {
-        AnyShapeStyle(.red.opacity(monthNumberTintOpacity(colorScheme: colorScheme,
-                                                          contrast: contrast)))
+                                contrast: ColorSchemeContrast) -> Color {
+        .red.opacity(monthNumberTintOpacity(colorScheme: colorScheme, contrast: contrast))
     }
 
     static let medium = Metrics(title: 11, monthNumber: 8.5,

@@ -24,6 +24,8 @@ public struct OnboardingView: View {
 
     public static let width: CGFloat = 480
 
+    @Environment(\.colorSchemeContrast) private var colorSchemeContrast
+
     private let donationURL: URL
     private let feedbackURL: URL
 
@@ -54,7 +56,7 @@ public struct OnboardingView: View {
             Text("A calendar widget for the Desktop and Notification Center. macOS places widgets itself – the three steps below take about a minute.",
                  bundle: .module)
                 .font(.callout)
-                .foregroundStyle(Theme.secondaryText)
+                .foregroundStyle(Theme.secondaryText(contrast: colorSchemeContrast))
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
@@ -64,7 +66,7 @@ public struct OnboardingView: View {
             Divider()
                 .padding(.bottom, 8)
             Text("Enjoy Leap?", bundle: .module)
-                .foregroundStyle(Theme.secondaryText)
+                .foregroundStyle(Theme.secondaryText(contrast: colorSchemeContrast))
             HStack(spacing: 14) {
                 Link(destination: donationURL) {
                     Text("You can buy me a coffee", bundle: .module)
@@ -75,55 +77,12 @@ public struct OnboardingView: View {
             }
             .buttonStyle(.link)
             Text("Thank you!", bundle: .module)
-                .foregroundStyle(Theme.secondaryText)
+                .foregroundStyle(Theme.secondaryText(contrast: colorSchemeContrast))
         }
-        .font(.caption)
+        .font(.callout)
         .multilineTextAlignment(.center)
         .fixedSize(horizontal: false, vertical: true)
         .frame(maxWidth: .infinity)
-    }
-}
-
-struct OnboardingStep: Identifiable {
-    let symbol: String
-    let title: LocalizedStringResource
-    let text: LocalizedStringResource
-
-    var id: String { symbol }
-}
-
-struct OnboardingStepView: View {
-    let step: OnboardingStep
-    let number: Int
-    let total: Int
-
-    var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            Image(systemName: step.symbol)
-                .font(.title2)
-                .foregroundStyle(.tint)
-                .frame(width: 28)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(verbatim: headline)
-                    .font(.headline)
-                Text(step.text)
-                    .font(.callout)
-                    .foregroundStyle(Theme.secondaryText)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-        }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(verbatim: spokenStep))
-    }
-
-    private var headline: String {
-        "\(number). \(String(localized: step.title))"
-    }
-
-    private var spokenStep: String {
-        String(localized: "Step \(number) of \(total). \(String(localized: step.title)). \(String(localized: step.text))",
-               bundle: .module,
-               comment: "VoiceOver label for one onboarding step")
     }
 }
 

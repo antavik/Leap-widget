@@ -1,51 +1,5 @@
 import Foundation
 
-public enum MonthNumberStyle: String, CaseIterable, Sendable {
-    case arabic
-    case roman
-
-    private static let romanLabels = ["I", "II", "III", "IV", "V", "VI",
-                                                "VII", "VIII", "IX", "X", "XI", "XII"]
-
-    public func label(forMonth month: Int) -> String? {
-        switch self {
-        case .arabic:
-            return month > 0 ? String(month) : nil
-        case .roman:
-            return (1...12).contains(month) ? Self.romanLabels[month - 1] : nil
-        }
-    }
-}
-
-public struct MonthOptions: Equatable, Sendable {
-    public let firstWeekday: Int?
-    public let showWeekNumbers: Bool
-    public let showOutsideDays: Bool
-    public let monthNumberStyle: MonthNumberStyle?
-
-    public init(firstWeekday: Int? = nil,
-                showWeekNumbers: Bool = false,
-                showOutsideDays: Bool = true,
-                monthNumberStyle: MonthNumberStyle? = nil) {
-        self.firstWeekday = firstWeekday
-        self.showWeekNumbers = showWeekNumbers
-        self.showOutsideDays = showOutsideDays
-        self.monthNumberStyle = monthNumberStyle
-    }
-}
-
-public struct Day: Equatable, Sendable {
-    public let number: Int
-    public let isToday: Bool
-    public let isOutsideMonth: Bool
-
-    init(number: Int, isToday: Bool, isOutsideMonth: Bool = false) {
-        self.number = number
-        self.isToday = isToday
-        self.isOutsideMonth = isOutsideMonth
-    }
-}
-
 public struct MonthModel: Equatable, Sendable {
     /// Uppercased standalone month symbol, e.g. "AUGUST".
     public let title: String

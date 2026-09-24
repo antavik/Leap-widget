@@ -1,31 +1,11 @@
 import AppKit
 import LeapCore
 
-enum UninstallError: LocalizedError {
-    case handoffFailed(underlying: any Error)
-
-    var errorDescription: String? {
-        switch self {
-        case .handoffFailed(let underlying):
-            String(localized: "Leap could not hand the uninstall over to Homebrew. \(underlying.localizedDescription)",
-                   comment: "Uninstall failure message")
-        }
-    }
-
-    var recoverySuggestion: String? {
-        switch self {
-        case .handoffFailed:
-            String(localized: "Run “brew uninstall --cask --zap leap” in Terminal instead.",
-                   comment: "Uninstall failure recovery suggestion")
-        }
-    }
-}
-
 @MainActor
 enum Uninstaller {
 
-    static func perform() throws -> [URL] {
-        deregister()
+    static func perform() async throws -> [URL] {
+        await deregister()
 
         switch Uninstall.channel(exists: exists) {
         case .homebrew(let brew):
@@ -40,15 +20,15 @@ enum Uninstaller {
 
     /// Best-effort: failure only delays the gallery catching up, since both
     /// services prune records whose bundle has vanished.
-    private static func deregister() {
+    private static func deregister() async {
         if let widget = widgetURL {
-            run("/usr/bin/pluginkit", ["-r", widget.path(percentEncoded: false)])
+            await run("/usr/bin/pluginkit", ["-r", widget.path(percentEncoded: false)])
             // A live extension would recreate the container once it is trashed.
-            run("/usr/bin/pkill", ["-U", String(getuid()),
-                                   "-f", Uninstall.regexEscaped(
-                                       widget.path(percentEncoded: false))])
+            await run("/usr/bin/pkill", ["-U", String(getuid()),
+                                         "-f", Uninstall.regexEscaped(
+                                             widget.path(percentEncoded: false))])
         }
-        run(lsregister, ["-u", Bundle.main.bundleURL.path(percentEncoded: false)])
+        await run(lsregister, ["-u", Bundle.main.bundleURL.path(percentEncoded: false)])
     }
 
     // MARK: - Direct install
@@ -121,7 +101,13 @@ enum Uninstaller {
         process.standardOutput = FileHandle.nullDevice
         process.standardError = FileHandle.nullDevice
 
-        guard (try? process.run()) != nil else { return }
-        process.waitUntilExit()
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            process.terminationHandler = { _ in continuation.resume() }
+            do {
+                try process.run()
+            } catch {
+                continuation.resume()
+            }
+        }
     }
 }
