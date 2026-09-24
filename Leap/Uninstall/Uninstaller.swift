@@ -94,7 +94,7 @@ enum Uninstaller {
     }
 
     /// Best-effort: the caller has already decided that failure is survivable.
-    private static func run(_ tool: String, _ arguments: [String]) {
+    private static func run(_ tool: String, _ arguments: [String]) async {
         let process = Process()
         process.executableURL = URL(filePath: tool)
         process.arguments = arguments
