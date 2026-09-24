@@ -51,8 +51,6 @@ public struct MonthModel: Equatable, Sendable {
     public let title: String
     /// Calendar year of the month – the small widget's year label follows it.
     public let year: Int
-    /// Month of the year, 1…12; always set, whatever the number option is.
-    public let monthNumber: Int
     /// Rendered month number, e.g. "8" or "VIII"; `nil` when the option is off.
     public let monthNumberLabel: String?
     /// Very-short standalone weekday symbols rotated to the effective first weekday.
@@ -72,14 +70,13 @@ public struct MonthModel: Equatable, Sendable {
     /// month holds today, the month and year otherwise. Already localized.
     public let spokenSummary: String
 
-    init(title: String, year: Int, monthNumber: Int,
-                monthNumberLabel: String? = nil,
-                weekdayHeaders: [String], weekendColumns: [Bool], weeks: [[Day]],
-                weekNumbers: [Int]?, showsOutsideDays: Bool = true,
-                containsToday: Bool, spokenSummary: String) {
+    init(title: String, year: Int,
+         monthNumberLabel: String? = nil,
+         weekdayHeaders: [String], weekendColumns: [Bool], weeks: [[Day]],
+         weekNumbers: [Int]?, showsOutsideDays: Bool = true,
+         containsToday: Bool, spokenSummary: String) {
         self.title = title
         self.year = year
-        self.monthNumber = monthNumber
         self.monthNumberLabel = monthNumberLabel
         self.weekdayHeaders = weekdayHeaders
         self.weekendColumns = weekendColumns

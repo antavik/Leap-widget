@@ -57,6 +57,6 @@ struct MonthNumberStyleTests {
                                                      monthNumberStyle: .roman))
 
         #expect(model.monthNumberLabel == "IX")
-        #expect(model.monthNumber == 9)
+        #expect(model.title == "SEPTEMBER")
     }
 }

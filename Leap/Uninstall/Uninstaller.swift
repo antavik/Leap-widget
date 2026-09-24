@@ -54,10 +54,9 @@ enum Uninstaller {
     // MARK: - Direct install
 
     private static func removeEverything() -> [URL] {
-        // cfprefsd owns this domain and writes it back out when Leap quits, so
-        // trashing the plist on its own would leave an empty one behind.
         if let bundleID = Bundle.main.bundleIdentifier {
             UserDefaults.standard.removePersistentDomain(forName: bundleID)
+            CFPreferencesAppSynchronize(bundleID as CFString)
         }
 
         return Uninstall.removalPaths(home: FileManager.default.homeDirectoryForCurrentUser,

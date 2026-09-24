@@ -155,7 +155,6 @@ struct CalendarMathTests {
         for (offset, expected) in [(-1, 7), (0, 8), (1, 9)] {
             let displayed = try model(2026, 8, 12, offset: offset,
                                       calendar: mondayFirst, options: options)
-            #expect(displayed.monthNumber == expected)
             #expect(displayed.monthNumberLabel == String(expected))
         }
     }
@@ -164,24 +163,21 @@ struct CalendarMathTests {
         let january = try model(2026, 12, 15, offset: 1, calendar: mondayFirst,
                                 options: MonthOptions(monthNumberStyle: .roman))
         #expect(january.title == "JANUARY")
-        #expect(january.monthNumber == 1)
         #expect(january.monthNumberLabel == "I")
         #expect(january.year == 2027)
 
         let december = try model(2027, 1, 15, offset: -1, calendar: mondayFirst,
                                  options: MonthOptions(monthNumberStyle: .roman))
         #expect(december.title == "DECEMBER")
-        #expect(december.monthNumber == 12)
         #expect(december.monthNumberLabel == "XII")
         #expect(december.year == 2026)
     }
 
-    // Off leaves no label, but the number itself stays available to the view's
-    // accessibility text.
+    // Off leaves the month itself drawn and only drops the superscript.
     @Test func monthNumberLabelAbsentWhenStyleIsOff() throws {
         let august = try model(2026, 8, 12, calendar: mondayFirst)
         #expect(august.monthNumberLabel == nil)
-        #expect(august.monthNumber == 8)
+        #expect(august.title == "AUGUST")
     }
 
     // MARK: - Weekends

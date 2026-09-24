@@ -20,6 +20,18 @@ if [ ! -f "$CATALOGUE" ]; then
     exit 1
 fi
 
+# Config/<Target>.xcconfig configures the <Target>/ source directory.
+for config in Config/*.xcconfig; do
+    grep -q '^SWIFT_EMIT_LOC_STRINGS *= *YES' "$config" || continue
+
+    target=$(basename "$config" .xcconfig)
+    if [ ! -f "$target/Localizable.xcstrings" ]; then
+        echo "check-localization: $target sets SWIFT_EMIT_LOC_STRINGS but has no" \
+             "$target/Localizable.xcstrings - its strings cannot be localized" >&2
+        exit 1
+    fi
+done
+
 found=$(mktemp)
 keys=$(mktemp)
 trap 'rm -f "$found" "$keys"' EXIT

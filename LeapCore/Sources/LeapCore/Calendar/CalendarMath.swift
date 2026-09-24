@@ -13,6 +13,12 @@ public struct MonthModelBuilder: Sendable {
     /// Whether this calendar can use a two-digit Gregorian year label.
     public let usesGregorianYearNumbering: Bool
 
+    /// Stands in when a calendar reports no length for a month.
+    ///
+    /// Unreachable for the calendars in use; it only keeps the grid drawable
+    /// instead of trapping.
+    private static let fallbackDayCount = 30
+
     public init(calendar: Calendar, options: MonthOptions) {
         var effective = calendar
         applyFirstWeekday(options.firstWeekday, to: &effective)
@@ -53,22 +59,34 @@ public struct MonthModelBuilder: Sendable {
         self.weekendColumns = (0..<7).map { weekend[(firstIndex + $0) % 7] }
     }
 
+    /// Builds the display model for the month `offset` months from `date`.
+    ///
+    /// - Parameters:
+    ///   - date: any date in the reference month.
+    ///   - offset: months relative to the reference month (-1, 0, +1).
+    ///   - today: marks its day only in the offset-0 month.
+    /// - Returns: a grid that always has a full set of cells. A calendar that
+    ///   reports no month length or cannot shift a date degrades the affected
+    ///   day numbers to a 30-day approximation rather than failing; the
+    ///   supported calendars never take that path.
     public func model(containing date: Date, offset: Int, today: Date) -> MonthModel {
-        let shifted = calendar.date(byAdding: .month, value: offset, to: date)!
+        let shifted = calendar.date(byAdding: .month, value: offset, to: date) ?? date
         let components = calendar.dateComponents([.year, .month], from: shifted)
-        let monthStart = calendar.date(from: components)!
-        let year = components.year!
-        let month = components.month!
-        let dayCount = calendar.range(of: .day, in: .month, for: monthStart)!.count
+        let monthStart = calendar.date(from: components) ?? calendar.startOfDay(for: shifted)
+        let year = components.year ?? calendar.component(.year, from: shifted)
+        let month = components.month ?? calendar.component(.month, from: shifted)
+        let dayCount = calendar.range(of: .day, in: .month, for: monthStart)?.count
+            ?? Self.fallbackDayCount
 
         let leadingCount = (calendar.component(.weekday, from: monthStart)
                             - firstWeekday + 7) % 7
 
         // Leading cells show the previous month's tail; its length is all the
         // date math those cells need.
-        let previousMonthStart = calendar.date(byAdding: .month, value: -1, to: monthStart)!
-        let previousDayCount = calendar.range(of: .day, in: .month,
-                                              for: previousMonthStart)!.count
+        let previousMonthStart = calendar.date(byAdding: .month, value: -1, to: monthStart)
+        let previousDayCount = previousMonthStart
+            .flatMap { calendar.range(of: .day, in: .month, for: $0)?.count }
+            ?? Self.fallbackDayCount
 
         // The today marker reduces to one day-number comparison: it can only
         // sit in the offset-0 month, and only when `today` falls inside it.
@@ -102,14 +120,13 @@ public struct MonthModelBuilder: Sendable {
                 // A row is one calendar week, so its first day yields the number.
                 let rowFirstDate = calendar.date(byAdding: .day,
                                                  value: row * 7 - leadingCount,
-                                                 to: monthStart)!
+                                                 to: monthStart) ?? monthStart
                 weekNumbers?.append(calendar.component(.weekOfYear, from: rowFirstDate))
             }
         }
 
-        return MonthModel(title: monthTitles[month - 1],
+        return MonthModel(title: title(forMonth: month),
                           year: year,
-                          monthNumber: month,
                           monthNumberLabel: options.monthNumberStyle
                               .flatMap { $0.label(forMonth: month) },
                           weekdayHeaders: weekdayHeaders,
@@ -125,6 +142,10 @@ public struct MonthModelBuilder: Sendable {
 }
 
 private extension MonthModelBuilder {
+    func title(forMonth month: Int) -> String {
+        monthTitles.indices.contains(month - 1) ? monthTitles[month - 1] : String(month)
+    }
+
     func spokenSummary(monthStart: Date, today: Date, holdsToday: Bool) -> String {
         guard holdsToday else { return monthStart.formatted(monthYearStyle) }
 
@@ -150,6 +171,9 @@ private extension MonthModelBuilder {
 ///   - offset: months relative to the reference month (-1, 0, +1).
 ///   - calendar: base calendar, usually `Calendar.autoupdatingCurrent`.
 ///   - today: marks its day only in the offset-0 month.
+/// - Returns: a grid that always has a full set of cells; see
+///   `MonthModelBuilder.model(containing:offset:today:)` for how a calendar
+///   that reports nothing is approximated.
 public func monthModel(containing date: Date,
                        offset: Int,
                        calendar: Calendar,

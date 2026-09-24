@@ -55,7 +55,6 @@ struct TimelineTests {
                                       now: now, calendar: calendar)
 
         #expect(entries.map { $0.models[0].title } == ["AUGUST", "SEPTEMBER", "SEPTEMBER"])
-        #expect(entries.map { $0.models[0].monthNumber } == [8, 9, 9])
     }
 
     /// A differently configured host must not change the reload's shape.
