@@ -10,3 +10,4 @@ reports/
 Leap.xcodeproj/
 
 .claude/
+.codegraph/

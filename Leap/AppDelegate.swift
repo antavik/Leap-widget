@@ -108,7 +108,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         window.makeKeyAndOrderFront(nil)
 
+        activate()
+    }
+
+    /// `NSApp.activate()` can be denied on macOS 14+; retry as if the
+    /// frontmost app handed over focus.
+    private func activate() {
         NSApp.activate()
+
+        guard !NSApp.isActive,
+              let frontmost = NSWorkspace.shared.frontmostApplication,
+              frontmost != .current
+        else { return }
+
+        NSRunningApplication.current.activate(from: frontmost)
     }
 
     private func makeMainWindow() -> NSWindow {

@@ -56,17 +56,6 @@
         }
       }
     },
-    "Enjoy Leap?" : {
-      "comment" : "Lead-in above the donation and feedback links",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enjoy Leap?"
-          }
-        }
-      }
-    },
     "Leap" : {
       "comment" : "Main window title",
       "localizations" : {
@@ -122,13 +111,13 @@
         }
       }
     },
-    "Thank you!" : {
-      "comment" : "Closing line under the donation links",
+    "Thank you for using Leap!" : {
+      "comment" : "Lead-in above the donation and feedback links",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thank you!"
+            "value" : "Thank you for using Leap!"
           }
         }
       }
@@ -155,13 +144,13 @@
         }
       }
     },
-    "You can buy me a coffee" : {
+    "Buy me a coffee" : {
       "comment" : "Donation link",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You can buy me a coffee"
+            "value" : "Buy me a coffee"
           }
         }
       }

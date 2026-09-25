@@ -53,6 +53,7 @@ public struct OnboardingView: View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Leap", bundle: .module)
                 .font(.title.bold())
+                .accessibilityAddTraits(.isHeader)
             Text("A calendar widget for the Desktop and Notification Center. macOS places widgets itself – the three steps below take about a minute.",
                  bundle: .module)
                 .font(.callout)
@@ -65,19 +66,17 @@ public struct OnboardingView: View {
         VStack(spacing: 6) {
             Divider()
                 .padding(.bottom, 8)
-            Text("Enjoy Leap?", bundle: .module)
+            Text("Thank you for using Leap!", bundle: .module)
                 .foregroundStyle(Theme.secondaryText(contrast: colorSchemeContrast))
             HStack(spacing: 14) {
                 Link(destination: donationURL) {
-                    Text("You can buy me a coffee", bundle: .module)
+                    Text("Buy me a coffee", bundle: .module)
                 }
                 Link(destination: feedbackURL) {
                     Text("Share your thoughts", bundle: .module)
                 }
             }
             .buttonStyle(.link)
-            Text("Thank you!", bundle: .module)
-                .foregroundStyle(Theme.secondaryText(contrast: colorSchemeContrast))
         }
         .font(.callout)
         .multilineTextAlignment(.center)
