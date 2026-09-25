@@ -1,23 +1,13 @@
 import XCTest
 import AppKit
 
-/// L4 – the half of the widget click this project owns.
+/// L4 – `kAEGetURL` delivery and fallback chain (wire format is in `URLRelayTests`).
 ///
-/// The wire format is pinned at L1 (`URLRelayTests`); what no unit test can
-/// reach is the delivery – the `kAEGetURL` handler, the scheme-and-host match,
-/// and the fallback chain when the token means nothing to this build.
+/// No calendar launches: in safe mode the app writes the resolved target to a file.
 ///
-/// **Nothing here launches a calendar.** In safe mode the app resolves the
-/// target and writes it to a file this test owns.
-///
-/// Two neighbouring behaviours stay on the release checklist:
-///
-/// - **That `widgetURL` is attached at all** – a widget is rendered by
-///   WidgetKit in another process and no test host can click it.
-/// - **That a *cold* launch by URL relays and then quits.** A sandboxed runner
-///   cannot arm safe mode on a cold launch (LaunchServices drops its
-///   environment), so the event goes to the running instance instead: same
-///   handler, same resolution, and it correctly leaves the app running.
+/// Manual release checks: `widgetURL` is attached (untestable out of process),
+/// and a cold launch by URL relays then quits (safe mode can't be armed on a
+/// cold launch).
 @MainActor
 final class CalendarRelayUITests: XCTestCase {
     private var app: XCUIApplication!
@@ -55,8 +45,7 @@ final class CalendarRelayUITests: XCTestCase {
 
     // MARK: - The fallback chain
 
-    /// An older app reading a newer widget's configuration: it opens the
-    /// default calendar, never the unknown token itself.
+    /// Older app, newer widget config: opens the default calendar.
     func testAnUnknownTokenFallsBackToTheDefaultCalendar() throws {
         try relay("leap://open-calendar?action=somethingElse")
 
@@ -69,8 +58,7 @@ final class CalendarRelayUITests: XCTestCase {
         XCTAssertEqual(try waitForResolvedTarget(), "ical://")
     }
 
-    /// The allow-list property where the URL actually arrives: the app never
-    /// reaches past the parser for its target.
+    /// The target always comes from the allow-list, never the token.
     func testAHostileTokenNeverBecomesTheTarget() throws {
         try relay("leap://open-calendar?action=file:///Applications/Calculator.app")
 
@@ -79,25 +67,25 @@ final class CalendarRelayUITests: XCTestCase {
 
     // MARK: - Relaying to a running app
 
-    /// The quit belongs to the cold-launch path, which cannot be armed from a
-    /// sandboxed runner.
+    /// Checks running, not frontmost: activation is up to the system
+    /// (macOS 27 leaves the app in the background).
     func testRelayingToARunningAppLeavesItRunning() throws {
         try relay("leap://open-calendar?action=fantastical")
         _ = try waitForResolvedTarget()
 
-        XCTAssertEqual(app.state, .runningForeground)
+        XCTAssertFalse(app.wait(for: .notRunning, timeout: 2),
+                       "the app quit after a relay to a running instance")
+        XCTAssertTrue([.runningForeground, .runningBackground].contains(app.state),
+                      "unexpected app state \(app.state.rawValue) after a relay")
         XCTAssertTrue(app.windows["Leap"].exists,
                       "the onboarding window disappeared on a relay")
     }
 
     // MARK: - Delivering the event
 
-    /// A real `kAEGetURL`, the same event a `widgetURL` click produces.
-    ///
-    /// `createsNewApplicationInstance` is false on purpose: only the instance
-    /// `XCUIApplication` launched carries safe mode.
+    /// Sends a real `kAEGetURL` to the launched instance (the only one in safe mode).
     private func relay(_ string: String) throws {
-        // Or the second token in a loop reads the first one's answer.
+        // Clear the previous answer.
         try? FileManager.default.removeItem(at: record)
 
         let url = try XCTUnwrap(URL(string: string))
@@ -106,7 +94,7 @@ final class CalendarRelayUITests: XCTestCase {
         configuration.createsNewApplicationInstance = false
 
         let delivered = expectation(description: "relay \(string)")
-        // Written by the completion handler, read only after `wait(for:)`.
+        // Read only after `wait(for:)`.
         nonisolated(unsafe) var failure: (any Error)?
 
         NSWorkspace.shared.open([url],
@@ -120,7 +108,7 @@ final class CalendarRelayUITests: XCTestCase {
         if let failure { throw failure }
     }
 
-    /// The app writes atomically, so a non-empty read is a complete one.
+    /// Atomic write, so non-empty means complete.
     private func waitForResolvedTarget(timeout: TimeInterval = 10) throws -> String {
         let deadline = Date().addingTimeInterval(timeout)
 
