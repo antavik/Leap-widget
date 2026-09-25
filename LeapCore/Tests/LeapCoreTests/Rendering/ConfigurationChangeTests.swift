@@ -15,8 +15,8 @@ import Foundation
 /// month fails here rather than looking like a change.
 ///
 /// The goldens pin each state's pixels; these pin the *difference* between
-/// states, which survives a toolchain re-record. That the host re-renders a
-/// placed widget after an edit stays a release-checklist item.
+/// states, which survives a toolchain re-record. Intent → settings:
+/// `LeapWidgetTests`. Host re-render: `docs/release-checklist.md`.
 @Suite("Configuration changes", .tags(.layout), .serialized, .warmRenderer)
 @MainActor
 struct ConfigurationChangeTests {
@@ -362,9 +362,8 @@ struct ConfigurationChangeTests {
 
     // MARK: - Click action
 
-    /// Only the click target may change. The widget-side wrapper
-    /// (`WidgetClickSurface`) is outside this package; its pixel parity stays
-    /// a release-checklist item.
+    /// Only the click target may change. `WidgetClickSurface` pixels:
+    /// `WidgetViewRenderTests`.
     @Test(arguments: ClickAction.allCases, tiles)
     func theClickActionNeverChangesWhatIsDrawn(action: ClickAction, tile: WidgetGeometry) throws {
         let offsets = Self.offsets(tile)

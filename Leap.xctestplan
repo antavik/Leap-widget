@@ -47,6 +47,14 @@
         "identifier": "LeapUITests",
         "name": "LeapUITests"
       }
+    },
+    {
+      "parallelizable": false,
+      "target": {
+        "containerPath": "container:Leap.xcodeproj",
+        "identifier": "LeapWidgetTests",
+        "name": "LeapWidgetTests"
+      }
     }
   ],
   "version": 1

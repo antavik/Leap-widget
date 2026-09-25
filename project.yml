@@ -46,6 +46,27 @@ targets:
     dependencies:
       - target: Leap
 
+  LeapWidgetTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: LeapWidgetTests
+      - path: LeapWidget/ConfigurationIntent.swift
+      - path: LeapWidget/CalendarEntry.swift
+      - path: LeapWidget/CalendarWidgetView.swift
+      - path: LeapWidget/WidgetClickSurface.swift
+      - path: LeapWidget/InertButtonStyle.swift
+      - path: LeapWidget/DoNothingIntent.swift
+      - path: LeapCore/Tests/LeapCoreTests/Harness/RenderHarness.swift
+      - path: LeapCore/Tests/LeapCoreTests/Harness/ImageComparator.swift
+      - path: LeapCore/Tests/LeapCoreTests/Harness/Fixtures.swift
+    configFiles:
+      Debug: Config/LeapWidgetTests.xcconfig
+      Release: Config/LeapWidgetTests.xcconfig
+    dependencies:
+      - package: LeapCore
+        product: LeapCore
+
   LeapWidget:
     type: app-extension
     platform: macOS
@@ -72,6 +93,7 @@ schemes:
           defaultPlan: true
       targets:
         - LeapUITests
+        - LeapWidgetTests
     profile:
       config: Release
     analyze:
