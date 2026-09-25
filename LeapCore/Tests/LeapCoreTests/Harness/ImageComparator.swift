@@ -114,6 +114,50 @@ enum ImageComparator {
                           maxChannelDelta: maxDelta, sizeMismatch: false)
     }
 
+    /// Where two same-sized renders differ beyond `channelTolerance`, in pixels.
+    struct Change: Sendable, CustomStringConvertible {
+        let rows: IndexSet
+        let columns: ClosedRange<Int>
+
+        var description: String {
+            "rows \(rows.first ?? 0)…\(rows.last ?? 0), columns \(columns)"
+        }
+    }
+
+    /// `nil` when the renders match. Sizes must agree – a config change never
+    /// resizes the tile.
+    /// `columns` narrows the comparison, e.g. to one month of the two-month tile.
+    static func change(from before: Buffer, to after: Buffer,
+                       columns: Range<Int>? = nil) -> Change? {
+        precondition(before.width == after.width && before.height == after.height,
+                     "renders of different sizes")
+
+        let columns = columns ?? 0..<before.width
+        var rows = IndexSet()
+        var minX = Int.max
+        var maxX = Int.min
+
+        before.bytes.withUnsafeBufferPointer { left in
+            after.bytes.withUnsafeBufferPointer { right in
+                for y in 0..<before.height {
+                    for x in columns {
+                        let offset = (y * before.width + x) * 4
+                        for channel in 0..<4
+                        where abs(Int(left[offset + channel]) - Int(right[offset + channel]))
+                            > channelTolerance {
+                            rows.insert(y)
+                            minX = min(minX, x)
+                            maxX = max(maxX, x)
+                            break
+                        }
+                    }
+                }
+            }
+        }
+
+        return rows.isEmpty ? nil : Change(rows: rows, columns: minX...maxX)
+    }
+
     // Raw pointers throughout: these run on every case in the matrix in an
     // unoptimised test build, and `Array` subscripts cost seconds across it.
 
