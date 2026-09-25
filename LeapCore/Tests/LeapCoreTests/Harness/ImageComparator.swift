@@ -77,7 +77,7 @@ enum ImageComparator {
     // MARK: - Comparison
 
     /// Buffer equality first: the pass case never pays for the pixel walk.
-    static func compare(_ expected: Buffer, _ actual: Buffer) -> Difference {
+    static func compare(expected: Buffer, actual: Buffer) -> Difference {
         guard expected.width == actual.width, expected.height == actual.height else {
             return Difference(differingPixels: max(expected.pixelCount, actual.pixelCount),
                               pixelCount: max(expected.pixelCount, actual.pixelCount),

@@ -15,8 +15,9 @@ import Foundation
 /// month fails here rather than looking like a change.
 ///
 /// The goldens pin each state's pixels; these pin the *difference* between
-/// states, which survives a toolchain re-record. Intent → settings:
-/// `LeapWidgetTests`. Host re-render: `docs/release-checklist.md`.
+/// states, which survives a toolchain re-record. The intent-to-settings
+/// mapping is tested in `LeapWidgetTests`; that the host re-renders a placed
+/// widget after an edit is checked by hand (`docs/release-checklist.md`).
 @Suite("Configuration changes", .tags(.layout), .serialized, .warmRenderer)
 @MainActor
 struct ConfigurationChangeTests {
@@ -52,7 +53,7 @@ struct ConfigurationChangeTests {
         let entry = try GoldenCase.entry(settings: settings, calendar: calendar, reference: day)
         let image = try #require(RenderHarness.render(
             CalendarSurface(models: entry.models, yearLabel: entry.yearLabel),
-            size: tile.tile, scheme: .light, layoutDirection: .leftToRight))
+            size: tile.tileSize, scheme: .light, layoutDirection: .leftToRight))
         let buffer = try #require(ImageComparator.buffer(of: image))
         let separators = Set(Self.separatorColumns(of: buffer))
 
@@ -362,8 +363,8 @@ struct ConfigurationChangeTests {
 
     // MARK: - Click action
 
-    /// Only the click target may change. `WidgetClickSurface` pixels:
-    /// `WidgetViewRenderTests`.
+    /// Only the click target may change. The pixels of the widget-side
+    /// `WidgetClickSurface` are tested in `WidgetViewRenderTests`.
     @Test(arguments: ClickAction.allCases, tiles)
     func theClickActionNeverChangesWhatIsDrawn(action: ClickAction, tile: WidgetGeometry) throws {
         let offsets = Self.offsets(tile)

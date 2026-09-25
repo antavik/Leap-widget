@@ -368,8 +368,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // The medium widget's tile, so the grid lays out as it ships.
         let hosting = NSHostingController(
             rootView: CalendarSurface(models: row.models, yearLabel: row.yearLabel)
-                .frame(width: WidgetGeometry.medium.tile.width,
-                       height: WidgetGeometry.medium.tile.height))
+                .frame(width: WidgetGeometry.medium.tileSize.width,
+                       height: WidgetGeometry.medium.tileSize.height))
         hosting.sizingOptions = [.preferredContentSize]
 
         let window = NSWindow(contentViewController: hosting)

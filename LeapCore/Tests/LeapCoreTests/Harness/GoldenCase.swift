@@ -186,7 +186,7 @@ extension GoldenCase {
                                           yearLabel: entry.yearLabel)
 
             return try #require(RenderHarness.render(surface,
-                                                     size: tile.tile,
+                                                     size: tile.tileSize,
                                                      scheme: scheme,
                                                      layoutDirection: layoutDirection),
                                 "render produced no image for \(id)")

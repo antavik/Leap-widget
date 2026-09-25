@@ -39,7 +39,7 @@ struct SnapshotTests {
 
         let expected = try #require(ImageComparator.buffer(of: GoldenStore.read(id: golden.id)))
         let actual = try #require(ImageComparator.buffer(of: rendered))
-        let difference = ImageComparator.compare(expected, actual)
+        let difference = ImageComparator.compare(expected: expected, actual: actual)
 
         if difference.exceedsTolerance {
             try attachFailure(golden: golden, expected: expected, actual: actual,
@@ -57,7 +57,7 @@ struct SnapshotTests {
            let stored = try? GoldenStore.read(id: golden.id),
            let expected = ImageComparator.buffer(of: stored),
            let actual = ImageComparator.buffer(of: rendered),
-           !ImageComparator.compare(expected, actual).exceedsTolerance {
+           !ImageComparator.compare(expected: expected, actual: actual).exceedsTolerance {
             return
         }
 

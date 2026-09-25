@@ -38,7 +38,7 @@ struct LayoutInvariantTests {
         let image = try #require(
             RenderHarness.render(CalendarSurface(models: row.models,
                                                  yearLabel: row.yearLabel),
-                                 size: tile.tile,
+                                 size: tile.tileSize,
                                  scheme: scheme,
                                  layoutDirection: layoutDirection),
             "render produced no image")
@@ -76,7 +76,7 @@ struct LayoutInvariantTests {
         let light = try buffer(row, scheme: .light)
         let dark = try buffer(row, scheme: .dark)
 
-        #expect(ImageComparator.compare(light, dark).differingPixels > 0)
+        #expect(ImageComparator.compare(expected: light, actual: dark).differingPixels > 0)
         #expect(!ImageComparator.isFlat(light))
         #expect(!ImageComparator.isFlat(dark))
     }
@@ -208,7 +208,7 @@ struct LayoutInvariantTests {
         let ltr = try buffer(row, layoutDirection: .leftToRight)
         let rtl = try buffer(row, layoutDirection: .rightToLeft)
 
-        #expect(ImageComparator.compare(ltr, rtl).differingPixels > 0)
+        #expect(ImageComparator.compare(expected: ltr, actual: rtl).differingPixels > 0)
     }
 
     @Test func accessibilityFiveRendersIdenticallyToTheDefault() throws {
@@ -217,12 +217,12 @@ struct LayoutInvariantTests {
         let image = try #require(RenderHarness.render(
             CalendarSurface(models: row.models, yearLabel: row.yearLabel)
                 .dynamicTypeSize(.accessibility5),
-            size: WidgetGeometry.small.tile,
+            size: WidgetGeometry.small.tileSize,
             scheme: .light,
             layoutDirection: .leftToRight))
         let enlarged = try #require(ImageComparator.buffer(of: image))
 
-        #expect(ImageComparator.compare(standard, enlarged).differingPixels == 0)
+        #expect(ImageComparator.compare(expected: standard, actual: enlarged).differingPixels == 0)
     }
 
     // MARK: - Edge guards

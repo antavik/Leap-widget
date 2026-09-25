@@ -23,7 +23,7 @@ enum RenderHarness {
     /// there first – unlike a per-suite `init`, unordered across suites.
     static let warmedUp: Void = {
         _ = render(Text(verbatim: "warm-up").padding(),
-                   size: WidgetGeometry.small.tile,
+                   size: WidgetGeometry.small.tileSize,
                    scheme: .light,
                    layoutDirection: .leftToRight)
     }()

@@ -3,7 +3,7 @@ import LeapCore
 
 // Case lists and display names only; every mapping lives in
 // `LeapCore.CalendarSettings`. Each is the twin of a plain enum in
-// `LeapCore.WidgetOptions`, bridged by raw value through `core` – see that
+// `LeapCore.WidgetOptions`, bridged by raw value through `coreOption` – see that
 // file for why. `scripts/check-widget-options.sh` pins the two lists together.
 
 /// The second month the two-month (medium) widget shows.
@@ -16,7 +16,7 @@ enum Companion: String, AppEnum {
         .previous: "Previous",
     ]
 
-    var core: LeapCore.Companion {
+    var coreOption: LeapCore.Companion {
         LeapCore.Companion(rawValue: rawValue) ?? .next
     }
 }
@@ -32,7 +32,7 @@ enum DisplayedMonth: String, AppEnum {
         .previous: "Previous",
     ]
 
-    var core: LeapCore.DisplayedMonth {
+    var coreOption: LeapCore.DisplayedMonth {
         LeapCore.DisplayedMonth(rawValue: rawValue) ?? .current
     }
 }
@@ -47,7 +47,7 @@ enum FirstWeekday: String, AppEnum {
         .sunday: "Sunday",
     ]
 
-    var core: LeapCore.FirstWeekday { LeapCore.FirstWeekday(rawValue: rawValue) ?? .system }
+    var coreOption: LeapCore.FirstWeekday { LeapCore.FirstWeekday(rawValue: rawValue) ?? .system }
 }
 
 enum MonthNumberDisplay: String, AppEnum {
@@ -60,7 +60,7 @@ enum MonthNumberDisplay: String, AppEnum {
         .roman: "Roman (VI)",
     ]
 
-    var core: LeapCore.MonthNumberDisplay {
+    var coreOption: LeapCore.MonthNumberDisplay {
         LeapCore.MonthNumberDisplay(rawValue: rawValue) ?? .off
     }
 }
@@ -79,7 +79,7 @@ enum ClickAction: String, AppEnum {
         .doNothing: DisplayRepresentation(title: "Nothing"),
     ]
 
-    var core: LeapCore.ClickAction {
+    var coreOption: LeapCore.ClickAction {
         LeapCore.ClickAction(rawValue: rawValue) ?? .appleCalendar
     }
 }
@@ -109,13 +109,13 @@ struct CalendarConfigIntent: WidgetConfigurationIntent, CalendarConfiguration {
     var clickAction: ClickAction
 
     var settings: CalendarSettings {
-        CalendarSettings(monthOffsets: companion.core.monthOffsets,
-                         firstWeekday: firstWeekday.core,
+        CalendarSettings(monthOffsets: companion.coreOption.monthOffsets,
+                         firstWeekday: firstWeekday.coreOption,
                          showWeekNumbers: showWeekNumbers,
                          showOutsideDays: showOutsideDays,
                          showYear: showYear,
-                         monthNumber: monthNumber.core,
-                         clickAction: clickAction.core)
+                         monthNumber: monthNumber.coreOption,
+                         clickAction: clickAction.coreOption)
     }
 
     static var parameterSummary: some ParameterSummary {
@@ -155,13 +155,13 @@ struct SmallCalendarConfigIntent: WidgetConfigurationIntent, CalendarConfigurati
     var clickAction: ClickAction
 
     var settings: CalendarSettings {
-        CalendarSettings(monthOffsets: month.core.monthOffsets,
-                         firstWeekday: firstWeekday.core,
+        CalendarSettings(monthOffsets: month.coreOption.monthOffsets,
+                         firstWeekday: firstWeekday.coreOption,
                          showWeekNumbers: showWeekNumbers,
                          showOutsideDays: showOutsideDays,
                          showYear: showYear,
-                         monthNumber: monthNumber.core,
-                         clickAction: clickAction.core)
+                         monthNumber: monthNumber.coreOption,
+                         clickAction: clickAction.coreOption)
     }
 
     static var parameterSummary: some ParameterSummary {

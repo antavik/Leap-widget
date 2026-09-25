@@ -16,78 +16,80 @@ struct ConfigurationIntentTests {
 
     // MARK: - One parameter at a time
 
-    /// One parameter at a time: a swapped argument moves the wrong field.
+    /// Each two-month parameter moves only its own `CalendarSettings` field;
+    /// a swapped argument in `settings` moves the wrong one.
     @Test func everyTwoMonthParameterMovesOnlyItsOwnField() {
-        func edited(_ edit: (CalendarConfigIntent) -> Void) -> CalendarSettings {
+        func settings(editing edit: (CalendarConfigIntent) -> Void) -> CalendarSettings {
             let intent = CalendarConfigIntent()
             edit(intent)
             return intent.settings
         }
         let months = [0, 1]
 
-        #expect(edited { $0.companion = .previous } == CalendarSettings(monthOffsets: [-1, 0]))
-        #expect(edited { $0.firstWeekday = .monday }
+        #expect(settings { $0.companion = .previous } == CalendarSettings(monthOffsets: [-1, 0]))
+        #expect(settings { $0.firstWeekday = .monday }
                 == CalendarSettings(monthOffsets: months, firstWeekday: .monday))
-        #expect(edited { $0.firstWeekday = .sunday }
+        #expect(settings { $0.firstWeekday = .sunday }
                 == CalendarSettings(monthOffsets: months, firstWeekday: .sunday))
-        #expect(edited { $0.showWeekNumbers = true }
+        #expect(settings { $0.showWeekNumbers = true }
                 == CalendarSettings(monthOffsets: months, showWeekNumbers: true))
-        #expect(edited { $0.showOutsideDays = false }
+        #expect(settings { $0.showOutsideDays = false }
                 == CalendarSettings(monthOffsets: months, showOutsideDays: false))
-        #expect(edited { $0.showYear = false }
+        #expect(settings { $0.showYear = false }
                 == CalendarSettings(monthOffsets: months, showYear: false))
-        #expect(edited { $0.monthNumber = .arabic }
+        #expect(settings { $0.monthNumber = .arabic }
                 == CalendarSettings(monthOffsets: months, monthNumber: .arabic))
-        #expect(edited { $0.monthNumber = .roman }
+        #expect(settings { $0.monthNumber = .roman }
                 == CalendarSettings(monthOffsets: months, monthNumber: .roman))
         for action in ClickAction.allCases {
-            #expect(edited { $0.clickAction = action }
-                    == CalendarSettings(monthOffsets: months, clickAction: action.core),
+            #expect(settings { $0.clickAction = action }
+                    == CalendarSettings(monthOffsets: months, clickAction: action.coreOption),
                     "\(action)")
         }
     }
 
+    /// Each one-month parameter moves only its own `CalendarSettings` field.
     @Test func everyOneMonthParameterMovesOnlyItsOwnField() {
-        func edited(_ edit: (SmallCalendarConfigIntent) -> Void) -> CalendarSettings {
+        func settings(editing edit: (SmallCalendarConfigIntent) -> Void) -> CalendarSettings {
             let intent = SmallCalendarConfigIntent()
             edit(intent)
             return intent.settings
         }
         let month = [0]
 
-        #expect(edited { $0.month = .next } == CalendarSettings(monthOffsets: [1]))
-        #expect(edited { $0.month = .previous } == CalendarSettings(monthOffsets: [-1]))
-        #expect(edited { $0.firstWeekday = .monday }
+        #expect(settings { $0.month = .next } == CalendarSettings(monthOffsets: [1]))
+        #expect(settings { $0.month = .previous } == CalendarSettings(monthOffsets: [-1]))
+        #expect(settings { $0.firstWeekday = .monday }
                 == CalendarSettings(monthOffsets: month, firstWeekday: .monday))
-        #expect(edited { $0.firstWeekday = .sunday }
+        #expect(settings { $0.firstWeekday = .sunday }
                 == CalendarSettings(monthOffsets: month, firstWeekday: .sunday))
-        #expect(edited { $0.showWeekNumbers = true }
+        #expect(settings { $0.showWeekNumbers = true }
                 == CalendarSettings(monthOffsets: month, showWeekNumbers: true))
-        #expect(edited { $0.showOutsideDays = false }
+        #expect(settings { $0.showOutsideDays = false }
                 == CalendarSettings(monthOffsets: month, showOutsideDays: false))
-        #expect(edited { $0.showYear = false }
+        #expect(settings { $0.showYear = false }
                 == CalendarSettings(monthOffsets: month, showYear: false))
-        #expect(edited { $0.monthNumber = .arabic }
+        #expect(settings { $0.monthNumber = .arabic }
                 == CalendarSettings(monthOffsets: month, monthNumber: .arabic))
-        #expect(edited { $0.monthNumber = .roman }
+        #expect(settings { $0.monthNumber = .roman }
                 == CalendarSettings(monthOffsets: month, monthNumber: .roman))
         for action in ClickAction.allCases {
-            #expect(edited { $0.clickAction = action }
-                    == CalendarSettings(monthOffsets: month, clickAction: action.core),
+            #expect(settings { $0.clickAction = action }
+                    == CalendarSettings(monthOffsets: month, clickAction: action.coreOption),
                     "\(action)")
         }
     }
 
     // MARK: - Bridging
 
-    /// `core` falls back to a default, so a renamed case would pass silently.
+    /// `coreOption` falls back to a default, so a renamed case would pass silently.
     @Test func everyWidgetCaseBridgesToTheCoreCaseOfTheSameName() {
-        for option in Companion.allCases { #expect(option.core.rawValue == option.rawValue) }
-        for option in DisplayedMonth.allCases { #expect(option.core.rawValue == option.rawValue) }
-        for option in FirstWeekday.allCases { #expect(option.core.rawValue == option.rawValue) }
+        for option in Companion.allCases { #expect(option.coreOption.rawValue == option.rawValue) }
+        for option in DisplayedMonth.allCases { #expect(option.coreOption.rawValue == option.rawValue) }
+        for option in FirstWeekday.allCases { #expect(option.coreOption.rawValue == option.rawValue) }
         for option in MonthNumberDisplay.allCases {
-            #expect(option.core.rawValue == option.rawValue)
+            #expect(option.coreOption.rawValue == option.rawValue)
         }
-        for option in ClickAction.allCases { #expect(option.core.rawValue == option.rawValue) }
+        for option in ClickAction.allCases { #expect(option.coreOption.rawValue == option.rawValue) }
     }
 }
