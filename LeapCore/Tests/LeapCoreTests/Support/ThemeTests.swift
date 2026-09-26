@@ -1,4 +1,5 @@
 import Testing
+import AppKit
 import SwiftUI
 @testable import LeapCore
 
@@ -21,6 +22,17 @@ struct ThemeTests {
                                                  opacity: Double) {
         #expect(Theme.monthNumberTintOpacity(colorScheme: scheme,
                                              contrast: contrast) == opacity)
+    }
+
+    @Test(arguments: [(NSAppearance.Name.aqua, false, 0.55),
+                      (.aqua, true, 1.0),
+                      (.darkAqua, false, 1.0),
+                      (.darkAqua, true, 1.0)])
+    func monthNumberTintResolvesPerAppearance(name: NSAppearance.Name,
+                                              increasedContrast: Bool,
+                                              opacity: Double) {
+        #expect(Theme.monthNumberTintOpacity(for: NSAppearance(named: name)!,
+                                             increasedContrast: increasedContrast) == opacity)
     }
 
     @Test(arguments: [(ColorSchemeContrast.standard, 0.7), (.increased, 1.0)])

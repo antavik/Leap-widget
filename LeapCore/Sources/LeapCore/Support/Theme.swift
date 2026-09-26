@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 enum Theme {
@@ -49,10 +50,22 @@ enum Theme {
         colorScheme == .dark || contrast == .increased ? 1 : 0.55
     }
 
-    static func monthNumberTint(colorScheme: ColorScheme,
-                                contrast: ColorSchemeContrast) -> Color {
-        .red.opacity(monthNumberTintOpacity(colorScheme: colorScheme, contrast: contrast))
+    /// High contrast is a system setting, not something `bestMatch` can
+    /// tell apart, so it is read from `NSWorkspace` by default.
+    static func monthNumberTintOpacity(
+        for appearance: NSAppearance,
+        increasedContrast: Bool = NSWorkspace.shared.accessibilityDisplayShouldIncreaseContrast
+    ) -> Double {
+        let isDark = appearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua
+        return monthNumberTintOpacity(colorScheme: isDark ? .dark : .light,
+                                      contrast: increasedContrast ? .increased : .standard)
     }
+
+    /// Resolves per appearance at draw time, so a scheme change restyles the
+    /// title instead of handing WidgetKit a new text run to cross-fade.
+    static let monthNumberTint = Color(nsColor: NSColor(name: nil) { appearance in
+        .systemRed.withAlphaComponent(monthNumberTintOpacity(for: appearance))
+    })
 
     enum Onboarding {
         static let padding: CGFloat = 24
