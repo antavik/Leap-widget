@@ -49,22 +49,13 @@ enum Theme {
         colorScheme == .dark || contrast == .increased ? 1 : 0.55
     }
 
-    /// High contrast is a system setting, not something `bestMatch` can
-    /// tell apart, so it is read from `NSWorkspace` by default.
-    static func monthNumberTintOpacity(
-        for appearance: NSAppearance,
-        increasedContrast: Bool = NSWorkspace.shared.accessibilityDisplayShouldIncreaseContrast
-    ) -> Double {
-        let isDark = appearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua
-        return monthNumberTintOpacity(colorScheme: isDark ? .dark : .light,
-                                      contrast: increasedContrast ? .increased : .standard)
+    /// Built from the environment, not a closure-backed `NSColor`: WidgetKit
+    /// archives the view for out-of-process rendering, and such a colour does
+    /// not survive it (the number vanished on macOS 27).
+    static func monthNumberTint(colorScheme: ColorScheme,
+                                contrast: ColorSchemeContrast) -> Color {
+        .red.opacity(monthNumberTintOpacity(colorScheme: colorScheme, contrast: contrast))
     }
-
-    /// Resolves per appearance at draw time, so a scheme change restyles the
-    /// title instead of handing WidgetKit a new text run to cross-fade.
-    static let monthNumberTint = Color(nsColor: NSColor(name: nil) { appearance in
-        .systemRed.withAlphaComponent(monthNumberTintOpacity(for: appearance))
-    })
 
     enum Onboarding {
         static let padding: CGFloat = 24

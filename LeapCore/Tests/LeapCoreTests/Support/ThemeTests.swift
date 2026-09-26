@@ -23,18 +23,6 @@ struct ThemeTests {
                                              contrast: contrast) == opacity)
     }
 
-    @Test(arguments: [(NSAppearance.Name.aqua, false, 0.55),
-                      (.aqua, true, 1.0),
-                      (.darkAqua, false, 1.0),
-                      (.darkAqua, true, 1.0)])
-    func monthNumberTintResolvesPerAppearance(name: NSAppearance.Name,
-                                              increasedContrast: Bool,
-                                              opacity: Double) throws {
-        let appearance = try #require(NSAppearance(named: name))
-        #expect(Theme.monthNumberTintOpacity(for: appearance,
-                                             increasedContrast: increasedContrast) == opacity)
-    }
-
     @Test(arguments: [(ColorSchemeContrast.standard, 0.7), (.increased, 1.0)])
     func secondaryTextFollowsContrast(contrast: ColorSchemeContrast, opacity: Double) {
         #expect(Theme.secondaryTextOpacity(contrast: contrast) == opacity)

@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct MonthGridView: View {
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.colorSchemeContrast) private var colorSchemeContrast
+
     private let model: MonthModel
     private let metrics: Theme.Metrics
     private let yearLabel: String?
@@ -67,7 +70,8 @@ struct MonthGridView: View {
         var number = AttributedString("\u{2009}" + label)
         number.swiftUI.font = .system(size: metrics.monthNumber, weight: .semibold)
         number.swiftUI.baselineOffset = metrics.monthNumberBaseline
-        number.swiftUI.foregroundColor = Theme.monthNumberTint
+        number.swiftUI.foregroundColor = Theme.monthNumberTint(colorScheme: colorScheme,
+                                                               contrast: colorSchemeContrast)
 
         return name + number
     }
