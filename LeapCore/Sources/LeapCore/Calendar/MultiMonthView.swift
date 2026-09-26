@@ -14,17 +14,9 @@ public struct MultiMonthView: View {
     public var body: some View {
         Group {
             if models.count == 1 {
-                MonthGridView(model: models[0], metrics: metrics)
+                MonthGridView(model: models[0], metrics: metrics, yearLabel: yearLabel)
             } else {
                 sideBySideMonths
-            }
-        }
-        .overlay(alignment: .topTrailing) {
-            if let yearLabel {
-                Text(yearLabel)
-                    .font(.system(size: metrics.title, weight: .bold))
-                    .foregroundStyle(.red)
-                    .padding(.trailing, metrics.yearLabelTrailingInset)
             }
         }
         .accessibilityElement(children: .ignore)
@@ -34,7 +26,9 @@ public struct MultiMonthView: View {
     private var sideBySideMonths: some View {
         HStack(alignment: .top, spacing: 10) {
             ForEach(models.indices, id: \.self) { index in
-                MonthGridView(model: models[index], metrics: metrics)
+                MonthGridView(model: models[index],
+                              metrics: metrics,
+                              yearLabel: index == models.indices.last ? yearLabel : nil)
                     .frame(maxWidth: .infinity, alignment: .topLeading)
             }
         }

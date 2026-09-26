@@ -1,11 +1,12 @@
 import SwiftUI
 
-/// The first column's glyph exports its leading edge as the
-/// `firstWeekdayColumn` guide the month title aligns to.
+/// The first and last columns' glyphs export the `firstWeekdayColumn` and
+/// `lastWeekdayColumn` guides the month title and year label align to.
 struct WeekdayHeaderCell: View {
     let symbol: String
     let isWeekend: Bool
     let isFirstColumn: Bool
+    let isLastColumn: Bool
     let metrics: Theme.Metrics
 
     var body: some View {
@@ -16,6 +17,8 @@ struct WeekdayHeaderCell: View {
         Group {
             if isFirstColumn {
                 label.alignmentGuide(.firstWeekdayColumn) { $0[.leading] }
+            } else if isLastColumn {
+                label.alignmentGuide(.lastWeekdayColumn) { $0[.trailing] }
             } else {
                 label
             }

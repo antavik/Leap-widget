@@ -11,7 +11,6 @@ enum Theme {
         let todayCircle: CGFloat
         let rowHeight: CGFloat
         let rowSpacing: CGFloat
-        let yearLabelTrailingInset: CGFloat
 
         /// Glyph-bbox top as a fraction of point size, measured with
         /// `CTFontGetBoundingRectsForGlyphs`. Caps and lining digits share it.
@@ -30,8 +29,7 @@ enum Theme {
     static let small = Metrics(title: 11, monthNumber: 8.5,
                                header: 9, day: 10,
                                weekNumber: 8, weekNumberColumnWidth: 14,
-                               todayCircle: 18, rowHeight: 16, rowSpacing: 2,
-                               yearLabelTrailingInset: 6)
+                               todayCircle: 18, rowHeight: 16, rowSpacing: 2)
 
     static func secondaryTextOpacity(contrast: ColorSchemeContrast) -> Double {
         contrast == .increased ? 1 : 0.7
@@ -54,6 +52,5 @@ enum Theme {
     static let medium = Metrics(title: 11, monthNumber: 8.5,
                                 header: 9, day: 10,
                                 weekNumber: 8, weekNumberColumnWidth: 12,
-                                todayCircle: 18, rowHeight: 14, rowSpacing: 2,
-                                yearLabelTrailingInset: 7)
+                                todayCircle: 18, rowHeight: 14, rowSpacing: 2)
 }

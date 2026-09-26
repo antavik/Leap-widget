@@ -6,10 +6,12 @@ struct MonthGridView: View {
 
     private let model: MonthModel
     private let metrics: Theme.Metrics
+    private let yearLabel: String?
 
-    init(model: MonthModel, metrics: Theme.Metrics = Theme.small) {
+    init(model: MonthModel, metrics: Theme.Metrics = Theme.small, yearLabel: String? = nil) {
         self.model = model
         self.metrics = metrics
+        self.yearLabel = yearLabel
     }
 
     var body: some View {
@@ -27,7 +29,8 @@ struct MonthGridView: View {
                     ForEach(0..<7, id: \.self) { column in
                         WeekdayHeaderCell(symbol: model.weekdayHeaders[column],
                                           isWeekend: weekendColumns[column],
-                                          isFirstColumn: column == 0,
+                                          isFirstColumn: column == model.weekdayHeaders.indices.first,
+                                          isLastColumn: column == model.weekdayHeaders.indices.last,
                                           metrics: metrics)
                     }
                 }
@@ -45,6 +48,13 @@ struct MonthGridView: View {
                         }
                     }
                 }
+            }
+        }
+        .overlay(alignment: Alignment(horizontal: .lastWeekdayColumn, vertical: .top)) {
+            if let yearLabel {
+                Text(yearLabel)
+                    .font(.system(size: metrics.title, weight: .bold))
+                    .foregroundStyle(.red)
             }
         }
     }
