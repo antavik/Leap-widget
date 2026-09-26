@@ -47,7 +47,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Reload on every launch that shows UI so chronod rebuilds archives for
         // the environments in use now. Otherwise a gallery-added widget can get
         // stuck on its placeholder with "no matching environment".
-        WidgetCenter.shared.reloadAllTimelines()
+        Task {
+            await WidgetRegistration.register()
+            WidgetCenter.shared.reloadAllTimelines()
+        }
 
         showMainWindow()
     }
