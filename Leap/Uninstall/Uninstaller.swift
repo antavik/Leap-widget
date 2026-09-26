@@ -39,12 +39,16 @@ enum Uninstaller {
             CFPreferencesAppSynchronize(bundleID as CFString)
         }
 
-        return Uninstall.removalPaths(home: FileManager.default.homeDirectoryForCurrentUser,
-                                      bundle: Bundle.main.bundleURL)
-            .filter { url in
-                guard exists(url) else { return false }
-                return (try? FileManager.default.trashItem(at: url, resultingItemURL: nil)) == nil
+        var leftovers: [URL] = []
+        for url in Uninstall.removalPaths(home: .homeDirectory, bundle: Bundle.main.bundleURL)
+        where exists(url) {
+            do {
+                try FileManager.default.trashItem(at: url, resultingItemURL: nil)
+            } catch {
+                leftovers.append(url)
             }
+        }
+        return leftovers
     }
 
     // MARK: - Homebrew install
@@ -71,11 +75,11 @@ enum Uninstaller {
     }
 
     private static var scriptURL: URL {
-        FileManager.default.temporaryDirectory.appending(component: "leap-uninstall.sh")
+        URL.temporaryDirectory.appending(component: "leap-uninstall.sh")
     }
 
     private static var logURL: URL {
-        FileManager.default.temporaryDirectory.appending(component: "leap-uninstall.log")
+        URL.temporaryDirectory.appending(component: "leap-uninstall.log")
     }
 
     // MARK: - Helpers

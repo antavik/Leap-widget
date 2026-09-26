@@ -1,6 +1,17 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%lld. %@" : {
+      "comment" : "Numbered onboarding step headline",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld. %2$@"
+          }
+        }
+      }
+    },
     "A calendar widget for the Desktop and Notification Center. macOS places widgets itself – the three steps below take about a minute." : {
       "comment" : "Onboarding window subtitle",
       "localizations" : {

@@ -36,21 +36,21 @@ public struct OnboardingView: View {
     }
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .leading, spacing: Theme.Onboarding.sectionSpacing) {
             header
             ForEach(Array(Self.steps.enumerated()), id: \.element.id) { index, step in
                 OnboardingStepView(step: step,
                                    number: index + 1,
                                    total: Self.steps.count)
             }
-            donation
+            OnboardingFooter(donationURL: donationURL, feedbackURL: feedbackURL)
         }
-        .padding(24)
+        .padding(Theme.Onboarding.padding)
         .frame(width: Self.width)
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: Theme.Onboarding.headerSpacing) {
             Text("Leap", bundle: .module)
                 .font(.title.bold())
                 .accessibilityAddTraits(.isHeader)
@@ -60,28 +60,6 @@ public struct OnboardingView: View {
                 .foregroundStyle(Theme.secondaryText(contrast: colorSchemeContrast))
                 .fixedSize(horizontal: false, vertical: true)
         }
-    }
-
-    private var donation: some View {
-        VStack(spacing: 6) {
-            Divider()
-                .padding(.bottom, 8)
-            Text("Thank you for using Leap!", bundle: .module)
-                .foregroundStyle(Theme.secondaryText(contrast: colorSchemeContrast))
-            HStack(spacing: 14) {
-                Link(destination: donationURL) {
-                    Text("Buy me a coffee", bundle: .module)
-                }
-                Link(destination: feedbackURL) {
-                    Text("Share your thoughts", bundle: .module)
-                }
-            }
-            .buttonStyle(.link)
-        }
-        .font(.callout)
-        .multilineTextAlignment(.center)
-        .fixedSize(horizontal: false, vertical: true)
-        .frame(maxWidth: .infinity)
     }
 }
 

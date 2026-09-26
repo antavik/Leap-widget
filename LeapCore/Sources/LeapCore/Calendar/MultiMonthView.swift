@@ -20,11 +20,11 @@ public struct MultiMonthView: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(verbatim: spokenSummary(of: models)))
+        .accessibilityLabel(spokenSummary(of: models))
     }
 
     private var sideBySideMonths: some View {
-        HStack(alignment: .top, spacing: 10) {
+        HStack(alignment: .top, spacing: metrics.monthSpacing) {
             ForEach(models.indices, id: \.self) { index in
                 MonthGridView(model: models[index],
                               metrics: metrics,

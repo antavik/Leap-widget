@@ -11,6 +11,8 @@ enum Theme {
         let todayCircle: CGFloat
         let rowHeight: CGFloat
         let rowSpacing: CGFloat
+        let titleSpacing: CGFloat
+        let monthSpacing: CGFloat
 
         /// Glyph-bbox top as a fraction of point size, measured with
         /// `CTFontGetBoundingRectsForGlyphs`. Caps and lining digits share it.
@@ -29,8 +31,11 @@ enum Theme {
     static let small = Metrics(title: 11, monthNumber: 8.5,
                                header: 9, day: 10,
                                weekNumber: 8, weekNumberColumnWidth: 14,
-                               todayCircle: 18, rowHeight: 16, rowSpacing: 2)
+                               todayCircle: 18, rowHeight: 16, rowSpacing: 2,
+                               titleSpacing: 4, monthSpacing: 10)
 
+    /// Stronger than `.secondary` (≈0.5 on macOS), which falls short of
+    /// 4.5:1 contrast for `.callout` text.
     static func secondaryTextOpacity(contrast: ColorSchemeContrast) -> Double {
         contrast == .increased ? 1 : 0.7
     }
@@ -49,8 +54,18 @@ enum Theme {
         .red.opacity(monthNumberTintOpacity(colorScheme: colorScheme, contrast: contrast))
     }
 
+    enum Onboarding {
+        static let padding: CGFloat = 24
+        static let sectionSpacing: CGFloat = 20
+        static let headerSpacing: CGFloat = 4
+        static let footerSpacing: CGFloat = 6
+        static let footerDividerGap: CGFloat = 8
+        static let linkSpacing: CGFloat = 14
+    }
+
     static let medium = Metrics(title: 11, monthNumber: 8.5,
                                 header: 9, day: 10,
                                 weekNumber: 8, weekNumberColumnWidth: 12,
-                                todayCircle: 18, rowHeight: 14, rowSpacing: 2)
+                                todayCircle: 18, rowHeight: 14, rowSpacing: 2,
+                                titleSpacing: 4, monthSpacing: 10)
 }

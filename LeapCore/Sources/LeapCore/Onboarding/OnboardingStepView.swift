@@ -27,7 +27,9 @@ struct OnboardingStepView: View {
     }
 
     private var headline: String {
-        "\(number). \(String(localized: step.title))"
+        String(localized: "\(number). \(String(localized: step.title))",
+               bundle: .module,
+               comment: "Numbered onboarding step headline")
     }
 
     private var spokenStep: String {

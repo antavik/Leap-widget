@@ -10,9 +10,9 @@ public enum MonthNumberStyle: String, CaseIterable, Sendable {
     public func label(forMonth month: Int) -> String? {
         switch self {
         case .arabic:
-            return month > 0 ? String(month) : nil
+            month > 0 ? String(month) : nil
         case .roman:
-            return (1...12).contains(month) ? Self.romanLabels[month - 1] : nil
+            (1...12).contains(month) ? Self.romanLabels[month - 1] : nil
         }
     }
 }

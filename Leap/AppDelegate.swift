@@ -6,7 +6,7 @@ import LeapCore
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var relayedURL = false
-    private var isUninstalling = false
+    var isUninstalling = false
     private var window: NSWindow?
 #if DEBUG
     private var previewWindow: NSWindow?
@@ -65,6 +65,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard let relay = urls.first(where: CalendarRelay.isRelay) else { return }
         relayedURL = true
         openCalendar(CalendarRelay.target(forRelay: relay))
+    }
+
+    static var relayRecordURL: URL? {
+        guard isUITestSafeMode,
+              let path = ProcessInfo.processInfo.environment["LEAP_UI_TEST_RELAY_RECORD"]
+        else { return nil }
+
+        return URL(filePath: path)
     }
 
     private func openCalendar(_ url: URL?) {
@@ -241,120 +249,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func openSupportMail() {
         NSWorkspace.shared.open(Constants.Mail.support)
-    }
-
-    // MARK: - Uninstall
-
-    /// Set by `Leap.xctestplan`, never by a per-test launch argument.
-    static var isUITestSafeMode: Bool {
-        ProcessInfo.processInfo.environment["LEAP_UI_TEST_SAFE_MODE"] == "1"
-    }
-
-    /// Where a relay's resolved calendar URL is written instead of opened.
-    /// Read only in safe mode, so a stray environment variable on a real
-    /// machine cannot silently stop clicks from working.
-    static var relayRecordURL: URL? {
-        guard isUITestSafeMode,
-              let path = ProcessInfo.processInfo.environment["LEAP_UI_TEST_RELAY_RECORD"]
-        else { return nil }
-
-        return URL(filePath: path)
-    }
-
-    /// Deliberately unlocalized: they are test fixtures, never shipped copy.
-    static let safeModeArmedMessage = "UI test safe mode is on – nothing will be removed."
-    static let safeModeMessage = "Uninstall skipped – UI test safe mode."
-
-    @objc private func confirmUninstall() {
-        guard !isUninstalling else { return }
-
-        let alert = NSAlert()
-        alert.alertStyle = .warning
-        alert.messageText = String(localized: "Uninstall Leap?",
-                                   comment: "Uninstall confirmation title")
-        let message = String(
-            localized: "Leap and its settings will be moved to the Trash, and its widgets will disappear from the Desktop and Notification Center.",
-            comment: "Uninstall confirmation message")
-
-        alert.informativeText = Self.isUITestSafeMode
-            ? "\(message)\n\n\(Self.safeModeArmedMessage)"
-            : message
-
-        let uninstall = alert.addButton(
-            withTitle: String(localized: "Uninstall", comment: "Uninstall confirmation button"))
-        let cancel = alert.addButton(
-            withTitle: String(localized: "Cancel", comment: "Uninstall confirmation button"))
-
-        uninstall.hasDestructiveAction = true
-        uninstall.keyEquivalent = ""
-        cancel.keyEquivalent = "\u{1b}"
-
-        NSApp.activate()
-
-        guard alert.runModal() == .alertFirstButtonReturn else { return }
-
-        // `Uninstaller.perform()` is not sandboxed to a test's copy of the app:
-        // it trashes the real user's preferences and containers, and on a cask
-        // machine runs `brew uninstall --cask --zap`. Safe mode comes from the
-        // test plan, so no future UI test can forget it.
-        guard !Self.isUITestSafeMode else {
-            let paths = Uninstall.removalPaths(
-                home: FileManager.default.homeDirectoryForCurrentUser,
-                bundle: Bundle.main.bundleURL)
-            NSLog("LEAP_UI_TEST_SAFE_MODE: skipped uninstall of %d paths", paths.count)
-            for path in paths {
-                NSLog("LEAP_UI_TEST_SAFE_MODE: would remove %@",
-                      path.path(percentEncoded: false))
-            }
-
-            // Surfaced, not just logged: an XCUITest can read a window.
-            let skipped = NSAlert()
-            skipped.alertStyle = .informational
-            skipped.messageText = Self.safeModeMessage
-            skipped.informativeText = paths
-                .map { $0.path(percentEncoded: false) }
-                .joined(separator: "\n")
-            skipped.addButton(withTitle: "OK")
-            skipped.runModal()
-
-            return
-        }
-
-        isUninstalling = true
-        Task {
-            defer { isUninstalling = false }
-            do {
-                report(leftovers: try await Uninstaller.perform())
-                NSApp.terminate(nil)
-            } catch {
-                NSAlert(error: error).runModal()
-            }
-        }
-    }
-
-    private func report(leftovers: [URL]) {
-        guard !leftovers.isEmpty else { return }
-
-        let list = leftovers
-            .map { "  " + NSString(string: $0.path(percentEncoded: false)).abbreviatingWithTildeInPath }
-            .joined(separator: "\n")
-
-        let alert = NSAlert()
-        alert.alertStyle = .informational
-        alert.messageText = String(localized: "Leap is gone, but a few of its files are not.",
-                                   comment: "Uninstall leftovers title")
-        alert.informativeText = String(
-            localized: "macOS keeps these out of reach of every app but Finder:\n\n\(list)\n\nDrag them to the Trash to finish up.",
-            comment: "Uninstall leftovers message")
-
-        alert.addButton(withTitle: String(localized: "Show in Finder",
-                                          comment: "Uninstall leftovers button"))
-        alert.addButton(withTitle: String(localized: "OK",
-                                          comment: "Uninstall leftovers button"))
-
-        guard alert.runModal() == .alertFirstButtonReturn else { return }
-
-        NSWorkspace.shared.activateFileViewerSelecting(leftovers)
     }
 
 #if DEBUG

@@ -17,7 +17,7 @@ struct MonthGridView: View {
     var body: some View {
         let weekendColumns = model.weekendColumns
 
-        VStack(alignment: .firstWeekdayColumn, spacing: 4) {
+        VStack(alignment: .firstWeekdayColumn, spacing: metrics.titleSpacing) {
             Text(title)
                 .foregroundStyle(.red)
                 .alignmentGuide(.firstWeekdayColumn) { $0[.leading] }
