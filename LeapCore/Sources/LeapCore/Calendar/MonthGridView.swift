@@ -18,7 +18,7 @@ struct MonthGridView: View {
         let weekendColumns = model.weekendColumns
 
         VStack(alignment: .firstWeekdayColumn, spacing: metrics.titleSpacing) {
-            Text(title)
+            title
                 .foregroundStyle(.red)
                 .alignmentGuide(.firstWeekdayColumn) { $0[.leading] }
             Grid(horizontalSpacing: 0, verticalSpacing: metrics.rowSpacing) {
@@ -60,20 +60,20 @@ struct MonthGridView: View {
     }
 
     /// Month name and optional superscript month number in one glyph run.
-    private var title: AttributedString {
-        var name = AttributedString(model.title)
-        name.swiftUI.font = .system(size: metrics.title, weight: .semibold)
+    private var title: Text {
+        let name = Text(verbatim: model.title)
+            .font(.system(size: metrics.title, weight: .semibold))
 
         guard let label = model.monthNumberLabel else { return name }
 
         // Keep the gap in the glyph run so alignment stays on the title.
-        var number = AttributedString("\u{2009}" + label)
-        number.swiftUI.font = .system(size: metrics.monthNumber, weight: .semibold)
-        number.swiftUI.baselineOffset = metrics.monthNumberBaseline
-        number.swiftUI.foregroundColor = Theme.monthNumberTint(colorScheme: colorScheme,
-                                                               contrast: colorSchemeContrast)
+        let number = Text(verbatim: "\u{2009}" + label)
+            .font(.system(size: metrics.monthNumber, weight: .semibold))
+            .baselineOffset(metrics.monthNumberBaseline)
+            .foregroundStyle(Theme.monthNumberTint(colorScheme: colorScheme,
+                                                   contrast: colorSchemeContrast))
 
-        return name + number
+        return Text("\(name)\(number)", bundle: .module)
     }
 
     /// A row made purely of adjacent-month days shows no week number when

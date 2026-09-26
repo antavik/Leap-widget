@@ -1,6 +1,10 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@%@" : {
+      "comment" : "Month title followed by its superscript month number",
+      "shouldTranslate" : false
+    },
     "%lld. %@" : {
       "comment" : "Numbered onboarding step headline",
       "localizations" : {
