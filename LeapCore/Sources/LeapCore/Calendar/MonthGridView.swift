@@ -59,21 +59,26 @@ struct MonthGridView: View {
         }
     }
 
-    /// Month name and optional superscript month number in one glyph run.
-    private var title: Text {
-        let name = Text(verbatim: model.title)
-            .font(.system(size: metrics.title, weight: .semibold))
+    /// Month name and optional superscript month number.
+    ///
+    /// Two plain `Text` views raised by layout, not one styled run: on macOS 27
+    /// the widget renderer drops a `baselineOffset` run (concatenated or
+    /// attributed), so the number vanished from placed widgets.
+    private var title: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 0) {
+            Text(verbatim: model.title)
+                .font(.system(size: metrics.title, weight: .semibold))
 
-        guard let label = model.monthNumberLabel else { return name }
-
-        // Keep the gap in the glyph run so alignment stays on the title.
-        let number = Text(verbatim: "\u{2009}" + label)
-            .font(.system(size: metrics.monthNumber, weight: .semibold))
-            .baselineOffset(metrics.monthNumberBaseline)
-            .foregroundStyle(Theme.monthNumberTint(colorScheme: colorScheme,
-                                                   contrast: colorSchemeContrast))
-
-        return Text("\(name)\(number)", bundle: .module)
+            if let label = model.monthNumberLabel {
+                Text(verbatim: "\u{2009}" + label)
+                    .font(.system(size: metrics.monthNumber, weight: .semibold))
+                    .foregroundStyle(Theme.monthNumberTint(colorScheme: colorScheme,
+                                                           contrast: colorSchemeContrast))
+                    .alignmentGuide(.firstTextBaseline) {
+                        $0[.firstTextBaseline] + metrics.monthNumberBaseline
+                    }
+            }
+        }
     }
 
     /// A row made purely of adjacent-month days shows no week number when
