@@ -5,7 +5,9 @@
 # resets someone's widget.
 #
 # Also checks that every `ClickPreset` has a `ClickAction`, and the reverse
-# apart from `.doNothing`.
+# apart from `.doNothing`, and that no widget type is an `AppEnum` or
+# `AppEntity`: on macOS 26+ those resolve through `linkd`, which refuses an
+# ad-hoc signed bundle, so a saved choice reaches the widget as nil.
 
 set -eu
 
@@ -56,6 +58,12 @@ actions=$(cases "$CORE" ClickAction | grep -v '^doNothing$' | sort)
 if [ "$presets" != "$actions" ]; then
     echo "check-widget-options: ClickPreset and ClickAction (minus doNothing) disagree" >&2
     printf -- '--- ClickPreset\n%s\n--- ClickAction\n%s\n' "$presets" "$actions" >&2
+    status=1
+fi
+
+# Declarations only, not the comments that explain why.
+if grep -n -E '^[^/]*:.*\b(AppEnum|AppEntity)\b' LeapWidget/*.swift >&2; then
+    echo "check-widget-options: widget parameters must be String or Bool, not AppEnum/AppEntity" >&2
     status=1
 fi
 

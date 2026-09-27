@@ -61,14 +61,14 @@ struct WidgetViewRenderTests {
 
     /// `widgetURL`, or an inert `Button` for "Nothing" – neither may show.
     @Test func theClickActionNeverChangesThePixels() throws {
-        let medium = try twoMonthWidget { $0.clickAction = .appleCalendar }
-        let small = try oneMonthWidget { $0.clickAction = .appleCalendar }
+        let medium = try twoMonthWidget { $0.clickAction = ClickAction.appleCalendar.rawValue }
+        let small = try oneMonthWidget { $0.clickAction = ClickAction.appleCalendar.rawValue }
 
         for action in ClickAction.allCases {
             let twoMonthDiff = ImageComparator.compare(
-                expected: medium, actual: try twoMonthWidget { $0.clickAction = action })
+                expected: medium, actual: try twoMonthWidget { $0.clickAction = action.rawValue })
             let oneMonthDiff = ImageComparator.compare(
-                expected: small, actual: try oneMonthWidget { $0.clickAction = action })
+                expected: small, actual: try oneMonthWidget { $0.clickAction = action.rawValue })
 
             #expect(twoMonthDiff.differingPixels == 0, "medium, \(action): \(twoMonthDiff.summary)")
             #expect(oneMonthDiff.differingPixels == 0, "small, \(action): \(oneMonthDiff.summary)")
@@ -81,13 +81,13 @@ struct WidgetViewRenderTests {
     @Test func everyVisibleTwoMonthParameterChangesTheWidget() throws {
         let standard = try twoMonthWidget()
         let edits: [(name: String, edit: (CalendarConfigIntent) -> Void)] = [
-            ("Second Month", { $0.companion = .previous }),
+            ("Second Month", { $0.companion = Companion.previous.rawValue }),
             // Monday-first host: `.monday` changes nothing.
-            ("First Day of Week", { $0.firstWeekday = .sunday }),
+            ("First Day of Week", { $0.firstWeekday = FirstWeekday.sunday.rawValue }),
             ("Week Numbers", { $0.showWeekNumbers = true }),
             ("Adjacent Month Days", { $0.showOutsideDays = false }),
             ("Show Year", { $0.showYear = false }),
-            ("Month Number", { $0.monthNumber = .roman }),
+            ("Month Number", { $0.monthNumber = MonthNumberDisplay.roman.rawValue }),
         ]
 
         for (name, edit) in edits {
@@ -100,12 +100,12 @@ struct WidgetViewRenderTests {
     @Test func everyVisibleOneMonthParameterChangesTheWidget() throws {
         let standard = try oneMonthWidget()
         let edits: [(name: String, edit: (SmallCalendarConfigIntent) -> Void)] = [
-            ("Month", { $0.month = .next }),
-            ("First Day of Week", { $0.firstWeekday = .sunday }),
+            ("Month", { $0.month = DisplayedMonth.next.rawValue }),
+            ("First Day of Week", { $0.firstWeekday = FirstWeekday.sunday.rawValue }),
             ("Week Numbers", { $0.showWeekNumbers = true }),
             ("Adjacent Month Days", { $0.showOutsideDays = false }),
             ("Show Year", { $0.showYear = false }),
-            ("Month Number", { $0.monthNumber = .roman }),
+            ("Month Number", { $0.monthNumber = MonthNumberDisplay.roman.rawValue }),
         ]
 
         for (name, edit) in edits {

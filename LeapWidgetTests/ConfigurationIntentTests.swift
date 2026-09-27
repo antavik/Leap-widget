@@ -26,10 +26,11 @@ struct ConfigurationIntentTests {
         }
         let months = [0, 1]
 
-        #expect(settings { $0.companion = .previous } == CalendarSettings(monthOffsets: [-1, 0]))
-        #expect(settings { $0.firstWeekday = .monday }
+        #expect(settings { $0.companion = Companion.previous.rawValue }
+                == CalendarSettings(monthOffsets: [-1, 0]))
+        #expect(settings { $0.firstWeekday = FirstWeekday.monday.rawValue }
                 == CalendarSettings(monthOffsets: months, firstWeekday: .monday))
-        #expect(settings { $0.firstWeekday = .sunday }
+        #expect(settings { $0.firstWeekday = FirstWeekday.sunday.rawValue }
                 == CalendarSettings(monthOffsets: months, firstWeekday: .sunday))
         #expect(settings { $0.showWeekNumbers = true }
                 == CalendarSettings(monthOffsets: months, showWeekNumbers: true))
@@ -37,12 +38,12 @@ struct ConfigurationIntentTests {
                 == CalendarSettings(monthOffsets: months, showOutsideDays: false))
         #expect(settings { $0.showYear = false }
                 == CalendarSettings(monthOffsets: months, showYear: false))
-        #expect(settings { $0.monthNumber = .arabic }
+        #expect(settings { $0.monthNumber = MonthNumberDisplay.arabic.rawValue }
                 == CalendarSettings(monthOffsets: months, monthNumber: .arabic))
-        #expect(settings { $0.monthNumber = .roman }
+        #expect(settings { $0.monthNumber = MonthNumberDisplay.roman.rawValue }
                 == CalendarSettings(monthOffsets: months, monthNumber: .roman))
         for action in ClickAction.allCases {
-            #expect(settings { $0.clickAction = action }
+            #expect(settings { $0.clickAction = action.rawValue }
                     == CalendarSettings(monthOffsets: months, clickAction: action.coreOption),
                     "\(action)")
         }
@@ -57,11 +58,13 @@ struct ConfigurationIntentTests {
         }
         let month = [0]
 
-        #expect(settings { $0.month = .next } == CalendarSettings(monthOffsets: [1]))
-        #expect(settings { $0.month = .previous } == CalendarSettings(monthOffsets: [-1]))
-        #expect(settings { $0.firstWeekday = .monday }
+        #expect(settings { $0.month = DisplayedMonth.next.rawValue }
+                == CalendarSettings(monthOffsets: [1]))
+        #expect(settings { $0.month = DisplayedMonth.previous.rawValue }
+                == CalendarSettings(monthOffsets: [-1]))
+        #expect(settings { $0.firstWeekday = FirstWeekday.monday.rawValue }
                 == CalendarSettings(monthOffsets: month, firstWeekday: .monday))
-        #expect(settings { $0.firstWeekday = .sunday }
+        #expect(settings { $0.firstWeekday = FirstWeekday.sunday.rawValue }
                 == CalendarSettings(monthOffsets: month, firstWeekday: .sunday))
         #expect(settings { $0.showWeekNumbers = true }
                 == CalendarSettings(monthOffsets: month, showWeekNumbers: true))
@@ -69,12 +72,12 @@ struct ConfigurationIntentTests {
                 == CalendarSettings(monthOffsets: month, showOutsideDays: false))
         #expect(settings { $0.showYear = false }
                 == CalendarSettings(monthOffsets: month, showYear: false))
-        #expect(settings { $0.monthNumber = .arabic }
+        #expect(settings { $0.monthNumber = MonthNumberDisplay.arabic.rawValue }
                 == CalendarSettings(monthOffsets: month, monthNumber: .arabic))
-        #expect(settings { $0.monthNumber = .roman }
+        #expect(settings { $0.monthNumber = MonthNumberDisplay.roman.rawValue }
                 == CalendarSettings(monthOffsets: month, monthNumber: .roman))
         for action in ClickAction.allCases {
-            #expect(settings { $0.clickAction = action }
+            #expect(settings { $0.clickAction = action.rawValue }
                     == CalendarSettings(monthOffsets: month, clickAction: action.coreOption),
                     "\(action)")
         }
@@ -82,21 +85,24 @@ struct ConfigurationIntentTests {
 
     // MARK: - Saved choices
 
-    /// WidgetKit restores a saved choice through the option's query, by raw
-    /// value; an unknown one is dropped and the fallback stands in.
-    @Test func everyQueryRestoresEveryCaseAndDefaultsToTheFallback() async throws {
-        func check<Query: WidgetOptionQuery>(_ query: Query) async throws {
-            let saved = Query.Entity.allCases.map(\.rawValue)
+    /// The picker offers every case by raw value and starts on the fallback;
+    /// a missing or unknown saved value reads back as the fallback.
+    @Test func everyPickerOffersEveryCaseAndFallsBack() async throws {
+        func check<Provider: WidgetOptionProvider>(_ provider: Provider) async throws
+        where Provider.Option: Equatable {
+            typealias Option = Provider.Option
 
-            #expect(try await query.entities(for: saved + ["unknown"]).map(\.rawValue) == saved)
-            #expect(await query.defaultResult() == Query.Entity.fallback)
+            #expect(try await provider.results().items == Option.allCases.map(\.rawValue))
+            #expect(await provider.defaultResult() == Option.fallback.rawValue)
+            #expect(Option(saved: nil) == Option.fallback)
+            #expect(Option(saved: "unknown") == Option.fallback)
         }
 
-        try await check(CompanionQuery())
-        try await check(DisplayedMonthQuery())
-        try await check(FirstWeekdayQuery())
-        try await check(MonthNumberDisplayQuery())
-        try await check(ClickActionQuery())
+        try await check(CompanionOptions())
+        try await check(DisplayedMonthOptions())
+        try await check(FirstWeekdayOptions())
+        try await check(MonthNumberDisplayOptions())
+        try await check(ClickActionOptions())
     }
 
     // MARK: - Bridging

@@ -19,7 +19,7 @@ struct SmallCalendarWidget: Widget {
 
 private func smallIntent(showing month: DisplayedMonth) -> SmallCalendarConfigIntent {
     let intent = SmallCalendarConfigIntent()
-    intent.month = month
+    intent.month = month.rawValue
     return intent
 }
 
