@@ -6,9 +6,50 @@ import LeapCore
 // `LeapCore.WidgetOptions`, bridged by raw value through `coreOption` – see that
 // file for why. `scripts/check-widget-options.sh` pins the two lists together.
 
+/// A fixed-choice widget parameter, as an `AppEntity` looked up by raw value.
+///
+/// Not `AppEnum`: from macOS 26.5 WidgetKit hands a saved `AppEnum` parameter
+/// to the extension as nil (FB22848510), so every choice fell back to its
+/// default – the month number never appeared. Entities resolve through
+/// `WidgetOptionQuery`, which decodes the stored raw value itself.
+protocol WidgetOption: AppEntity, CaseIterable, Hashable, RawRepresentable
+where ID == String, RawValue == String {
+    /// What a parameter holds before anyone picks, or when its value is lost.
+    static var fallback: Self { get }
+    static var caseDisplayRepresentations: [Self: DisplayRepresentation] { get }
+}
+
+extension WidgetOption {
+    var id: String { rawValue }
+
+    var displayRepresentation: DisplayRepresentation {
+        Self.caseDisplayRepresentations[self] ?? DisplayRepresentation(stringLiteral: rawValue)
+    }
+}
+
+/// One per option: the metadata processor rejects a generic query.
+protocol WidgetOptionQuery: EntityQuery where Entity: WidgetOption {}
+
+extension WidgetOptionQuery {
+    func entities(for identifiers: [String]) async throws -> [Entity] {
+        identifiers.compactMap(Entity.init(rawValue:))
+    }
+
+    func suggestedEntities() async throws -> [Entity] {
+        Array(Entity.allCases)
+    }
+
+    func defaultResult() async -> Entity? {
+        .fallback
+    }
+}
+
 /// The second month the two-month (medium) widget shows.
-enum Companion: String, AppEnum {
+enum Companion: String, WidgetOption {
     case next, previous
+
+    static let fallback: Companion = .next
+    static let defaultQuery = CompanionQuery()
 
     static let typeDisplayRepresentation: TypeDisplayRepresentation = "Second Month"
     static let caseDisplayRepresentations: [Companion: DisplayRepresentation] = [
@@ -21,9 +62,16 @@ enum Companion: String, AppEnum {
     }
 }
 
+struct CompanionQuery: WidgetOptionQuery {
+    typealias Entity = Companion
+}
+
 /// Which month the single-month (small) widget renders, relative to today.
-enum DisplayedMonth: String, AppEnum {
+enum DisplayedMonth: String, WidgetOption {
     case current, next, previous
+
+    static let fallback: DisplayedMonth = .current
+    static let defaultQuery = DisplayedMonthQuery()
 
     static let typeDisplayRepresentation: TypeDisplayRepresentation = "Month"
     static let caseDisplayRepresentations: [DisplayedMonth: DisplayRepresentation] = [
@@ -37,8 +85,15 @@ enum DisplayedMonth: String, AppEnum {
     }
 }
 
-enum FirstWeekday: String, AppEnum {
+struct DisplayedMonthQuery: WidgetOptionQuery {
+    typealias Entity = DisplayedMonth
+}
+
+enum FirstWeekday: String, WidgetOption {
     case system, monday, sunday
+
+    static let fallback: FirstWeekday = .system
+    static let defaultQuery = FirstWeekdayQuery()
 
     static let typeDisplayRepresentation: TypeDisplayRepresentation = "First Day of Week"
     static let caseDisplayRepresentations: [FirstWeekday: DisplayRepresentation] = [
@@ -50,8 +105,15 @@ enum FirstWeekday: String, AppEnum {
     var coreOption: LeapCore.FirstWeekday { LeapCore.FirstWeekday(rawValue: rawValue) ?? .system }
 }
 
-enum MonthNumberDisplay: String, AppEnum {
+struct FirstWeekdayQuery: WidgetOptionQuery {
+    typealias Entity = FirstWeekday
+}
+
+enum MonthNumberDisplay: String, WidgetOption {
     case off, arabic, roman
+
+    static let fallback: MonthNumberDisplay = .off
+    static let defaultQuery = MonthNumberDisplayQuery()
 
     static let typeDisplayRepresentation: TypeDisplayRepresentation = "Month Number"
     static let caseDisplayRepresentations: [MonthNumberDisplay: DisplayRepresentation] = [
@@ -65,8 +127,15 @@ enum MonthNumberDisplay: String, AppEnum {
     }
 }
 
-enum ClickAction: String, AppEnum {
+struct MonthNumberDisplayQuery: WidgetOptionQuery {
+    typealias Entity = MonthNumberDisplay
+}
+
+enum ClickAction: String, WidgetOption {
     case appleCalendar, fantastical, googleCalendar, doNothing
+
+    static let fallback: ClickAction = .appleCalendar
+    static let defaultQuery = ClickActionQuery()
 
     static let typeDisplayRepresentation: TypeDisplayRepresentation = "Click Opens"
     static let caseDisplayRepresentations: [ClickAction: DisplayRepresentation] = [
@@ -84,14 +153,18 @@ enum ClickAction: String, AppEnum {
     }
 }
 
+struct ClickActionQuery: WidgetOptionQuery {
+    typealias Entity = ClickAction
+}
+
 struct CalendarConfigIntent: WidgetConfigurationIntent, CalendarConfiguration {
     static let title: LocalizedStringResource = "Calendar Options"
 
-    @Parameter(title: "Second Month", default: .next)
-    var companion: Companion
+    @Parameter(title: "Second Month")
+    var companion: Companion?
 
-    @Parameter(title: "First Day of Week", default: .system)
-    var firstWeekday: FirstWeekday
+    @Parameter(title: "First Day of Week")
+    var firstWeekday: FirstWeekday?
 
     @Parameter(title: "Week Numbers", default: false)
     var showWeekNumbers: Bool
@@ -102,20 +175,20 @@ struct CalendarConfigIntent: WidgetConfigurationIntent, CalendarConfiguration {
     @Parameter(title: "Show Year", default: true)
     var showYear: Bool
 
-    @Parameter(title: "Month Number", default: .off)
-    var monthNumber: MonthNumberDisplay
+    @Parameter(title: "Month Number")
+    var monthNumber: MonthNumberDisplay?
 
-    @Parameter(title: "Click Opens", default: .appleCalendar)
-    var clickAction: ClickAction
+    @Parameter(title: "Click Opens")
+    var clickAction: ClickAction?
 
     var settings: CalendarSettings {
-        CalendarSettings(monthOffsets: companion.coreOption.monthOffsets,
-                         firstWeekday: firstWeekday.coreOption,
+        CalendarSettings(monthOffsets: (companion ?? .fallback).coreOption.monthOffsets,
+                         firstWeekday: (firstWeekday ?? .fallback).coreOption,
                          showWeekNumbers: showWeekNumbers,
                          showOutsideDays: showOutsideDays,
                          showYear: showYear,
-                         monthNumber: monthNumber.coreOption,
-                         clickAction: clickAction.coreOption)
+                         monthNumber: (monthNumber ?? .fallback).coreOption,
+                         clickAction: (clickAction ?? .fallback).coreOption)
     }
 
     static var parameterSummary: some ParameterSummary {
@@ -133,11 +206,11 @@ struct CalendarConfigIntent: WidgetConfigurationIntent, CalendarConfiguration {
 struct SmallCalendarConfigIntent: WidgetConfigurationIntent, CalendarConfiguration {
     static let title: LocalizedStringResource = "Calendar Options"
 
-    @Parameter(title: "Month", default: .current)
-    var month: DisplayedMonth
+    @Parameter(title: "Month")
+    var month: DisplayedMonth?
 
-    @Parameter(title: "First Day of Week", default: .system)
-    var firstWeekday: FirstWeekday
+    @Parameter(title: "First Day of Week")
+    var firstWeekday: FirstWeekday?
 
     @Parameter(title: "Week Numbers", default: false)
     var showWeekNumbers: Bool
@@ -148,20 +221,20 @@ struct SmallCalendarConfigIntent: WidgetConfigurationIntent, CalendarConfigurati
     @Parameter(title: "Show Year", default: true)
     var showYear: Bool
 
-    @Parameter(title: "Month Number", default: .off)
-    var monthNumber: MonthNumberDisplay
+    @Parameter(title: "Month Number")
+    var monthNumber: MonthNumberDisplay?
 
-    @Parameter(title: "Click Opens", default: .appleCalendar)
-    var clickAction: ClickAction
+    @Parameter(title: "Click Opens")
+    var clickAction: ClickAction?
 
     var settings: CalendarSettings {
-        CalendarSettings(monthOffsets: month.coreOption.monthOffsets,
-                         firstWeekday: firstWeekday.coreOption,
+        CalendarSettings(monthOffsets: (month ?? .fallback).coreOption.monthOffsets,
+                         firstWeekday: (firstWeekday ?? .fallback).coreOption,
                          showWeekNumbers: showWeekNumbers,
                          showOutsideDays: showOutsideDays,
                          showYear: showYear,
-                         monthNumber: monthNumber.coreOption,
-                         clickAction: clickAction.coreOption)
+                         monthNumber: (monthNumber ?? .fallback).coreOption,
+                         clickAction: (clickAction ?? .fallback).coreOption)
     }
 
     static var parameterSummary: some ParameterSummary {

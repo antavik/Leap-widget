@@ -2,7 +2,7 @@ import Testing
 import LeapCore
 
 /// Intent → `CalendarSettings`, the one link `LeapCore` cannot run.
-/// Unqualified `Companion`, `ClickAction`, … are the widget's `AppEnum`s.
+/// Unqualified `Companion`, `ClickAction`, … are the widget's `WidgetOption`s.
 @Suite("Widget intents")
 struct ConfigurationIntentTests {
 
@@ -78,6 +78,25 @@ struct ConfigurationIntentTests {
                     == CalendarSettings(monthOffsets: month, clickAction: action.coreOption),
                     "\(action)")
         }
+    }
+
+    // MARK: - Saved choices
+
+    /// WidgetKit restores a saved choice through the option's query, by raw
+    /// value; an unknown one is dropped and the fallback stands in.
+    @Test func everyQueryRestoresEveryCaseAndDefaultsToTheFallback() async throws {
+        func check<Query: WidgetOptionQuery>(_ query: Query) async throws {
+            let saved = Query.Entity.allCases.map(\.rawValue)
+
+            #expect(try await query.entities(for: saved + ["unknown"]).map(\.rawValue) == saved)
+            #expect(await query.defaultResult() == Query.Entity.fallback)
+        }
+
+        try await check(CompanionQuery())
+        try await check(DisplayedMonthQuery())
+        try await check(FirstWeekdayQuery())
+        try await check(MonthNumberDisplayQuery())
+        try await check(ClickActionQuery())
     }
 
     // MARK: - Bridging

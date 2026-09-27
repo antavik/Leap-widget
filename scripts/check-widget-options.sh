@@ -1,5 +1,5 @@
 #!/bin/sh
-# The widget's `AppEnum`s and the package's plain enums are two spellings of
+# The widget's `WidgetOption` enums and the package's plain enums are two spellings of
 # one thing, and nothing in the compiler notices when they drift. The raw
 # values are persisted widget configuration: a dropped or renamed case silently
 # resets someone's widget.
