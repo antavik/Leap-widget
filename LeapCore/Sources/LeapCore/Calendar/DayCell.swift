@@ -27,7 +27,7 @@ struct DayCell: View {
                 .background {
                     if day.isToday {
                         Circle()
-                            .fill(.red)
+                            .fill(brightensToday ? .white : .red)
                             .frame(width: metrics.todayCircle, height: metrics.todayCircle)
                     }
                 }
@@ -50,6 +50,16 @@ struct DayCell: View {
         return renderingMode != .fullColor
     }
 
+    /// On macOS 15 a dimmed (vibrant) desktop widget turns the red circle
+    /// into a pale disc the white number barely stands out from. There the
+    /// circle goes white and the number black, which vibrancy renders as a
+    /// bright disc with the number showing through.
+    private var brightensToday: Bool {
+        if #available(macOS 26, *) { return false }
+        guard #available(macOS 15, *) else { return false }
+        return renderingMode != .fullColor
+    }
+
     private var todayKnockout: some View {
         Circle()
             .fill(.primary)
@@ -63,7 +73,7 @@ struct DayCell: View {
 
     private var numberStyle: AnyShapeStyle {
         if day.isToday {
-            AnyShapeStyle(.white)
+            AnyShapeStyle(brightensToday ? .black : .white)
         } else if day.isOutsideMonth {
             AnyShapeStyle(.tertiary)
         } else {
