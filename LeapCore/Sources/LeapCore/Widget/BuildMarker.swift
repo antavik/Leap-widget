@@ -21,12 +21,26 @@ public struct BuildMarker {
         self.key = key
     }
 
+    /// "version (build)".
+    public static func build(of bundle: Bundle) -> String {
+        let info = bundle.infoDictionary
+        let marketing = info?["CFBundleShortVersionString"] as? String ?? "?"
+        let number = info?["CFBundleVersion"] as? String ?? "?"
+
+        return "\(marketing) (\(number))"
+    }
+
+    /// Like `advance(to:)` without recording.
+    public func isBehind(_ build: String) -> Bool {
+        defaults.string(forKey: key) != build
+    }
+
     /// Records `build` and reports whether it replaced a different one.
     ///
     /// True on the first run of a fresh install as well: there is no archive
     /// worth keeping then either.
     public func advance(to build: String) -> Bool {
-        guard defaults.string(forKey: key) != build else { return false }
+        guard isBehind(build) else { return false }
 
         defaults.set(build, forKey: key)
 

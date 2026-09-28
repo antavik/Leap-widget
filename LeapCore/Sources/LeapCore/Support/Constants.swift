@@ -32,6 +32,7 @@ public enum Constants {
 
     public enum Defaults {
         public static let widgetBuild = "LeapWidgetBuild"
+        public static let repairedBuild = "LeapRepairedBuild"
     }
 
     public enum Bundles {

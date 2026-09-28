@@ -31,7 +31,11 @@ In the app: **Help ▸ Donate**, or the link at the bottom of the welcome window
 
 **Leap does not appear in the widget gallery.**
 Open the app once - that is what registers the widgets. If it still does not
-appear, log out and back in.
+appear, choose **Help ▸ Repair Widgets**, or log out and back in.
+
+**After an update the widget is blank, or shows only the month names.**
+Open Leap once, or click the widget - your widgets redraw a moment later. If one
+still looks wrong, choose **Help ▸ Repair Widgets**.
 
 **Clicking the widget opens the wrong app.**
 Check **Click Opens** in that widget's settings. **Default Calendar** follows

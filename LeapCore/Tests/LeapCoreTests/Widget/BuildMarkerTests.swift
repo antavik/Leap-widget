@@ -43,4 +43,33 @@ struct BuildMarkerTests {
         #expect(marker.advance(to: next))
         #expect(!marker.advance(to: next))
     }
+
+    @Test func askingDoesNotRecord() {
+        let (marker, defaults, name) = self.marker()
+        defer { defaults.removePersistentDomain(forName: name) }
+
+        #expect(marker.isBehind("0.2.4 (1)"))
+        #expect(marker.isBehind("0.2.4 (1)"))
+        #expect(marker.advance(to: "0.2.4 (1)"))
+        #expect(!marker.isBehind("0.2.4 (1)"))
+        #expect(marker.isBehind("0.2.4 (2)"))
+    }
+
+    @Test func theBuildJoinsVersionAndNumber() throws {
+        let root = URL.temporaryDirectory.appending(component: "leap.tests.\(UUID().uuidString).bundle")
+        let contents = root.appending(component: "Contents")
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        try FileManager.default.createDirectory(at: contents, withIntermediateDirectories: true)
+        let info: [String: Any] = ["CFBundleIdentifier": "com.antavik.leap.tests",
+                                   "CFBundleShortVersionString": "0.2.19",
+                                   "CFBundleVersion": "1790573081"]
+        try PropertyListSerialization
+            .data(fromPropertyList: info, format: .xml, options: 0)
+            .write(to: contents.appending(component: "Info.plist"))
+
+        let bundle = try #require(Bundle(url: root))
+
+        #expect(BuildMarker.build(of: bundle) == "0.2.19 (1790573081)")
+    }
 }

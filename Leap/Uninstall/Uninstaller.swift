@@ -22,13 +22,14 @@ enum Uninstaller {
     /// services prune records whose bundle has vanished.
     private static func deregister() async {
         if let widget = widgetURL {
-            await run("/usr/bin/pluginkit", ["-r", widget.path(percentEncoded: false)])
+            await SystemTool.run("/usr/bin/pluginkit", ["-r", widget.path(percentEncoded: false)])
             // A live extension would recreate the container once it is trashed.
-            await run("/usr/bin/pkill", ["-U", String(getuid()),
-                                         "-f", Uninstall.regexEscaped(
-                                             widget.path(percentEncoded: false))])
+            await SystemTool.run("/usr/bin/pkill", ["-U", String(getuid()),
+                                                    "-f", Uninstall.regexEscaped(
+                                                        widget.path(percentEncoded: false))])
         }
-        await run(lsregister, ["-u", Bundle.main.bundleURL.path(percentEncoded: false)])
+        await SystemTool.run(SystemTool.lsregister,
+                             ["-u", Bundle.main.bundleURL.path(percentEncoded: false)])
     }
 
     // MARK: - Direct install
@@ -84,9 +85,6 @@ enum Uninstaller {
 
     // MARK: - Helpers
 
-    private static let lsregister =
-        "/System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks/LaunchServices.framework/Versions/Current/Support/lsregister"
-
     private static var widgetURL: URL? {
         let url = Bundle.main.bundleURL
             .appending(components: "Contents", "PlugIns", "LeapWidget.appex")
@@ -95,23 +93,5 @@ enum Uninstaller {
 
     private static func exists(_ url: URL) -> Bool {
         FileManager.default.fileExists(atPath: url.path(percentEncoded: false))
-    }
-
-    /// Best-effort: the caller has already decided that failure is survivable.
-    private static func run(_ tool: String, _ arguments: [String]) async {
-        let process = Process()
-        process.executableURL = URL(filePath: tool)
-        process.arguments = arguments
-        process.standardOutput = FileHandle.nullDevice
-        process.standardError = FileHandle.nullDevice
-
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            process.terminationHandler = { _ in continuation.resume() }
-            do {
-                try process.run()
-            } catch {
-                continuation.resume()
-            }
-        }
     }
 }

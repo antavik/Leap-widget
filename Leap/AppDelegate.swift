@@ -32,7 +32,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         guard !relayedURL else {
-            NSApp.terminate(nil)
+            // A click on a broken widget should repair it too.
+            Task {
+                await WidgetRepair.repairIfUpdated()
+                NSApp.terminate(nil)
+            }
             return
         }
 
@@ -44,12 +48,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             name: NSApplication.didChangeScreenParametersNotification,
             object: nil)
 
-        // Reload on every launch that shows UI so chronod rebuilds archives for
-        // the environments in use now. Otherwise a gallery-added widget can get
-        // stuck on its placeholder with "no matching environment".
+        // Reloads every launch; repairs on the first launch of a new build.
         Task {
-            await WidgetRegistration.register()
-            WidgetCenter.shared.reloadAllTimelines()
+            await WidgetRepair.onLaunch()
         }
 
         showMainWindow()
@@ -235,6 +236,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                          action: #selector(openDonationPage),
                          keyEquivalent: "")
         helpMenu.addItem(.separator())
+        helpMenu.addItem(withTitle: String(localized: "Repair Widgets", comment: "Help menu item"),
+                         action: #selector(repairWidgets),
+                         keyEquivalent: "")
         helpMenu.addItem(withTitle: String(localized: "Uninstall Leap…", comment: "Help menu item"),
                          action: #selector(confirmUninstall),
                          keyEquivalent: "")
@@ -244,6 +248,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         NSApp.mainMenu = mainMenu
         NSApp.helpMenu = helpMenu
+    }
+
+    @objc private func repairWidgets() {
+        Task {
+            guard await WidgetRepair.repair() == .hostRestartFailed else { return }
+
+            let alert = NSAlert()
+            alert.alertStyle = .warning
+            alert.messageText = String(localized: "Leap couldn’t redraw the widgets.",
+                                       comment: "Repair Widgets failure title")
+            alert.informativeText = String(
+                localized: "Log out and back in to have macOS redraw them.",
+                comment: "Repair Widgets failure message")
+
+            NSApp.activate()
+            alert.runModal()
+        }
     }
 
     @objc private func openDonationPage() {

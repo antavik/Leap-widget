@@ -1,8 +1,8 @@
 # Leap User Manual
 
-Leap is a calendar widget for the macOS Desktop and Notification Center. It
-shows one or two months at a glance, matches the look of Classic Calendar widgets,
-and opens the calendar app of your choice when you click it.
+Leap is a pixel-perfect calendar widget for the macOS Desktop and Notification
+Center. It shows one or two months at a glance, matches the look of Classic
+Calendar widgets, and opens the calendar app of your choice when you click it.
 
 Leap shows no events and asks for no permissions. It never connects to the
 network, and it does not stay running in the background - macOS draws the

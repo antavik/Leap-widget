@@ -122,6 +122,17 @@
         }
       }
     },
+    "Leap couldn’t redraw the widgets." : {
+      "comment" : "Repair Widgets failure title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leap couldn’t redraw the widgets."
+          }
+        }
+      }
+    },
     "Leap is gone, but a few of its files are not." : {
       "comment" : "Uninstall leftovers title",
       "localizations" : {
@@ -129,6 +140,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Leap is gone, but a few of its files are not."
+          }
+        }
+      }
+    },
+    "Log out and back in to have macOS redraw them." : {
+      "comment" : "Repair Widgets failure message",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log out and back in to have macOS redraw them."
           }
         }
       }
@@ -151,6 +173,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quit Leap"
+          }
+        }
+      }
+    },
+    "Repair Widgets" : {
+      "comment" : "Help menu item",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repair Widgets"
           }
         }
       }

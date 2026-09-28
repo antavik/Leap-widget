@@ -59,7 +59,7 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertTrue(menuBar.menuBarItems["Help"].exists)
 
         menuBar.menuBarItems["Help"].click()
-        for item in ["Support & Feedback", "Donate", "Uninstall Leap…"] {
+        for item in ["Support & Feedback", "Donate", "Repair Widgets", "Uninstall Leap…"] {
             XCTAssertTrue(menuBar.menuItems[item].exists, "Help is missing “\(item)”")
         }
         app.typeKey(.escape, modifierFlags: [])

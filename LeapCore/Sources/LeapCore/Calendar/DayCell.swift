@@ -50,10 +50,8 @@ struct DayCell: View {
         return renderingMode != .fullColor
     }
 
-    /// On macOS 15 a dimmed (vibrant) desktop widget turns the red circle
-    /// into a pale disc the white number barely stands out from. There the
-    /// circle goes white and the number black, which vibrancy renders as a
-    /// bright disc with the number showing through.
+    /// macOS 15 dimmed widget: red circle turns pale, so use white circle,
+    /// black number for contrast.
     private var brightensToday: Bool {
         if #available(macOS 26, *) { return false }
         guard #available(macOS 15, *) else { return false }
