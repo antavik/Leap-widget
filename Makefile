@@ -51,14 +51,15 @@ test:
 	swift test --package-path LeapCore
 
 ui-test: project
-	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration Debug \
-		-derivedDataPath $(BUILD_DIR) build-for-testing $(UI_SIGNING)
 	rm -rf $(UI_RESULTS)
+	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration Debug \
+		-derivedDataPath $(BUILD_DIR) build-for-testing $(UI_SIGNING) && \
 	xcodebuild test-without-building \
 		-project $(PROJECT) -scheme $(SCHEME) -configuration Debug \
 		-derivedDataPath $(BUILD_DIR) -testPlan $(TEST_PLAN) \
 		-resultBundlePath $(UI_RESULTS) \
-		$(if $(ONLY),-only-testing:$(ONLY)) $(UI_SIGNING)
+		$(if $(ONLY),-only-testing:$(ONLY)) $(UI_SIGNING); \
+	status=$$?; $(LSREGISTER) -u $(DEBUG_APP); exit $$status
 
 report:
 	./scripts/run-tests.sh

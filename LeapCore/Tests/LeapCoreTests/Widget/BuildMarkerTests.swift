@@ -7,25 +7,25 @@ import Foundation
 /// placeholder on the Desktop until the archive goes stale.
 @Suite("Build marker")
 struct BuildMarkerTests {
-    /// A suite of its own per test: `UserDefaults.standard` is the app's real
-    /// container, and these write.
+    /// Not `.standard`: that is the app's real domain. One suite with a key per
+    /// test, since every suite leaves a plist in ~/Library/Preferences.
     private func marker() -> (BuildMarker, UserDefaults, String) {
-        let name = "leap.tests.\(UUID().uuidString)"
-        let defaults = UserDefaults(suiteName: name)!
+        let defaults = UserDefaults(suiteName: "com.antavik.leap.tests")!
+        let key = "build.\(UUID().uuidString)"
 
-        return (BuildMarker(defaults: defaults), defaults, name)
+        return (BuildMarker(defaults: defaults, key: key), defaults, key)
     }
 
     @Test func aFreshInstallAdvances() {
-        let (marker, defaults, name) = self.marker()
-        defer { defaults.removePersistentDomain(forName: name) }
+        let (marker, defaults, key) = self.marker()
+        defer { defaults.removeObject(forKey: key) }
 
         #expect(marker.advance(to: "0.2.4 (1)"))
     }
 
     @Test func theSameBuildAdvancesOnlyOnce() {
-        let (marker, defaults, name) = self.marker()
-        defer { defaults.removePersistentDomain(forName: name) }
+        let (marker, defaults, key) = self.marker()
+        defer { defaults.removeObject(forKey: key) }
 
         #expect(marker.advance(to: "0.2.4 (1)"))
         #expect(!marker.advance(to: "0.2.4 (1)"))
@@ -36,8 +36,8 @@ struct BuildMarkerTests {
     /// release: either one is an update as far as the host's archives go.
     @Test(arguments: ["0.2.4 (2)", "0.2.5 (1)"])
     func anyPartOfTheBuildAdvancing(next: String) {
-        let (marker, defaults, name) = self.marker()
-        defer { defaults.removePersistentDomain(forName: name) }
+        let (marker, defaults, key) = self.marker()
+        defer { defaults.removeObject(forKey: key) }
 
         #expect(marker.advance(to: "0.2.4 (1)"))
         #expect(marker.advance(to: next))
@@ -45,8 +45,8 @@ struct BuildMarkerTests {
     }
 
     @Test func askingDoesNotRecord() {
-        let (marker, defaults, name) = self.marker()
-        defer { defaults.removePersistentDomain(forName: name) }
+        let (marker, defaults, key) = self.marker()
+        defer { defaults.removeObject(forKey: key) }
 
         #expect(marker.isBehind("0.2.4 (1)"))
         #expect(marker.isBehind("0.2.4 (1)"))
