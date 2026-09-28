@@ -10,25 +10,25 @@ struct URLRelayTests {
 
     // MARK: - Round trip
 
-    @Test(arguments: ClickPreset.allCases)
-    func everyPresetSurvivesTheRoundTrip(preset: ClickPreset) throws {
-        let relay = try #require(CalendarRelay.url(for: preset))
+    @Test(arguments: ClickAction.allCases.filter { $0 != .doNothing })
+    func everyActionSurvivesTheRoundTrip(action: ClickAction) throws {
+        let relay = try #require(CalendarRelay.url(for: action))
 
         #expect(relay.scheme == "leap")
         #expect(relay.host == "open-calendar")
         #expect(CalendarRelay.isRelay(relay))
-        #expect(CalendarRelay.preset(forRelay: relay) == preset)
-        #expect(CalendarRelay.target(forRelay: relay)?.absoluteString == preset.url)
+        #expect(CalendarRelay.target(forRelay: relay)?.absoluteString == action.url)
     }
 
-    @Test func noPresetYieldsNoRelay() {
-        #expect(CalendarRelay.url(for: nil) == nil)
+    @Test func doingNothingYieldsNoRelay() {
+        #expect(CalendarRelay.url(for: .doNothing) == nil)
     }
 
     // MARK: - Hostile and malformed input
 
     @Test(arguments: [
         "leap://open-calendar?action=somethingElse",
+        "leap://open-calendar?action=doNothing",           // opens nothing
         "leap://open-calendar?action=",
         "leap://open-calendar",
         "leap://open-calendar?other=appleCalendar",
@@ -43,13 +43,12 @@ struct URLRelayTests {
     func unknownOrHostileTokensAreRejected(string: String) throws {
         let url = try #require(URL(string: string))
 
-        #expect(CalendarRelay.preset(forRelay: url) == nil)
         #expect(CalendarRelay.target(forRelay: url) == nil)
     }
 
     // MARK: - Is this ours at all
 
-    /// `AppDelegate.handle(urls:)` consumes a URL and quits on this answer
+    /// `AppDelegate.handleGetURL` consumes a URL and quits on this answer
     /// alone, before any token is parsed, so scheme and host go together.
     @Test(arguments: [
         ("leap://open-calendar?action=appleCalendar", true),
@@ -74,11 +73,12 @@ struct URLRelayTests {
     @Test func duplicatedActionTakesTheFirstValue() throws {
         let known = try #require(
             URL(string: "leap://open-calendar?action=fantastical&action=googleCalendar"))
-        #expect(CalendarRelay.preset(forRelay: known) == .fantastical)
+        #expect(CalendarRelay.target(forRelay: known)?.absoluteString
+                == ClickAction.fantastical.url)
 
         let unknown = try #require(
             URL(string: "leap://open-calendar?action=nonsense&action=fantastical"))
-        #expect(CalendarRelay.preset(forRelay: unknown) == nil)
+        #expect(CalendarRelay.target(forRelay: unknown) == nil)
     }
 
     /// Scheme and host are case-insensitive; only the token is not.
@@ -87,7 +87,8 @@ struct URLRelayTests {
                       "LEAP://OPEN-CALENDAR?action=appleCalendar"])
     func aMixedCaseSchemeOrHostStillParses(string: String) throws {
         let url = try #require(URL(string: string))
-        #expect(CalendarRelay.preset(forRelay: url) == .appleCalendar)
+        #expect(CalendarRelay.target(forRelay: url)?.absoluteString
+                == ClickAction.appleCalendar.url)
     }
 
     // MARK: - The allow-list property
@@ -102,7 +103,7 @@ struct URLRelayTests {
     ])
     func theTargetIsAlwaysAConstantOrNil(string: String) throws {
         let url = try #require(URL(string: string))
-        let allowed = Set(ClickPreset.allCases.map(\.url))
+        let allowed = Set(ClickAction.allCases.compactMap(\.url))
 
         if let target = CalendarRelay.target(forRelay: url) {
             #expect(allowed.contains(target.absoluteString))

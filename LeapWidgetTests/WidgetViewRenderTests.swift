@@ -47,8 +47,8 @@ struct WidgetViewRenderTests {
 
         for (placed, geometry) in [(medium, WidgetGeometry.medium), (small, .small)] {
             let widget = try render(CalendarWidgetView(entry: placed), geometry: geometry)
-            let surface = try render(CalendarSurface(models: placed.models,
-                                                     yearLabel: placed.yearLabel),
+            let surface = try render(CalendarSurface(models: placed.model.models,
+                                                     yearLabel: placed.model.yearLabel),
                                      geometry: geometry)
             let diff = ImageComparator.compare(expected: surface, actual: widget)
 

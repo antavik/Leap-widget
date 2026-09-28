@@ -3,7 +3,7 @@ import Foundation
 /// The `leap://` wire format, written and read in one place.
 ///
 /// `leap://` is system-wide, so this parses input any process can send. Only
-/// opaque `ClickPreset` tokens are carried, never URLs, so the output is always
+/// opaque `ClickAction` tokens are carried, never URLs, so the output is always
 /// `nil` or one of three constants – nothing supplied externally reaches
 /// `NSWorkspace.open`.
 public enum CalendarRelay {
@@ -12,14 +12,14 @@ public enum CalendarRelay {
     public static let actionQueryItem = "action"
 
     /// `nil` when a click should do nothing.
-    public static func url(for preset: ClickPreset?) -> URL? {
-        guard let preset else { return nil }
+    public static func url(for action: ClickAction) -> URL? {
+        guard action.url != nil else { return nil }
 
         var components = URLComponents()
         components.scheme = scheme
         components.host = host
         components.queryItems = [URLQueryItem(name: actionQueryItem,
-                                              value: preset.rawValue)]
+                                              value: action.rawValue)]
 
         return components.url
     }
@@ -40,15 +40,11 @@ public enum CalendarRelay {
         return components
     }
 
-    public static func preset(forRelay relay: URL) -> ClickPreset? {
-        guard let token = components(of: relay)?.queryItems?
-                  .first(where: { $0.name == actionQueryItem })?.value
-        else { return nil }
-
-        return ClickPreset(rawValue: token)
-    }
-
+    /// `nil` for `.doNothing` and anything unknown.
     public static func target(forRelay relay: URL) -> URL? {
-        preset(forRelay: relay).flatMap { URL(string: $0.url) }
+        components(of: relay)?.queryItems?
+            .first { $0.name == actionQueryItem }?.value
+            .flatMap(ClickAction.init(rawValue:))?.url
+            .flatMap(URL.init(string:))
     }
 }

@@ -61,14 +61,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func handleGetURL(_ event: NSAppleEventDescriptor,
                                     withReplyEvent reply: NSAppleEventDescriptor) {
         guard let urlString = event.paramDescriptor(forKeyword: keyDirectObject)?.stringValue,
-              let url = URL(string: urlString) else { return }
-        handle(urls: [url])
-    }
+              let url = URL(string: urlString),
+              CalendarRelay.isRelay(url)
+        else { return }
 
-    private func handle(urls: [URL]) {
-        guard let relay = urls.first(where: CalendarRelay.isRelay) else { return }
         relayedURL = true
-        openCalendar(CalendarRelay.target(forRelay: relay))
+        openCalendar(CalendarRelay.target(forRelay: url))
     }
 
     static var relayRecordURL: URL? {

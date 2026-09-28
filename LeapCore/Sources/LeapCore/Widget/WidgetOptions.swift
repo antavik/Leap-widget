@@ -53,11 +53,12 @@ public enum MonthNumberDisplay: String, CaseIterable, Sendable {
 public enum ClickAction: String, CaseIterable, Sendable {
     case appleCalendar, fantastical, googleCalendar, doNothing
 
-    public var preset: ClickPreset? {
+    /// What a click opens; `nil` when it should do nothing.
+    public var url: String? {
         switch self {
-        case .appleCalendar: .appleCalendar
-        case .fantastical: .fantastical
-        case .googleCalendar: .googleCalendar
+        case .appleCalendar: "ical://"
+        case .fantastical: "x-fantastical3://"
+        case .googleCalendar: "https://calendar.google.com/"
         case .doNothing: nil
         }
     }
@@ -94,8 +95,6 @@ public struct CalendarSettings: Equatable, Sendable {
                      showOutsideDays: showOutsideDays,
                      monthNumberStyle: monthNumber.style)
     }
-
-    public var clickPreset: ClickPreset? { clickAction.preset }
 }
 
 public protocol CalendarConfiguration {

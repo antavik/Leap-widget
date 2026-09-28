@@ -49,9 +49,6 @@ enum Theme {
         colorScheme == .dark || contrast == .increased ? 1 : 0.55
     }
 
-    /// Built from the environment, not a closure-backed `NSColor`: WidgetKit
-    /// archives the view for out-of-process rendering, and such a colour does
-    /// not survive it (the number vanished on macOS 27).
     static func monthNumberTint(colorScheme: ColorScheme,
                                 contrast: ColorSchemeContrast) -> Color {
         .red.opacity(monthNumberTintOpacity(colorScheme: colorScheme, contrast: contrast))

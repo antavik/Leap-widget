@@ -10,7 +10,6 @@ struct WidgetConfigurationTests {
     // MARK: - Raw values
 
     // Persisted configuration: changing one silently resets somebody's widget.
-    // `scripts/check-widget-options.sh` pins the same list against the twins.
     @Test func rawValuesArePinned() {
         #expect(DisplayedMonth.allCases.map(\.rawValue) == ["current", "next", "previous"])
         #expect(Companion.allCases.map(\.rawValue) == ["next", "previous"])
@@ -49,21 +48,6 @@ struct WidgetConfigurationTests {
         #expect(option.style == style)
     }
 
-    // MARK: - Click action
-
-    @Test(arguments: [(ClickAction.appleCalendar, ClickPreset.appleCalendar),
-                      (.fantastical, .fantastical),
-                      (.googleCalendar, .googleCalendar)])
-    func clickActionMapsToItsPreset(action: ClickAction, preset: ClickPreset) {
-        #expect(action.preset == preset)
-    }
-
-    @Test func doingNothingYieldsNoPreset() {
-        #expect(ClickAction.doNothing.preset == nil)
-        #expect(CalendarSettings(monthOffsets: [0], clickAction: .doNothing)
-                .clickPreset == nil)
-    }
-
     // MARK: - Settings → MonthOptions
 
     @Test func settingsCarryEveryOptionIntoTheModel() {
@@ -79,7 +63,7 @@ struct WidgetConfigurationTests {
                                                       showWeekNumbers: true,
                                                       showOutsideDays: false,
                                                       monthNumberStyle: .roman))
-        #expect(settings.clickPreset == .fantastical)
+        #expect(settings.clickAction == .fantastical)
         #expect(settings.showYear == false)
     }
 

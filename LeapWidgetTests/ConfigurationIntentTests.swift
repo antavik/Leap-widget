@@ -2,7 +2,6 @@ import Testing
 import LeapCore
 
 /// Intent → `CalendarSettings`, the one link `LeapCore` cannot run.
-/// Unqualified `Companion`, `ClickAction`, … are the widget's `WidgetOption`s.
 @Suite("Widget intents")
 struct ConfigurationIntentTests {
 
@@ -44,7 +43,7 @@ struct ConfigurationIntentTests {
                 == CalendarSettings(monthOffsets: months, monthNumber: .roman))
         for action in ClickAction.allCases {
             #expect(settings { $0.clickAction = action.rawValue }
-                    == CalendarSettings(monthOffsets: months, clickAction: action.coreOption),
+                    == CalendarSettings(monthOffsets: months, clickAction: action),
                     "\(action)")
         }
     }
@@ -78,7 +77,7 @@ struct ConfigurationIntentTests {
                 == CalendarSettings(monthOffsets: month, monthNumber: .roman))
         for action in ClickAction.allCases {
             #expect(settings { $0.clickAction = action.rawValue }
-                    == CalendarSettings(monthOffsets: month, clickAction: action.coreOption),
+                    == CalendarSettings(monthOffsets: month, clickAction: action),
                     "\(action)")
         }
     }
@@ -103,18 +102,5 @@ struct ConfigurationIntentTests {
         try await check(FirstWeekdayOptions())
         try await check(MonthNumberDisplayOptions())
         try await check(ClickActionOptions())
-    }
-
-    // MARK: - Bridging
-
-    /// `coreOption` falls back to a default, so a renamed case would pass silently.
-    @Test func everyWidgetCaseBridgesToTheCoreCaseOfTheSameName() {
-        for option in Companion.allCases { #expect(option.coreOption.rawValue == option.rawValue) }
-        for option in DisplayedMonth.allCases { #expect(option.coreOption.rawValue == option.rawValue) }
-        for option in FirstWeekday.allCases { #expect(option.coreOption.rawValue == option.rawValue) }
-        for option in MonthNumberDisplay.allCases {
-            #expect(option.coreOption.rawValue == option.rawValue)
-        }
-        for option in ClickAction.allCases { #expect(option.coreOption.rawValue == option.rawValue) }
     }
 }

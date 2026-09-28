@@ -372,7 +372,7 @@ struct ConfigurationChangeTests {
         let changed = try render(CalendarSettings(monthOffsets: offsets, clickAction: action),
                                  tile: tile)
 
-        #expect(changed.entry.clickTarget == action.preset)
+        #expect(changed.entry.clickAction == action)
         #expect(changed.entry.models == standard.entry.models)
         #expect(changed.entry.yearLabel == standard.entry.yearLabel)
         #expect(ImageComparator.change(from: standard.buffer, to: changed.buffer) == nil)

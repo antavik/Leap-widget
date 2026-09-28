@@ -50,6 +50,25 @@ jobs:
           -configuration Release build CODE_SIGNING_ALLOWED=NO
           LEAP_BUILD_COMMIT=$(git rev-parse --short=8 HEAD)
 
+  macos-26:
+    name: L0–L2 on macOS 26
+    # LeapCore layout invariants on the macOS 26 SwiftUI runtime. Goldens
+    # skip (no 26 key); rendering-mode paths are not reachable from tests.
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pin Xcode
+        run: sudo xcode-select -switch /Applications/Xcode_26.3.app
+
+      - name: Record the toolchain
+        run: |
+          sw_vers
+          xcodebuild -version
+
+      - name: Tests
+        run: make test
+
   ui:
     name: L4 host-app UI
     runs-on: macos-15

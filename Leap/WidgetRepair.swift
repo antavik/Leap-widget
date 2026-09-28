@@ -29,10 +29,6 @@ enum WidgetRepair {
     /// Marks the build repaired only on success, so a failed repair retries.
     @discardableResult
     static func repairIfUpdated() async -> Bool {
-        // Debug builds rebuild constantly; don't flicker widgets each time.
-#if DEBUG
-        return false
-#else
         let build = BuildMarker.build(of: .main)
         let marker = BuildMarker(key: Constants.Defaults.repairedBuild)
 
@@ -40,10 +36,9 @@ enum WidgetRepair {
               await repair() == .repaired
         else { return false }
 
-        marker.advance(to: build)
+        _ = marker.advance(to: build)
 
         return true
-#endif
     }
 
     @discardableResult
@@ -56,15 +51,12 @@ enum WidgetRepair {
 
         log.info("Repairing widgets for \(BuildMarker.build(of: .main), privacy: .public)")
 
-#if !DEBUG
-        // Debug builds must never take over the gallery from the installed app.
         if ownsWidget {
             let strays = StrayCopies.among(
                 NSWorkspace.shared.urlsForApplications(withBundleIdentifier: bundleIdentifier),
                 running: Bundle.main.bundleURL)
             await unregister(strays)
         }
-#endif
 
         await register()
 
@@ -93,7 +85,6 @@ enum WidgetRepair {
     }
 
     private static func register() async {
-#if !DEBUG
         guard ownsWidget else {
             log.info("Not registering \(Bundle.main.bundleURL.path(percentEncoded: false), privacy: .public): only an installed copy owns the widget")
             return
@@ -101,13 +92,14 @@ enum WidgetRepair {
 
         let app = Bundle.main.bundleURL
 
-        await Task.detached(priority: .utility) {
-            LSRegisterURL(app as CFURL, true)
-        }.value
-
+        await lsRegister(app)
         await SystemTool.run("/usr/bin/pluginkit",
                              ["-a", widget(in: app).path(percentEncoded: false)])
-#endif
+    }
+
+    /// Off the main actor: LaunchServices blocks.
+    @concurrent private nonisolated static func lsRegister(_ app: URL) async {
+        LSRegisterURL(app as CFURL, true)
     }
 
     /// Both relaunch on demand; widgets flicker once.
@@ -117,8 +109,14 @@ enum WidgetRepair {
 
     // MARK: - Helpers
 
+    /// Debug builds never own it: they rebuild constantly, and must not take
+    /// the gallery over from the installed app.
     private static var ownsWidget: Bool {
+#if DEBUG
+        false
+#else
         InstallLocation.ownsWidget(Bundle.main.bundleURL, home: .homeDirectory)
+#endif
     }
 
     private static var bundleIdentifier: String {

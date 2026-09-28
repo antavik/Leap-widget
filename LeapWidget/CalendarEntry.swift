@@ -8,18 +8,15 @@ struct CalendarEntry: TimelineEntry {
     let model: CalendarEntryModel
 
     var date: Date { model.date }
-    var clickTarget: ClickPreset? { model.clickTarget }
-    var models: [MonthModel] { model.models }
-    var yearLabel: String? { model.yearLabel }
 
     init(_ model: CalendarEntryModel) {
         self.model = model
     }
 
     /// A one-off entry – placeholder, snapshot, preview.
-    init<Configuration: CalendarConfiguration>(date: Date,
-                                               config: Configuration,
-                                               calendar: Calendar = .autoupdatingCurrent) {
+    init(date: Date,
+         config: some CalendarConfiguration,
+         calendar: Calendar = .autoupdatingCurrent) {
         let settings = config.settings
         self.init(CalendarEntryModel(
             date: date,

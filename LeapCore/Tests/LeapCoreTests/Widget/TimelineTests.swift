@@ -87,7 +87,7 @@ struct TimelineTests {
                                         clickAction: .googleCalendar)
         let entries = calendarEntries(for: settings, now: now, calendar: calendar)
 
-        #expect(entries.allSatisfy { $0.clickTarget == .googleCalendar })
+        #expect(entries.allSatisfy { $0.clickAction == .googleCalendar })
         #expect(entries.allSatisfy { $0.yearLabel == "\u{2019}26" })
     }
 

@@ -3,11 +3,11 @@ import AppIntents
 import LeapCore
 
 struct WidgetClickSurface<Content: View>: View {
-    let target: ClickPreset?
+    let action: ClickAction
     @ViewBuilder let content: Content
 
     var body: some View {
-        if let relayURL = CalendarRelay.url(for: target) {
+        if let relayURL = CalendarRelay.url(for: action) {
             content.widgetURL(relayURL)
         } else {
             Button(intent: DoNothingIntent()) { content }

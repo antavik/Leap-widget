@@ -59,11 +59,8 @@ struct MonthGridView: View {
         }
     }
 
-    /// Month name and optional superscript month number.
-    ///
-    /// Two plain `Text` views raised by layout, not one styled run: on macOS 27
-    /// the widget renderer drops a `baselineOffset` run (concatenated or
-    /// attributed), so the number vanished from placed widgets.
+    /// Month name and optional superscript month number, cap-aligned by an
+    /// alignment guide.
     private var title: some View {
         HStack(alignment: .firstTextBaseline, spacing: 0) {
             Text(verbatim: model.title)
