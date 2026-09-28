@@ -4,7 +4,7 @@
 
 Questions, bug reports, and feature ideas all go to one address:
 
-**antavik@pm.me**
+**[antavik@pm.me](mailto:antavik@pm.me)**
 
 From inside the app, choose **Help ▸ Support & Feedback** - it opens a new mail
 message with the subject already filled in.
