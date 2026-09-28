@@ -28,7 +28,7 @@ help-book:
 project: help-book
 	xcodegen generate --spec project.yml
 
-release: project
+release: help-book project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) \
 		-configuration Release -derivedDataPath $(BUILD_DIR) \
 		LEAP_BUILD_COMMIT=$(BUILD_COMMIT) \
