@@ -20,18 +20,15 @@ enum WidgetRepair {
                                     category: "WidgetRepair")
 
     /// Marks the build repaired only on success, so a failed repair retries.
-    @discardableResult
-    static func repairIfUpdated() async -> Bool {
+    static func repairIfUpdated() async {
         let build = BuildMarker.build(of: .main)
         let marker = BuildMarker(key: Constants.Defaults.repairedBuild)
 
         guard !AppDelegate.isUITestSafeMode, ownsWidget, marker.isBehind(build),
               await repair() == .repaired
-        else { return false }
+        else { return }
 
         _ = marker.advance(to: build)
-
-        return true
     }
 
     @discardableResult
