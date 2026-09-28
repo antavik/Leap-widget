@@ -19,13 +19,6 @@ enum WidgetRepair {
     private static let log = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.antavik.leap",
                                     category: "WidgetRepair")
 
-    static func onLaunch() async {
-        guard !(await repairIfUpdated()) else { return }
-
-        await register()
-        WidgetCenter.shared.reloadAllTimelines()
-    }
-
     /// Marks the build repaired only on success, so a failed repair retries.
     @discardableResult
     static func repairIfUpdated() async -> Bool {

@@ -48,9 +48,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             name: NSApplication.didChangeScreenParametersNotification,
             object: nil)
 
-        // Reloads every launch; repairs on the first launch of a new build.
+        // Repairs on the first launch of a new build only.
         Task {
-            await WidgetRepair.onLaunch()
+            await WidgetRepair.repairIfUpdated()
         }
 
         showMainWindow()
