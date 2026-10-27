@@ -30,8 +30,8 @@ struct ThemeTests {
 
     /// The L2 invariant measures `weekNumberColumnWidth + 7` off a render, so
     /// the constant itself has to be pinned somewhere.
-    @Test(arguments: [(Theme.small, CGFloat(14)), (Theme.medium, CGFloat(12))])
-    func weekNumberColumnWidthIsPinned(metrics: Theme.Metrics, width: CGFloat) {
+    @Test(arguments: [(Theme.small, 14.0), (Theme.medium, 12.0)])
+    func weekNumberColumnWidthIsPinned(metrics: Theme.Metrics, width: Double) {
         #expect(metrics.weekNumberColumnWidth == width)
     }
 }

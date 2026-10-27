@@ -2,27 +2,27 @@ import SwiftUI
 
 enum Theme {
     struct Metrics: Equatable, Sendable {
-        let title: CGFloat
-        let monthNumber: CGFloat
-        let header: CGFloat
-        let day: CGFloat
-        let weekNumber: CGFloat
-        let weekNumberColumnWidth: CGFloat
-        let todayCircle: CGFloat
-        let rowHeight: CGFloat
-        let rowSpacing: CGFloat
-        let titleSpacing: CGFloat
-        let monthSpacing: CGFloat
+        let title: Double
+        let monthNumber: Double
+        let header: Double
+        let day: Double
+        let weekNumber: Double
+        let weekNumberColumnWidth: Double
+        let todayCircle: Double
+        let rowHeight: Double
+        let rowSpacing: Double
+        let titleSpacing: Double
+        let monthSpacing: Double
 
         /// Glyph-bbox top as a fraction of point size, measured with
         /// `CTFontGetBoundingRectsForGlyphs`. Caps and lining digits share it.
-        private static let capTopRatio: CGFloat = 0.7222
+        private static let capTopRatio = 0.7222
 
         /// The raised run's raster origin snaps to a device pixel, landing the
         /// number a pixel low. Measured at 1x–3x.
-        private static let pixelSnapLift: CGFloat = 0.3
+        private static let pixelSnapLift = 0.3
 
-        var monthNumberBaseline: CGFloat {
+        var monthNumberBaseline: Double {
             (title - monthNumber) * Self.capTopRatio + Self.pixelSnapLift
         }
     }
@@ -33,6 +33,12 @@ enum Theme {
                                weekNumber: 8, weekNumberColumnWidth: 14,
                                todayCircle: 18, rowHeight: 16, rowSpacing: 2,
                                titleSpacing: 4, monthSpacing: 10)
+
+    static let medium = Metrics(title: 11, monthNumber: 8.5,
+                                header: 9, day: 10,
+                                weekNumber: 8, weekNumberColumnWidth: 12,
+                                todayCircle: 18, rowHeight: 14, rowSpacing: 2,
+                                titleSpacing: 4, monthSpacing: 10)
 
     /// Stronger than `.secondary` (≈0.5 on macOS), which falls short of
     /// 4.5:1 contrast for `.callout` text.
@@ -55,17 +61,14 @@ enum Theme {
     }
 
     enum Onboarding {
-        static let padding: CGFloat = 24
-        static let sectionSpacing: CGFloat = 20
-        static let headerSpacing: CGFloat = 4
-        static let footerSpacing: CGFloat = 6
-        static let footerDividerGap: CGFloat = 8
-        static let linkSpacing: CGFloat = 14
+        static let padding: Double = 24
+        static let sectionSpacing: Double = 20
+        static let headerSpacing: Double = 4
+        static let footerSpacing: Double = 6
+        static let footerDividerGap: Double = 8
+        static let linkSpacing: Double = 14
+        static let stepSpacing: Double = 12
+        static let stepTextSpacing: Double = 2
+        static let stepIconWidth: Double = 28
     }
-
-    static let medium = Metrics(title: 11, monthNumber: 8.5,
-                                header: 9, day: 10,
-                                weekNumber: 8, weekNumberColumnWidth: 12,
-                                todayCircle: 18, rowHeight: 14, rowSpacing: 2,
-                                titleSpacing: 4, monthSpacing: 10)
 }

@@ -88,7 +88,7 @@ struct LayoutInvariantTests {
         let numbered = try intrinsicSize(
             models(Self.august, options: MonthOptions(showWeekNumbers: true)))
 
-        #expect(numbered.width - plain.width
+        #expect(Double(numbered.width - plain.width)
                 == Theme.small.weekNumberColumnWidth + 7)
     }
 

@@ -8,12 +8,12 @@ struct OnboardingStepView: View {
     let total: Int
 
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
+        HStack(alignment: .top, spacing: Theme.Onboarding.stepSpacing) {
             Image(systemName: step.symbol)
                 .font(.title2)
                 .foregroundStyle(.tint)
-                .frame(width: 28)
-            VStack(alignment: .leading, spacing: 2) {
+                .frame(width: Theme.Onboarding.stepIconWidth)
+            VStack(alignment: .leading, spacing: Theme.Onboarding.stepTextSpacing) {
                 Text(verbatim: headline)
                     .font(.headline)
                 Text(step.text)
