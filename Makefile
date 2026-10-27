@@ -31,6 +31,8 @@ project: help-book
 release: help-book project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) \
 		-configuration Release -derivedDataPath $(BUILD_DIR) \
+		-destination 'generic/platform=macOS' \
+		CLANG_COVERAGE_MAPPING=NO \
 		LEAP_BUILD_COMMIT=$(BUILD_COMMIT) \
 		CURRENT_PROJECT_VERSION=$(BUILD_VERSION) build
 	-$(LSREGISTER) -u $(RELEASE_APP)
