@@ -50,7 +50,8 @@ struct UninstallTests {
     // MARK: - Removal paths
 
     @Test func removesTheBundleLast() {
-        let paths = Uninstall.removalPaths(home: home, bundle: bundle)
+        let paths = Uninstall.removalPaths(home: home, bundle: bundle,
+                                           bundleIdentifier: "com.antavik.leap")
 
         #expect(paths.last == bundle)
         #expect(paths.dropLast().allSatisfy { $0 != bundle })
@@ -58,7 +59,8 @@ struct UninstallTests {
 
     /// The exact array, in order.
     @Test func coversEverythingLeapLeavesBehind() {
-        let paths = Uninstall.removalPaths(home: home, bundle: bundle)
+        let paths = Uninstall.removalPaths(home: home, bundle: bundle,
+                                           bundleIdentifier: "com.antavik.leap")
             .map { $0.path(percentEncoded: false) }
 
         #expect(paths == [
@@ -71,6 +73,17 @@ struct UninstallTests {
             "/Users/tester/Library/Caches/com.antavik.leap",
             "/Applications/Leap.app"
         ])
+    }
+
+    /// A Debug build uninstalling itself must leave the installed app's data alone.
+    @Test func aDebugBuildRemovesOnlyItsOwnData() {
+        let debug = URL(filePath: "/Users/tester/Repos/Leap/build/Debug/Leap.app")
+        let paths = Uninstall.removalPaths(home: home, bundle: debug,
+                                           bundleIdentifier: "com.antavik.leap.debug")
+            .dropLast()
+            .map { $0.lastPathComponent }
+
+        #expect(paths.allSatisfy { $0.hasPrefix("com.antavik.leap.debug") })
     }
 
     // MARK: - Shell and regex escaping

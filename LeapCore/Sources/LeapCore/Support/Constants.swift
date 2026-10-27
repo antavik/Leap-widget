@@ -37,5 +37,17 @@ public enum Constants {
 
     public enum Bundles {
         public static let appleCalendar = "com.apple.iCal"
+
+        /// Release ID; Debug builds append `.debug`.
+        public static let leap = "com.antavik.leap"
+
+        /// The running app's ID, suffix included. Meaningful in the app only.
+        public static var current: String {
+            Bundle.main.bundleIdentifier ?? leap
+        }
+
+        public static func widgetExtension(in app: URL) -> URL {
+            app.appending(components: "Contents", "PlugIns", "LeapWidget.appex")
+        }
     }
 }

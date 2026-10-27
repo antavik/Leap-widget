@@ -14,7 +14,7 @@ ASSETS=$MANUAL/assets
 INDEX=$MANUAL/index.md
 BUILD=scripts/build-help.sh
 PLIST=Leap/Info.plist
-MENU=Leap/AppDelegate.swift
+MENU=Leap/AppDelegate+Menu.swift
 
 status=0
 

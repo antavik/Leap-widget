@@ -12,11 +12,12 @@ cd "$(dirname "$0")/.."
 CANONICAL=LeapCore/Sources/LeapCore/Uninstall/Uninstall.swift
 SOURCES="README.md Makefile"
 
-# `library.appending(components: "Preferences", "…plist")` becomes
-# `Library/Preferences/…plist`.
+# `library.appending(components: "Preferences", "\(id).plist")` becomes
+# `Library/Preferences/com.antavik.leap.plist` – the Release ID.
 canonical_paths() {
     sed -n 's/.*library\.appending(components: \(.*\)).*/\1/p' "$CANONICAL" |
         tr -d '"' |
+        sed 's/\\(id)/com.antavik.leap/g' |
         sed 's/, */\//g; s|^|Library/|' |
         sort
 }

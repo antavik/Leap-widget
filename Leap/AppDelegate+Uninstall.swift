@@ -3,13 +3,7 @@ import OSLog
 import LeapCore
 
 extension AppDelegate {
-    /// Set by `Leap.xctestplan`, never by a per-test launch argument.
-    static var isUITestSafeMode: Bool {
-        ProcessInfo.processInfo.environment["LEAP_UI_TEST_SAFE_MODE"] == "1"
-    }
-
-    private static let log = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.antavik.leap",
-                                    category: "Uninstall")
+    private static let log = Logger(category: "Uninstall")
 
     /// Deliberately unlocalized: they are test fixtures, never shipped copy.
     static let safeModeArmedMessage = "UI test safe mode is on – nothing will be removed."
@@ -26,7 +20,7 @@ extension AppDelegate {
             localized: "Leap and its settings will be moved to the Trash, and its widgets will disappear from the Desktop and Notification Center.",
             comment: "Uninstall confirmation message")
 
-        alert.informativeText = Self.isUITestSafeMode
+        alert.informativeText = LaunchEnvironment.isUITestSafeMode
             ? "\(message)\n\n\(Self.safeModeArmedMessage)"
             : message
 
@@ -47,9 +41,10 @@ extension AppDelegate {
         // it trashes the real user's preferences and containers, and on a cask
         // machine runs `brew uninstall --cask --zap`. Safe mode comes from the
         // test plan, so no future UI test can forget it.
-        guard !Self.isUITestSafeMode else {
+        guard !LaunchEnvironment.isUITestSafeMode else {
             let paths = Uninstall.removalPaths(home: .homeDirectory,
-                                               bundle: Bundle.main.bundleURL)
+                                               bundle: Bundle.main.bundleURL,
+                                               bundleIdentifier: Constants.Bundles.current)
             Self.log.info("LEAP_UI_TEST_SAFE_MODE: skipped uninstall of \(paths.count) paths")
             for path in paths {
                 Self.log.info("LEAP_UI_TEST_SAFE_MODE: would remove \(path.path(percentEncoded: false), privacy: .public)")

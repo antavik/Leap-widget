@@ -7,7 +7,7 @@ enum Uninstaller {
     static func perform() async throws -> [URL] {
         await deregister()
 
-        switch Uninstall.channel(exists: exists) {
+        switch channel {
         case .homebrew(let brew):
             try handOver(to: brew)
             return []
@@ -15,6 +15,13 @@ enum Uninstaller {
             return removeEverything()
         }
     }
+
+#if DEBUG
+    /// Never the cask's copy: `brew uninstall` would take the installed app.
+    private static var channel: InstallChannel { .direct }
+#else
+    private static var channel: InstallChannel { Uninstall.channel(exists: exists) }
+#endif
 
     // MARK: - Registrations
 
@@ -35,13 +42,14 @@ enum Uninstaller {
     // MARK: - Direct install
 
     private static func removeEverything() -> [URL] {
-        if let bundleID = Bundle.main.bundleIdentifier {
-            UserDefaults.standard.removePersistentDomain(forName: bundleID)
-            CFPreferencesAppSynchronize(bundleID as CFString)
-        }
+        let bundleID = Constants.Bundles.current
+        UserDefaults.standard.removePersistentDomain(forName: bundleID)
+        CFPreferencesAppSynchronize(bundleID as CFString)
 
         var leftovers: [URL] = []
-        for url in Uninstall.removalPaths(home: .homeDirectory, bundle: Bundle.main.bundleURL)
+        for url in Uninstall.removalPaths(home: .homeDirectory,
+                                          bundle: Bundle.main.bundleURL,
+                                          bundleIdentifier: bundleID)
         where exists(url) {
             do {
                 try FileManager.default.trashItem(at: url, resultingItemURL: nil)
@@ -86,8 +94,7 @@ enum Uninstaller {
     // MARK: - Helpers
 
     private static var widgetURL: URL? {
-        let url = Bundle.main.bundleURL
-            .appending(components: "Contents", "PlugIns", "LeapWidget.appex")
+        let url = Constants.Bundles.widgetExtension(in: Bundle.main.bundleURL)
         return exists(url) ? url : nil
     }
 

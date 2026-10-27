@@ -50,17 +50,17 @@ public enum Uninstall {
         """
     }
 
-    public static func removalPaths(home: URL, bundle: URL) -> [URL] {
+    public static func removalPaths(home: URL, bundle: URL, bundleIdentifier id: String) -> [URL] {
         let library = home.appending(component: "Library")
 
         return [
-            library.appending(components: "Preferences", "com.antavik.leap.plist"),
-            library.appending(components: "Containers", "com.antavik.leap"),
-            library.appending(components: "Containers", "com.antavik.leap.widget"),
-            library.appending(components: "Application Scripts", "com.antavik.leap"),
-            library.appending(components: "Application Scripts", "com.antavik.leap.widget"),
-            library.appending(components: "Saved Application State", "com.antavik.leap.savedState"),
-            library.appending(components: "Caches", "com.antavik.leap"),
+            library.appending(components: "Preferences", "\(id).plist"),
+            library.appending(components: "Containers", "\(id)"),
+            library.appending(components: "Containers", "\(id).widget"),
+            library.appending(components: "Application Scripts", "\(id)"),
+            library.appending(components: "Application Scripts", "\(id).widget"),
+            library.appending(components: "Saved Application State", "\(id).savedState"),
+            library.appending(components: "Caches", "\(id)"),
             bundle
         ]
     }
