@@ -1,6 +1,7 @@
 #!/bin/sh
 # Every copy of the uninstall path list must say the same thing; the app, the
-# read-me and the Makefile are exercised in completely different ways.
+# read-me, the Makefile and the cask's zap stanza are exercised in completely
+# different ways.
 #
 # Uninstall.swift is canonical. Only the paths under ~/Library are compared –
 # the app bundle is spelled differently in each source.
@@ -10,21 +11,21 @@ set -eu
 cd "$(dirname "$0")/.."
 
 CANONICAL=LeapCore/Sources/LeapCore/Uninstall/Uninstall.swift
-SOURCES="README.md Makefile"
+SOURCES="README.md Makefile packaging/leap-widget.rb"
 
 # `library.appending(components: "Preferences", "\(id).plist")` becomes
-# `Library/Preferences/com.antavik.leap.plist` – the Release ID.
+# `Library/Preferences/com.antavik.leapwidget.plist` – the Release ID.
 canonical_paths() {
     sed -n 's/.*library\.appending(components: \(.*\)).*/\1/p' "$CANONICAL" |
         tr -d '"' |
-        sed 's/\\(id)/com.antavik.leap/g' |
+        sed 's/\\(id)/com.antavik.leapwidget/g' |
         sed 's/, */\//g; s|^|Library/|' |
         sort
 }
 
 # Any shell-ish spelling: `~/Library/…`, `"$HOME/…"`, `"$(HOME)/…"`.
 documented_paths() {
-    grep -o 'Library/[A-Za-z ]*/com\.antavik\.leap[A-Za-z.]*' "$1" | sort -u
+    grep -o 'Library/[A-Za-z ]*/com\.antavik\.leapwidget[A-Za-z.]*' "$1" | sort -u
 }
 
 expected=$(canonical_paths)

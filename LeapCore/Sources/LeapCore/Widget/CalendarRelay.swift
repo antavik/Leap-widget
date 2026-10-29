@@ -1,13 +1,13 @@
 import Foundation
 
-/// The `leap://` wire format, written and read in one place.
+/// The `leapwidget://` wire format, written and read in one place.
 ///
-/// `leap://` is system-wide, so this parses input any process can send. Only
+/// `leapwidget://` is system-wide, so this parses input any process can send. Only
 /// opaque `ClickAction` tokens are carried, never URLs, so the output is always
 /// `nil` or one of three constants – nothing supplied externally reaches
 /// `NSWorkspace.open`.
 public enum CalendarRelay {
-    public static let scheme = "leap"
+    public static let scheme = "leapwidget"
     public static let host = "open-calendar"
     public static let actionQueryItem = "action"
 

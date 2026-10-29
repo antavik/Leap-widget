@@ -97,7 +97,7 @@ fi
 # --- contact sheet -----------------------------------------------------------
 
 {
-    echo '<!doctype html><meta charset="utf-8"><title>Leap renders</title>'
+    echo '<!doctype html><meta charset="utf-8"><title>Leap Widget renders</title>'
     echo '<style>body{font:13px -apple-system,sans-serif;margin:24px;background:#fff;color:#111}'
     echo 'figure{display:inline-block;margin:0 16px 24px 0;text-align:center}'
     echo 'img{border:1px solid #ddd;background:#fff}figcaption{margin-top:6px;color:#555}</style>'
@@ -123,7 +123,7 @@ fi
 renders=$(ls "$report"/screenshots/*.png 2>/dev/null | wc -l | tr -d ' ')
 
 {
-    echo "# Leap test report – $stamp-$hash"
+    echo "# Leap Widget test report – $stamp-$hash"
     echo
     if [ "$status" -eq 0 ]; then
         echo "**Result: passed.**"

@@ -12,11 +12,11 @@ extension AppDelegate {
         let helpItem = NSMenuItem()
         let helpMenu = NSMenu(title: String(localized: "Help", comment: "Menu bar title"))
 
-        appMenu.addItem(withTitle: String(localized: "About Leap", comment: "App menu item"),
+        appMenu.addItem(withTitle: String(localized: "About Leap Widget", comment: "App menu item"),
                         action: #selector(showAboutPanel),
                         keyEquivalent: "")
         appMenu.addItem(.separator())
-        appMenu.addItem(withTitle: String(localized: "Quit Leap", comment: "App menu item"),
+        appMenu.addItem(withTitle: String(localized: "Quit Leap Widget", comment: "App menu item"),
                         action: #selector(NSApplication.terminate(_:)),
                         keyEquivalent: "q")
 
@@ -40,7 +40,7 @@ extension AppDelegate {
         mainMenu.addItem(debugItem)
 #endif
 
-        helpMenu.addItem(withTitle: String(localized: "Leap Manual", comment: "Help menu item"),
+        helpMenu.addItem(withTitle: String(localized: "Leap Widget Manual", comment: "Help menu item"),
                          action: #selector(NSApplication.showHelp(_:)),
                          keyEquivalent: "?")
         helpMenu.addItem(.separator())
@@ -54,7 +54,7 @@ extension AppDelegate {
         helpMenu.addItem(withTitle: String(localized: "Repair Widgets", comment: "Help menu item"),
                          action: #selector(repairWidgets),
                          keyEquivalent: "")
-        helpMenu.addItem(withTitle: String(localized: "Uninstall Leap…", comment: "Help menu item"),
+        helpMenu.addItem(withTitle: String(localized: "Uninstall Leap Widget…", comment: "Help menu item"),
                          action: #selector(confirmUninstall),
                          keyEquivalent: "")
 
@@ -71,7 +71,7 @@ extension AppDelegate {
 
             let alert = NSAlert()
             alert.alertStyle = .warning
-            alert.messageText = String(localized: "Leap couldn’t redraw the widgets.",
+            alert.messageText = String(localized: "Leap Widget couldn’t redraw the widgets.",
                                        comment: "Repair Widgets failure title")
             alert.informativeText = String(
                 localized: "Log out and back in to have macOS redraw them.",

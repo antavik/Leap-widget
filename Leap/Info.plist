@@ -3,19 +3,19 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDisplayName</key>
-	<string>Leap</string>
+	<string>Leap Widget</string>
 	<key>CFBundleHelpBookFolder</key>
 	<string>Leap.help</string>
 	<key>CFBundleHelpBookName</key>
-	<string>com.antavik.leap.help</string>
+	<string>com.antavik.leapwidget.help</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
 			<key>CFBundleURLName</key>
-			<string>com.antavik.leap.relay</string>
+			<string>com.antavik.leapwidget.relay</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>leap</string>
+				<string>leapwidget</string>
 			</array>
 		</dict>
 	</array>

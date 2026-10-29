@@ -10,7 +10,7 @@ struct OnboardingFooter: View {
         VStack(spacing: Theme.Onboarding.footerSpacing) {
             Divider()
                 .padding(.bottom, Theme.Onboarding.footerDividerGap)
-            Text("Thank you for using Leap!", bundle: .module)
+            Text("Thank you for using Leap Widget!", bundle: .module)
                 .foregroundStyle(Theme.secondaryText(contrast: colorSchemeContrast))
             HStack(spacing: Theme.Onboarding.linkSpacing) {
                 Link(destination: donationURL) {

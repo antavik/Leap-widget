@@ -18,9 +18,10 @@ LPROJ=$BOOK/Contents/Resources/en.lproj
 
 # Kept in step with Leap/Info.plist's CFBundleHelpBookName by
 # scripts/check-help.sh – Help Viewer finds the book by this identifier.
-IDENTIFIER=com.antavik.leap.help
-TITLE="Leap Help"
-VERSION=$(sed -n 's/^MARKETING_VERSION = //p' Config/Base.xcconfig | tr -d ' ')
+IDENTIFIER=com.antavik.leapwidget.help
+TITLE="Leap Widget Help"
+# The app's version, passed in by `make help-book`.
+VERSION=${LEAP_VERSION:-0.0.0}
 
 # The system Python: the converter is written against 3.9 so a build needs
 # nothing installed.

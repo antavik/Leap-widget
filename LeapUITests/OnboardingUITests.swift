@@ -20,7 +20,7 @@ final class OnboardingUITests: XCTestCase {
     }
 
     private var window: XCUIElement {
-        app.windows["Leap"]
+        app.windows["Leap Widget"]
     }
 
     // MARK: - Window and steps
@@ -59,7 +59,7 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertTrue(menuBar.menuBarItems["Help"].exists)
 
         menuBar.menuBarItems["Help"].click()
-        for item in ["Support & Feedback", "Donate", "Repair Widgets", "Uninstall Leap…"] {
+        for item in ["Support & Feedback", "Donate", "Repair Widgets", "Uninstall Leap Widget…"] {
             XCTAssertTrue(menuBar.menuItems[item].exists, "Help is missing “\(item)”")
         }
         app.typeKey(.escape, modifierFlags: [])
@@ -70,14 +70,14 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertTrue(menuBar.waitForExistence(timeout: 10))
 
         menuBar.menuBarItems.element(boundBy: 1).click()   // the app menu
-        XCTAssertTrue(menuBar.menuItems["About Leap"].exists)
-        menuBar.menuItems["About Leap"].click()
+        XCTAssertTrue(menuBar.menuItems["About Leap Widget"].exists)
+        menuBar.menuItems["About Leap Widget"].click()
 
         // AppKit's About panel publishes its text as values, not labels, so
         // this asserts the panel, its icon and that it carries text.
         let about = app.dialogs.firstMatch
         XCTAssertTrue(about.waitForExistence(timeout: 5))
-        XCTAssertTrue(about.images["Leap icon"].waitForExistence(timeout: 5))
+        XCTAssertTrue(about.images["Leap Widget icon"].waitForExistence(timeout: 5))
         XCTAssertGreaterThan(about.staticTexts.count, 0)
 
         app.typeKey(.escape, modifierFlags: [])
@@ -92,11 +92,11 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertTrue(menuBar.waitForExistence(timeout: 10))
 
         menuBar.menuBarItems["Help"].click()
-        menuBar.menuItems["Uninstall Leap…"].click()
+        menuBar.menuItems["Uninstall Leap Widget…"].click()
 
         let alert = app.dialogs.firstMatch
         XCTAssertTrue(alert.waitForExistence(timeout: 5))
-        XCTAssertTrue(alert.staticTexts["Uninstall Leap?"].exists)
+        XCTAssertTrue(alert.staticTexts["Uninstall Leap Widget?"].exists)
 
         app.typeKey(.escape, modifierFlags: [])
 
@@ -111,7 +111,7 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertTrue(menuBar.waitForExistence(timeout: 10))
 
         menuBar.menuBarItems["Help"].click()
-        menuBar.menuItems["Uninstall Leap…"].click()
+        menuBar.menuItems["Uninstall Leap Widget…"].click()
 
         let alert = app.dialogs.firstMatch
         XCTAssertTrue(alert.waitForExistence(timeout: 5))

@@ -10,7 +10,7 @@ struct BuildMarkerTests {
     /// Not `.standard`: that is the app's real domain. One suite with a key per
     /// test, since every suite leaves a plist in ~/Library/Preferences.
     private func marker() -> (BuildMarker, UserDefaults, String) {
-        let defaults = UserDefaults(suiteName: "com.antavik.leap.tests")!
+        let defaults = UserDefaults(suiteName: "com.antavik.leapwidget.tests")!
         let key = "build.\(UUID().uuidString)"
 
         return (BuildMarker(defaults: defaults, key: key), defaults, key)
@@ -61,7 +61,7 @@ struct BuildMarkerTests {
         defer { try? FileManager.default.removeItem(at: root) }
 
         try FileManager.default.createDirectory(at: contents, withIntermediateDirectories: true)
-        let info: [String: Any] = ["CFBundleIdentifier": "com.antavik.leap.tests",
+        let info: [String: Any] = ["CFBundleIdentifier": "com.antavik.leapwidget.tests",
                                    "CFBundleShortVersionString": "0.2.19",
                                    "CFBundleVersion": "1790573081"]
         try PropertyListSerialization

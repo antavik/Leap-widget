@@ -299,8 +299,8 @@ struct ConfigurationChangeTests {
                       (.next, "SEPTEMBER", false),
                       (.previous, "JULY", false)])
     func theDisplayedMonthDecidesTheTitleAndTheTodayMarker(month: DisplayedMonth,
-                                                          title: String,
-                                                          marksToday: Bool) throws {
+                                                           title: String,
+                                                           marksToday: Bool) throws {
         let rendered = try render(CalendarSettings(monthOffsets: month.monthOffsets))
         let red = try Self.todayRed(rendered)
 
@@ -455,8 +455,8 @@ struct ConfigurationChangeTests {
     /// `LayoutInvariantTests.rowBands`, blind to the separator – which would
     /// otherwise bridge every week into one band.
     nonisolated private static func rowBands(of buffer: ImageComparator.Buffer,
-                                                 columns: Range<Int>,
-                                                 skipping skipped: Set<Int>) -> [Band] {
+                                             columns: Range<Int>,
+                                             skipping skipped: Set<Int>) -> [Band] {
         let background = background(of: buffer)
         var bands: [Band] = []
         var start: Int?

@@ -2,7 +2,7 @@ import Testing
 import Foundation
 @testable import LeapCore
 
-/// `leap://` is system-wide, so this parses input any process can send. The
+/// `leapwidget://` is system-wide, so this parses input any process can send. The
 /// allow-list property is asserted directly: the output is always `nil` or one
 /// of three constants.
 @Suite("URL relay")
@@ -14,7 +14,7 @@ struct URLRelayTests {
     func everyActionSurvivesTheRoundTrip(action: ClickAction) throws {
         let relay = try #require(CalendarRelay.url(for: action))
 
-        #expect(relay.scheme == "leap")
+        #expect(relay.scheme == "leapwidget")
         #expect(relay.host == "open-calendar")
         #expect(CalendarRelay.isRelay(relay))
         #expect(CalendarRelay.target(forRelay: relay)?.absoluteString == action.url)
@@ -27,17 +27,17 @@ struct URLRelayTests {
     // MARK: - Hostile and malformed input
 
     @Test(arguments: [
-        "leap://open-calendar?action=somethingElse",
-        "leap://open-calendar?action=doNothing",           // opens nothing
-        "leap://open-calendar?action=",
-        "leap://open-calendar",
-        "leap://open-calendar?other=appleCalendar",
-        "leap://open-calendar?action=AppleCalendar",       // case matters
-        "leap://open-calendar?action=%20appleCalendar",    // percent-encoded space
-        "leap://open-calendar?action=file:///etc/passwd",
-        "leap://open-calendar?action=javascript:alert(1)",
-        "leap://open-calendar?action=https://evil.example",
-        "leap://elsewhere?action=appleCalendar",           // wrong host
+        "leapwidget://open-calendar?action=somethingElse",
+        "leapwidget://open-calendar?action=doNothing",           // opens nothing
+        "leapwidget://open-calendar?action=",
+        "leapwidget://open-calendar",
+        "leapwidget://open-calendar?other=appleCalendar",
+        "leapwidget://open-calendar?action=AppleCalendar",       // case matters
+        "leapwidget://open-calendar?action=%20appleCalendar",    // percent-encoded space
+        "leapwidget://open-calendar?action=file:///etc/passwd",
+        "leapwidget://open-calendar?action=javascript:alert(1)",
+        "leapwidget://open-calendar?action=https://evil.example",
+        "leapwidget://elsewhere?action=appleCalendar",           // wrong host
         "https://open-calendar?action=appleCalendar",      // wrong scheme
     ])
     func unknownOrHostileTokensAreRejected(string: String) throws {
@@ -51,16 +51,16 @@ struct URLRelayTests {
     /// `AppDelegate.handleGetURL` consumes a URL and quits on this answer
     /// alone, before any token is parsed, so scheme and host go together.
     @Test(arguments: [
-        ("leap://open-calendar?action=appleCalendar", true),
-        ("leap://open-calendar", true),                    // ours, token or not
-        ("LEAP://open-calendar?action=appleCalendar", true),
-        ("leap://Open-Calendar?action=appleCalendar", true),
-        ("LEAP://OPEN-CALENDAR?action=appleCalendar", true),
-        ("notleap://open-calendar?action=appleCalendar", false),
+        ("leapwidget://open-calendar?action=appleCalendar", true),
+        ("leapwidget://open-calendar", true),                    // ours, token or not
+        ("LEAPWIDGET://open-calendar?action=appleCalendar", true),
+        ("leapwidget://Open-Calendar?action=appleCalendar", true),
+        ("LEAPWIDGET://OPEN-CALENDAR?action=appleCalendar", true),
+        ("notleapwidget://open-calendar?action=appleCalendar", false),
         ("https://open-calendar?action=appleCalendar", false),
         ("file://open-calendar", false),
-        ("leap://elsewhere?action=appleCalendar", false),
-        ("leap://", false),
+        ("leapwidget://elsewhere?action=appleCalendar", false),
+        ("leapwidget://", false),
         ("mailto:antavik@pm.me", false),
     ])
     func onlyOurSchemeAndHostCountAsARelay(string: String, isOurs: Bool) throws {
@@ -72,19 +72,19 @@ struct URLRelayTests {
     /// First value wins, and only a known token gets through either way.
     @Test func duplicatedActionTakesTheFirstValue() throws {
         let known = try #require(
-            URL(string: "leap://open-calendar?action=fantastical&action=googleCalendar"))
+            URL(string: "leapwidget://open-calendar?action=fantastical&action=googleCalendar"))
         #expect(CalendarRelay.target(forRelay: known)?.absoluteString
                 == ClickAction.fantastical.url)
 
         let unknown = try #require(
-            URL(string: "leap://open-calendar?action=nonsense&action=fantastical"))
+            URL(string: "leapwidget://open-calendar?action=nonsense&action=fantastical"))
         #expect(CalendarRelay.target(forRelay: unknown) == nil)
     }
 
     /// Scheme and host are case-insensitive; only the token is not.
-    @Test(arguments: ["LEAP://open-calendar?action=appleCalendar",
-                      "leap://Open-Calendar?action=appleCalendar",
-                      "LEAP://OPEN-CALENDAR?action=appleCalendar"])
+    @Test(arguments: ["LEAPWIDGET://open-calendar?action=appleCalendar",
+                      "leapwidget://Open-Calendar?action=appleCalendar",
+                      "LEAPWIDGET://OPEN-CALENDAR?action=appleCalendar"])
     func aMixedCaseSchemeOrHostStillParses(string: String) throws {
         let url = try #require(URL(string: string))
         #expect(CalendarRelay.target(forRelay: url)?.absoluteString
@@ -95,11 +95,11 @@ struct URLRelayTests {
 
     /// No externally supplied string can reach `NSWorkspace.open`.
     @Test(arguments: [
-        "leap://open-calendar?action=appleCalendar",
-        "leap://open-calendar?action=file:///Applications/Calculator.app",
-        "leap://open-calendar?action=x-fantastical3://&action=appleCalendar",
-        "leap://open-calendar?action=../../etc",
-        "leap://open-calendar?action=googleCalendar#fragment",
+        "leapwidget://open-calendar?action=appleCalendar",
+        "leapwidget://open-calendar?action=file:///Applications/Calculator.app",
+        "leapwidget://open-calendar?action=x-fantastical3://&action=appleCalendar",
+        "leapwidget://open-calendar?action=../../etc",
+        "leapwidget://open-calendar?action=googleCalendar#fragment",
     ])
     func theTargetIsAlwaysAConstantOrNil(string: String) throws {
         let url = try #require(URL(string: string))

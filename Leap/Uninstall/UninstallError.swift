@@ -6,7 +6,7 @@ enum UninstallError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .handoffFailed(let underlying):
-            String(localized: "Leap could not hand the uninstall over to Homebrew. \(underlying.localizedDescription)",
+            String(localized: "Leap Widget could not hand the uninstall over to Homebrew. \(underlying.localizedDescription)",
                    comment: "Uninstall failure message")
         }
     }

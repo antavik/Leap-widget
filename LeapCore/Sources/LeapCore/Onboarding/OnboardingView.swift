@@ -6,7 +6,7 @@ public struct OnboardingView: View {
             symbol: "menubar.dock.rectangle",
             title: LocalizedStringResource("Add to the Desktop",
                                            bundle: .atURL(Bundle.module.bundleURL)),
-            text: LocalizedStringResource("Right-click the Desktop, choose “Edit Widgets…”, search for “Leap”, then drag the Two Months or Month widget anywhere on the Desktop.",
+            text: LocalizedStringResource("Right-click the Desktop, choose “Edit Widgets…”, search for “Leap Widget”, then drag the Two Months or Month widget anywhere on the Desktop.",
                                           bundle: .atURL(Bundle.module.bundleURL))),
         OnboardingStep(
             symbol: "bell.badge",
@@ -51,7 +51,7 @@ public struct OnboardingView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: Theme.Onboarding.headerSpacing) {
-            Text("Leap", bundle: .module)
+            Text("Leap Widget", bundle: .module)
                 .font(.title.bold())
                 .accessibilityAddTraits(.isHeader)
             Text("A calendar widget for the Desktop and Notification Center. macOS places widgets itself – the three steps below take about a minute.",

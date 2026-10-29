@@ -1,13 +1,13 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "About Leap" : {
+    "About Leap Widget" : {
       "comment" : "App menu item",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "About Leap"
+            "value" : "About Leap Widget"
           }
         }
       }
@@ -78,68 +78,68 @@
         }
       }
     },
-    "Leap" : {
+    "Leap Widget" : {
       "comment" : "Main window title",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Leap"
+            "value" : "Leap Widget"
           }
         }
       }
     },
-    "Leap Manual" : {
+    "Leap Widget Manual" : {
       "comment" : "Help menu item",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Leap Manual"
+            "value" : "Leap Widget Manual"
           }
         }
       }
     },
-    "Leap and its settings will be moved to the Trash, and its widgets will disappear from the Desktop and Notification Center." : {
+    "Leap Widget and its settings will be moved to the Trash, and its widgets will disappear from the Desktop and Notification Center." : {
       "comment" : "Uninstall confirmation message",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Leap and its settings will be moved to the Trash, and its widgets will disappear from the Desktop and Notification Center."
+            "value" : "Leap Widget and its settings will be moved to the Trash, and its widgets will disappear from the Desktop and Notification Center."
           }
         }
       }
     },
-    "Leap could not hand the uninstall over to Homebrew. %@" : {
+    "Leap Widget could not hand the uninstall over to Homebrew. %@" : {
       "comment" : "Uninstall failure message",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Leap could not hand the uninstall over to Homebrew. %@"
+            "value" : "Leap Widget could not hand the uninstall over to Homebrew. %@"
           }
         }
       }
     },
-    "Leap couldn’t redraw the widgets." : {
+    "Leap Widget couldn’t redraw the widgets." : {
       "comment" : "Repair Widgets failure title",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Leap couldn’t redraw the widgets."
+            "value" : "Leap Widget couldn’t redraw the widgets."
           }
         }
       }
     },
-    "Leap is gone, but a few of its files are not." : {
+    "Leap Widget is gone, but a few of its files are not." : {
       "comment" : "Uninstall leftovers title",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Leap is gone, but a few of its files are not."
+            "value" : "Leap Widget is gone, but a few of its files are not."
           }
         }
       }
@@ -166,13 +166,13 @@
         }
       }
     },
-    "Quit Leap" : {
+    "Quit Leap Widget" : {
       "comment" : "App menu item",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quit Leap"
+            "value" : "Quit Leap Widget"
           }
         }
       }
@@ -232,24 +232,24 @@
         }
       }
     },
-    "Uninstall Leap?" : {
+    "Uninstall Leap Widget?" : {
       "comment" : "Uninstall confirmation title",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uninstall Leap?"
+            "value" : "Uninstall Leap Widget?"
           }
         }
       }
     },
-    "Uninstall Leap…" : {
+    "Uninstall Leap Widget…" : {
       "comment" : "Help menu item",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uninstall Leap…"
+            "value" : "Uninstall Leap Widget…"
           }
         }
       }

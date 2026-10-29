@@ -14,10 +14,10 @@ extension AppDelegate {
 
         let alert = NSAlert()
         alert.alertStyle = .warning
-        alert.messageText = String(localized: "Uninstall Leap?",
+        alert.messageText = String(localized: "Uninstall Leap Widget?",
                                    comment: "Uninstall confirmation title")
         let message = String(
-            localized: "Leap and its settings will be moved to the Trash, and its widgets will disappear from the Desktop and Notification Center.",
+            localized: "Leap Widget and its settings will be moved to the Trash, and its widgets will disappear from the Desktop and Notification Center.",
             comment: "Uninstall confirmation message")
 
         alert.informativeText = LaunchEnvironment.isUITestSafeMode
@@ -84,7 +84,7 @@ extension AppDelegate {
 
         let alert = NSAlert()
         alert.alertStyle = .informational
-        alert.messageText = String(localized: "Leap is gone, but a few of its files are not.",
+        alert.messageText = String(localized: "Leap Widget is gone, but a few of its files are not.",
                                    comment: "Uninstall leftovers title")
         alert.informativeText = String(
             localized: "macOS keeps these out of reach of every app but Finder:\n\n\(list)\n\nDrag them to the Trash to finish up.",

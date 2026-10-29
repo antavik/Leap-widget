@@ -67,24 +67,24 @@
         }
       }
     },
-    "Leap" : {
+    "Leap Widget" : {
       "comment" : "Main window title",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Leap"
+            "value" : "Leap Widget"
           }
         }
       }
     },
-    "Right-click the Desktop, choose “Edit Widgets…”, search for “Leap”, then drag the Two Months or Month widget anywhere on the Desktop." : {
+    "Right-click the Desktop, choose “Edit Widgets…”, search for “Leap Widget”, then drag the Two Months or Month widget anywhere on the Desktop." : {
       "comment" : "Onboarding step body",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Right-click the Desktop, choose “Edit Widgets…”, search for “Leap”, then drag the Two Months or Month widget anywhere on the Desktop."
+            "value" : "Right-click the Desktop, choose “Edit Widgets…”, search for “Leap Widget”, then drag the Two Months or Month widget anywhere on the Desktop."
           }
         }
       }
@@ -122,13 +122,13 @@
         }
       }
     },
-    "Thank you for using Leap!" : {
+    "Thank you for using Leap Widget!" : {
       "comment" : "Lead-in above the donation and feedback links",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thank you for using Leap!"
+            "value" : "Thank you for using Leap Widget!"
           }
         }
       }

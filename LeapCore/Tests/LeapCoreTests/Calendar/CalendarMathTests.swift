@@ -107,12 +107,12 @@ struct CalendarMathTests {
             // Two years of consecutive months covers a Hebrew leap year's month 13.
             for offset in 0..<24 {
                 let month = builder.model(containing: start, offset: offset, today: start)
-                let where_ = "identifier=\(identifier) offset=\(offset)"
-                #expect(month.weeks.count == 6, Comment(rawValue: where_))
-                #expect(month.weeks.allSatisfy { $0.count == 7 }, Comment(rawValue: where_))
-                #expect(month.weekdayHeaders.count == 7, Comment(rawValue: where_))
-                #expect(month.weekNumbers?.count == 6, Comment(rawValue: where_))
-                #expect(!month.title.isEmpty, Comment(rawValue: where_))
+                let context = "identifier=\(identifier) offset=\(offset)"
+                #expect(month.weeks.count == 6, Comment(rawValue: context))
+                #expect(month.weeks.allSatisfy { $0.count == 7 }, Comment(rawValue: context))
+                #expect(month.weekdayHeaders.count == 7, Comment(rawValue: context))
+                #expect(month.weekNumbers?.count == 6, Comment(rawValue: context))
+                #expect(!month.title.isEmpty, Comment(rawValue: context))
             }
         }
     }

@@ -36,7 +36,7 @@ final class CalendarRelayUITests: XCTestCase {
         for (token, expected) in [("appleCalendar", "ical://"),
                                   ("fantastical", "x-fantastical3://"),
                                   ("googleCalendar", "https://calendar.google.com/")] {
-            try relay("leap://open-calendar?action=\(token)")
+            try relay("leapwidget://open-calendar?action=\(token)")
 
             XCTAssertEqual(try waitForResolvedTarget(), expected,
                            "?action=\(token) resolved to the wrong calendar")
@@ -47,20 +47,20 @@ final class CalendarRelayUITests: XCTestCase {
 
     /// Older app, newer widget config: opens the default calendar.
     func testAnUnknownTokenFallsBackToTheDefaultCalendar() throws {
-        try relay("leap://open-calendar?action=somethingElse")
+        try relay("leapwidget://open-calendar?action=somethingElse")
 
         XCTAssertEqual(try waitForResolvedTarget(), "ical://")
     }
 
     func testAMissingTokenFallsBackToTheDefaultCalendar() throws {
-        try relay("leap://open-calendar")
+        try relay("leapwidget://open-calendar")
 
         XCTAssertEqual(try waitForResolvedTarget(), "ical://")
     }
 
     /// The target always comes from the allow-list, never the token.
     func testAHostileTokenNeverBecomesTheTarget() throws {
-        try relay("leap://open-calendar?action=file:///Applications/Calculator.app")
+        try relay("leapwidget://open-calendar?action=file:///Applications/Calculator.app")
 
         XCTAssertEqual(try waitForResolvedTarget(), "ical://")
     }
@@ -70,14 +70,14 @@ final class CalendarRelayUITests: XCTestCase {
     /// Checks running, not frontmost: activation is up to the system
     /// (macOS 27 leaves the app in the background).
     func testRelayingToARunningAppLeavesItRunning() throws {
-        try relay("leap://open-calendar?action=fantastical")
+        try relay("leapwidget://open-calendar?action=fantastical")
         _ = try waitForResolvedTarget()
 
         XCTAssertFalse(app.wait(for: .notRunning, timeout: 2),
                        "the app quit after a relay to a running instance")
         XCTAssertTrue([.runningForeground, .runningBackground].contains(app.state),
                       "unexpected app state \(app.state.rawValue) after a relay")
-        XCTAssertTrue(app.windows["Leap"].exists,
+        XCTAssertTrue(app.windows["Leap Widget"].exists,
                       "the onboarding window disappeared on a relay")
     }
 
@@ -124,18 +124,18 @@ final class CalendarRelayUITests: XCTestCase {
         return ""
     }
 
-    /// The built `Leap.app`, found beside the test bundle.
+    /// The built `Leap Widget.app`, found beside the test bundle.
     private static func appBundle() throws -> URL {
         var directory = Bundle(for: CalendarRelayUITests.self).bundleURL
 
         for _ in 0..<4 {
             directory = directory.deletingLastPathComponent()
-            let candidate = directory.appending(component: "Leap.app")
+            let candidate = directory.appending(component: "Leap Widget.app")
             if FileManager.default.fileExists(atPath: candidate.path(percentEncoded: false)) {
                 return candidate
             }
         }
 
-        throw XCTSkip("Leap.app is not beside the test bundle")
+        throw XCTSkip("Leap Widget.app is not beside the test bundle")
     }
 }

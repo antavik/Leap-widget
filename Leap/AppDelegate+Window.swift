@@ -42,7 +42,7 @@ extension AppDelegate {
         hosting.sizingOptions = [.preferredContentSize]
 
         let window = NSWindow(contentViewController: hosting)
-        window.title = String(localized: "Leap", comment: "Main window title")
+        window.title = String(localized: "Leap Widget", comment: "Main window title")
         window.styleMask = [.titled, .closable, .miniaturizable]
         window.isReleasedWhenClosed = false
 

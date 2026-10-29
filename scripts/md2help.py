@@ -51,7 +51,7 @@ PAGE = """<!DOCTYPE html>
 {body}
 </article>
 <nav class="pages">
-<h2>Leap Help</h2>
+<h2>Leap Widget Help</h2>
 {contents}
 </nav>
 </body>
@@ -384,7 +384,7 @@ def main() -> int:
                         help="directory of .md pages")
     parser.add_argument("--out", required=True, type=Path,
                         help="directory to write .html into")
-    parser.add_argument("--book-title", default="Leap Help",
+    parser.add_argument("--book-title", default="Leap Widget Help",
                         help="AppleTitle of the book's landing page")
     args = parser.parse_args()
 
@@ -417,9 +417,9 @@ def main() -> int:
         args.out.mkdir(parents=True, exist_ok=True)
         for stem, title, body in rendered:
             landing = stem == "index"
-            crumbs = ("Leap Help" if landing
-                      else f'<a href="index.html">Leap Help</a> › {html.escape(title)}')
-            description = title if landing else f"{title} – Leap User Manual"
+            crumbs = ("Leap Widget Help" if landing
+                      else f'<a href="index.html">Leap Widget Help</a> › {html.escape(title)}')
+            description = title if landing else f"{title} – Leap Widget User Manual"
             page = PAGE.format(
                 apple_title=html.escape(args.book_title if landing else title, quote=True),
                 description=html.escape(description, quote=True),

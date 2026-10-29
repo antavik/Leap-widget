@@ -1,6 +1,6 @@
 # Configuring Widgets
 
-Every Leap widget has its own settings. Changing one widget never changes
+Every widget has its own settings. Changing one widget never changes
 another, so you can keep a Monday-first planner on the Desktop and a
 Sunday-first month in Notification Center at the same time.
 
@@ -29,7 +29,7 @@ tight spot on the Desktop or a crowded Notification Center.
 <!-- SHOT: right-click popover on the medium widget, every option row visible -->
 
 If you do not see an **Edit** item, the widget is still showing its
-placeholder. Open Leap once, then try again.
+placeholder. Open Leap Widget once, then try again.
 
 ## The options
 
@@ -117,9 +117,9 @@ What happens when you click the widget:
 where you edit it. Choose **Nothing** for a widget you only read, so a stray
 click never pulls an app to the front.
 
-If the chosen app is not installed, Leap opens Apple Calendar instead.
+If the chosen app is not installed, Leap Widget opens Apple Calendar instead.
 
-## What Leap does automatically
+## What Leap Widget does automatically
 
 - **Today** is marked with a red circle, and rolls over at midnight.
 - **Light and dark** follow the system appearance, including the faded look

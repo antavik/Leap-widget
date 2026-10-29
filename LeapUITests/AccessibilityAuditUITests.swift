@@ -24,7 +24,7 @@ final class AccessibilityAuditUITests: XCTestCase {
     ]
 
     func testOnboardingWindowPassesTheAccessibilityAudit() throws {
-        let window = app.windows["Leap"]
+        let window = app.windows["Leap Widget"]
         XCTAssertTrue(window.waitForExistence(timeout: 10))
 
         try app.performAccessibilityAudit(for: Self.auditTypes,
@@ -43,7 +43,7 @@ final class AccessibilityAuditUITests: XCTestCase {
         let preview = app.windows["Accessibility Preview"]
         XCTAssertTrue(preview.waitForExistence(timeout: 5))
 
-        let onboarding = app.windows["Leap"]
+        let onboarding = app.windows["Leap Widget"]
         onboarding.buttons[XCUIIdentifierCloseWindow].click()
         XCTAssertTrue(onboarding.waitForNonExistence(timeout: 5))
 

@@ -7,7 +7,7 @@ public enum Uninstall {
         URL(filePath: "/usr/local")
     ]
 
-    public static let caskToken = "leap"
+    public static let caskToken = "leap-widget"
 
     public static func channel(prefixes: [URL] = homebrewPrefixes,
                                exists: (URL) -> Bool) -> InstallChannel {

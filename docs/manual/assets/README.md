@@ -21,7 +21,7 @@ comment next to each reference says what the shot has to contain.
 |---|---|---|
 | `hero-desktop.png` | index | Both widgets on the Desktop, today circled |
 | `welcome-window.png` | getting-started | The app's main window, all three steps |
-| `widget-gallery.png` | getting-started | Edit Widgets gallery, "Leap" searched |
+| `widget-gallery.png` | getting-started | Edit Widgets gallery, "Leap Widget" searched |
 | `notification-center.png` | getting-started | Month widget in Notification Center |
 | `widget-types.png` | widgets | Two Months and Month side by side |
 | `edit-popover.png` | widgets | The widget's Edit popover, every option visible |
@@ -31,4 +31,4 @@ comment next to each reference says what the shot has to contain.
 | `voiceover.png` | accessibility | VoiceOver caption panel over a widget |
 | `uninstall-alert.png` | uninstalling | The uninstall confirmation alert |
 | `uninstall-leftovers.png` | uninstalling | The leftovers alert listing both containers |
-| `about-panel.png` | support | About Leap, showing version and build |
+| `about-panel.png` | support | About Leap Widget, showing version and build |

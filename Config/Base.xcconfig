@@ -15,7 +15,8 @@ SDKROOT = macosx
 SWIFT_VERSION = 6.0
 
 CURRENT_PROJECT_VERSION = 1
-MARKETING_VERSION = 0.2.26
+// Placeholder for builds outside `make`, which passes the latest vX.Y.Z tag.
+MARKETING_VERSION = 0.0.0
 
 LEAP_BUILD_COMMIT = dev
 

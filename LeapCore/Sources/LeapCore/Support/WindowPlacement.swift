@@ -19,6 +19,7 @@ public enum WindowPlacement {
     }
 
     public static func isOnScreen(_ frame: CGRect, screens: [ScreenGeometry]) -> Bool {
+        // swiftlint:disable:next is_disjoint - CGRect, not Set; intersects(_:) differs for zero-size rects
         screens.contains { !$0.visibleFrame.intersection(frame).isEmpty }
     }
 }

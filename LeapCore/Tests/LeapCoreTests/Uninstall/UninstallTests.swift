@@ -17,22 +17,22 @@ struct UninstallTests {
 
     @Test func detectsHomebrewOnAppleSilicon() {
         let channel = Uninstall.channel(
-            exists: probe("/opt/homebrew/Caskroom/leap", "/opt/homebrew/bin/brew"))
+            exists: probe("/opt/homebrew/Caskroom/leap-widget", "/opt/homebrew/bin/brew"))
 
         #expect(channel == .homebrew(brew: URL(filePath: "/opt/homebrew/bin/brew")))
     }
 
     @Test func detectsHomebrewOnIntel() {
         let channel = Uninstall.channel(
-            exists: probe("/usr/local/Caskroom/leap", "/usr/local/bin/brew"))
+            exists: probe("/usr/local/Caskroom/leap-widget", "/usr/local/bin/brew"))
 
         #expect(channel == .homebrew(brew: URL(filePath: "/usr/local/bin/brew")))
     }
 
     @Test func prefersAppleSiliconWhenBothPrefixesAreInstalled() {
         let channel = Uninstall.channel(
-            exists: probe("/opt/homebrew/Caskroom/leap", "/opt/homebrew/bin/brew",
-                          "/usr/local/Caskroom/leap", "/usr/local/bin/brew"))
+            exists: probe("/opt/homebrew/Caskroom/leap-widget", "/opt/homebrew/bin/brew",
+                          "/usr/local/Caskroom/leap-widget", "/usr/local/bin/brew"))
 
         #expect(channel == .homebrew(brew: URL(filePath: "/opt/homebrew/bin/brew")))
     }
@@ -44,14 +44,14 @@ struct UninstallTests {
     }
 
     @Test func treatsAReceiptWithoutBrewAsDirect() {
-        #expect(Uninstall.channel(exists: probe("/opt/homebrew/Caskroom/leap")) == .direct)
+        #expect(Uninstall.channel(exists: probe("/opt/homebrew/Caskroom/leap-widget")) == .direct)
     }
 
     // MARK: - Removal paths
 
     @Test func removesTheBundleLast() {
         let paths = Uninstall.removalPaths(home: home, bundle: bundle,
-                                           bundleIdentifier: "com.antavik.leap")
+                                           bundleIdentifier: "com.antavik.leapwidget")
 
         #expect(paths.last == bundle)
         #expect(paths.dropLast().allSatisfy { $0 != bundle })
@@ -60,17 +60,17 @@ struct UninstallTests {
     /// The exact array, in order.
     @Test func coversEverythingLeapLeavesBehind() {
         let paths = Uninstall.removalPaths(home: home, bundle: bundle,
-                                           bundleIdentifier: "com.antavik.leap")
+                                           bundleIdentifier: "com.antavik.leapwidget")
             .map { $0.path(percentEncoded: false) }
 
         #expect(paths == [
-            "/Users/tester/Library/Preferences/com.antavik.leap.plist",
-            "/Users/tester/Library/Containers/com.antavik.leap",
-            "/Users/tester/Library/Containers/com.antavik.leap.widget",
-            "/Users/tester/Library/Application Scripts/com.antavik.leap",
-            "/Users/tester/Library/Application Scripts/com.antavik.leap.widget",
-            "/Users/tester/Library/Saved Application State/com.antavik.leap.savedState",
-            "/Users/tester/Library/Caches/com.antavik.leap",
+            "/Users/tester/Library/Preferences/com.antavik.leapwidget.plist",
+            "/Users/tester/Library/Containers/com.antavik.leapwidget",
+            "/Users/tester/Library/Containers/com.antavik.leapwidget.widget",
+            "/Users/tester/Library/Application Scripts/com.antavik.leapwidget",
+            "/Users/tester/Library/Application Scripts/com.antavik.leapwidget.widget",
+            "/Users/tester/Library/Saved Application State/com.antavik.leapwidget.savedState",
+            "/Users/tester/Library/Caches/com.antavik.leapwidget",
             "/Applications/Leap.app"
         ])
     }
@@ -79,11 +79,11 @@ struct UninstallTests {
     @Test func aDebugBuildRemovesOnlyItsOwnData() {
         let debug = URL(filePath: "/Users/tester/Repos/Leap/build/Debug/Leap.app")
         let paths = Uninstall.removalPaths(home: home, bundle: debug,
-                                           bundleIdentifier: "com.antavik.leap.debug")
+                                           bundleIdentifier: "com.antavik.leapwidget.debug")
             .dropLast()
             .map { $0.lastPathComponent }
 
-        #expect(paths.allSatisfy { $0.hasPrefix("com.antavik.leap.debug") })
+        #expect(paths.allSatisfy { $0.hasPrefix("com.antavik.leapwidget.debug") })
     }
 
     // MARK: - Shell and regex escaping

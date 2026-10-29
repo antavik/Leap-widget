@@ -1,4 +1,4 @@
-// Leap.app target. Same in Debug and Release; configuration-specific
+// Leap target – builds Leap Widget.app. Same in Debug and Release; configuration-specific
 // settings live in Debug.xcconfig / Release.xcconfig.
 
 ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon
@@ -8,6 +8,6 @@ ENABLE_HARDENED_RUNTIME = YES
 // INFOPLIST_FILE is emitted by XcodeGen from the target's sources.
 GENERATE_INFOPLIST_FILE = YES
 LD_RUNPATH_SEARCH_PATHS = $(inherited) @executable_path/../Frameworks
-PRODUCT_BUNDLE_IDENTIFIER = com.antavik.leap$(LEAP_BUNDLE_ID_SUFFIX)
-PRODUCT_NAME = $(TARGET_NAME)
+PRODUCT_BUNDLE_IDENTIFIER = com.antavik.leapwidget$(LEAP_BUNDLE_ID_SUFFIX)
+PRODUCT_NAME = Leap Widget
 SWIFT_EMIT_LOC_STRINGS = YES

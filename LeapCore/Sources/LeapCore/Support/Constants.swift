@@ -26,8 +26,8 @@ public enum Constants {
     }
 
     public enum Widgets {
-        public static let calendar = "com.antavik.leap.calendar"
-        public static let calendarSmall = "com.antavik.leap.calendar.small"
+        public static let calendar = "com.antavik.leapwidget.calendar"
+        public static let calendarSmall = "com.antavik.leapwidget.calendar.small"
     }
 
     public enum Defaults {
@@ -39,7 +39,7 @@ public enum Constants {
         public static let appleCalendar = "com.apple.iCal"
 
         /// Release ID; Debug builds append `.debug`.
-        public static let leap = "com.antavik.leap"
+        public static let leap = "com.antavik.leapwidget"
 
         /// The running app's ID, suffix included. Meaningful in the app only.
         public static var current: String {

@@ -37,7 +37,7 @@ struct WidgetRepairerTests {
 
     /// Not `.standard`: that is the app's real domain.
     private func marker() -> (BuildMarker, UserDefaults, String) {
-        let defaults = UserDefaults(suiteName: "com.antavik.leap.tests")!
+        let defaults = UserDefaults(suiteName: "com.antavik.leapwidget.tests")!
         let key = "repaired.\(UUID().uuidString)"
 
         return (BuildMarker(defaults: defaults, key: key), defaults, key)
