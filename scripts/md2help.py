@@ -417,8 +417,9 @@ def main() -> int:
         args.out.mkdir(parents=True, exist_ok=True)
         for stem, title, body in rendered:
             landing = stem == "index"
-            crumbs = ("Leap Widget Help" if landing
-                      else f'<a href="index.html">Leap Widget Help</a> › {html.escape(title)}')
+            book = html.escape(args.book_title)
+            crumbs = (book if landing
+                      else f'<a href="index.html">{book}</a> › {html.escape(title)}')
             description = title if landing else f"{title} – Leap Widget User Manual"
             page = PAGE.format(
                 apple_title=html.escape(args.book_title if landing else title, quote=True),

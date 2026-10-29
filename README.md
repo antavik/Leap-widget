@@ -48,8 +48,8 @@ make test
 make release
 ```
 
-`make help` lists every target. `make lint` runs SwiftLint in strict mode against `.swiftlint.yml`
-(`brew install swiftlint`).
+`make help` lists every target. `make lint` runs SwiftLint in strict mode
+against `.swiftlint.yml` (`brew install swiftlint`).
 
 `make release` and `make debug` regenerate the project first. Run `make project`
 on its own before opening Xcode, and again after adding or removing a source

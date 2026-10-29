@@ -116,7 +116,7 @@ struct UninstallTests {
             processIdentifier: 4242)
 
         #expect(script.hasPrefix("#!/bin/sh"))
-        #expect(script.contains("uninstall --cask --zap leap"))
+        #expect(script.hasSuffix("uninstall --cask --zap leap-widget"))
         #expect(script.contains("pid=4242"))
         #expect(try Self.passesShellSyntaxCheck(script))
     }

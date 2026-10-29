@@ -62,9 +62,9 @@ enum Uninstaller {
 
     // MARK: - Homebrew install
 
-    /// Schedules `brew uninstall` for after Leap quits. Deleting the bundle by
-    /// hand instead would leave the receipt, and `brew list --cask` would keep
-    /// reporting Leap as installed.
+    /// Schedules `brew uninstall` for after Leap Widget quits. Deleting the
+    /// bundle by hand instead would leave the receipt, and `brew list --cask`
+    /// would keep reporting Leap Widget as installed.
     private static func handOver(to brew: URL) throws {
         do {
             let script = Uninstall.trampoline(

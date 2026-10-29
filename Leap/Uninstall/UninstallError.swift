@@ -14,7 +14,7 @@ enum UninstallError: LocalizedError {
     var recoverySuggestion: String? {
         switch self {
         case .handoffFailed:
-            String(localized: "Run “brew uninstall --cask --zap leap” in Terminal instead.",
+            String(localized: "Run “brew uninstall --cask --zap leap-widget” in Terminal instead.",
                    comment: "Uninstall failure recovery suggestion")
         }
     }

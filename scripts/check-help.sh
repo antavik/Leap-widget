@@ -48,7 +48,7 @@ fi
 # 2. The Help menu still has an item wired to showHelp:, which is what opens
 #    the book and what AppKit's search field searches.
 if ! grep -q 'showHelp' "$MENU"; then
-    fail "$MENU has no showHelp: menu item – Help ▸ Leap Manual would be gone"
+    fail "$MENU has no showHelp: menu item – Help ▸ Leap Widget Manual would be gone"
 fi
 
 pages=$(ls -1 "$MANUAL"/*.md | sed 's|.*/||' | sort)

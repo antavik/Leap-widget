@@ -9,8 +9,8 @@ public enum Constants {
         public static let address = "antavik@pm.me"
 
         public enum Subject {
-            public static let feedback = "Leap feedback"
-            public static let support = "Leap support"
+            public static let feedback = "Leap Widget feedback"
+            public static let support = "Leap Widget support"
         }
 
         public static let feedback = url(subject: Subject.feedback)

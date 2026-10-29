@@ -9,9 +9,9 @@
 # Publishing creates the v<version> tag, which later builds take their version
 # from. The signing identity is the first "Developer ID Application" in the
 # keychain, or LEAP_SIGN_IDENTITY. With none it builds an ad-hoc, un-notarized
-# DMG – a dry run that refuses to publish. Notary credentials come from a keychain profile created with
-# `xcrun notarytool store-credentials` (default leap-widget-notary, override with
-# LEAP_NOTARY_PROFILE).
+# DMG – a dry run that refuses to publish. Notary credentials come from a
+# keychain profile created with `xcrun notarytool store-credentials` (default
+# leap-widget-notary, override with LEAP_NOTARY_PROFILE).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 ROOT="$PWD"

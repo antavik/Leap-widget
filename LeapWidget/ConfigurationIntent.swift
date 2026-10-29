@@ -8,9 +8,9 @@ import LeapCore
 ///
 /// Not `AppEnum` or `AppEntity`: on macOS 26+ the extension resolves those
 /// through `linkd`, which refuses a bundle without a Team ID
-/// ("requiresValidatedBundle"). Leap is ad-hoc signed, so every saved choice
-/// arrived as nil and fell back – the month number never appeared. A `String`,
-/// like the `Bool` parameters, needs no lookup.
+/// ("requiresValidatedBundle"). Local builds are ad-hoc signed, so every saved
+/// choice arrived as nil and fell back – the month number never appeared. A
+/// `String`, like the `Bool` parameters, needs no lookup.
 protocol WidgetOption: CaseIterable, RawRepresentable<String> {
     /// What a parameter holds before anyone picks, or when its value is lost.
     static var fallback: Self { get }
