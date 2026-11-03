@@ -1,0 +1,295 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Adjacent Month Days" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adjacent Month Days"
+          }
+        }
+      }
+    },
+    "Calendar Options" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendar Options"
+          }
+        }
+      }
+    },
+    "Click Opens" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Click Opens"
+          }
+        }
+      }
+    },
+    "Current" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current"
+          }
+        }
+      }
+    },
+    "Default Calendar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default Calendar"
+          }
+        }
+      }
+    },
+    "Do Nothing" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do Nothing"
+          }
+        }
+      }
+    },
+    "Fantastical" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fantastical"
+          }
+        }
+      }
+    },
+    "First Day of Week" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "First Day of Week"
+          }
+        }
+      }
+    },
+    "Google Calendar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Calendar"
+          }
+        }
+      }
+    },
+    "Monday" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monday"
+          }
+        }
+      }
+    },
+    "Month" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Month"
+          }
+        }
+      }
+    },
+    "Month Number" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Month Number"
+          }
+        }
+      }
+    },
+    "Next" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next"
+          }
+        }
+      }
+    },
+    "Nothing" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing"
+          }
+        }
+      }
+    },
+    "Number (6)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Number (6)"
+          }
+        }
+      }
+    },
+    "Off" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off"
+          }
+        }
+      }
+    },
+    "One month at a glance – the current, previous, or next." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One month at a glance – the current, previous, or next."
+          }
+        }
+      }
+    },
+    "Previous" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Previous"
+          }
+        }
+      }
+    },
+    "Roman (VI)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Roman (VI)"
+          }
+        }
+      }
+    },
+    "Second Month" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Second Month"
+          }
+        }
+      }
+    },
+    "Show Year" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Year"
+          }
+        }
+      }
+    },
+    "Show current and ${companion} month" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show current and ${companion} month"
+          }
+        }
+      }
+    },
+    "Show the ${month} month" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show the ${month} month"
+          }
+        }
+      }
+    },
+    "Sunday" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sunday"
+          }
+        }
+      }
+    },
+    "System Default" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System Default"
+          }
+        }
+      }
+    },
+    "Two Months" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Two Months"
+          }
+        }
+      }
+    },
+    "Two months at a glance – the current plus the previous or next." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Two months at a glance – the current plus the previous or next."
+          }
+        }
+      }
+    },
+    "Week Numbers" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Week Numbers"
+          }
+        }
+      }
+    },
+    "calendar.google.com" : {
+      "shouldTranslate" : false
+    },
+    "ical://" : {
+      "shouldTranslate" : false
+    },
+    "x-fantastical3://" : {
+      "shouldTranslate" : false
+    }
+  },
+  "version" : "1.0"
+}

@@ -1,23 +1,100 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
 
 jobs:
-  test-and-build:
+  fast:
+    name: L0–L3 + build on macOS 15
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
 
-      - name: Enforce zero third-party dependencies (G11)
-        run: Scripts/check-no-dependencies.sh
+      - name: Pin Xcode
+        run: sudo xcode-select -switch /Applications/Xcode_26.3.app
 
-      - name: Unit tests (QuaterlyCore)
-        run: swift test --package-path QuaterlyCore
+      - name: Tests and report
+        run: make report
+
+      - name: The golden layer must not have skipped
+        run: |
+          if grep -q 'golden layer reported skipped' reports/latest/summary.md; then
+            echo "::error::the snapshot suite skipped on a pinned runner"
+            exit 1
+          fi
+
+      - name: Coverage
+        run: |
+          echo '## LeapCore coverage' >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          tail -20 reports/latest/coverage/summary.txt >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo '`Leap` and `LeapWidget` are measured by the UI job, not here.' \
+            >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload the report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: report
+          path: reports/
+
+      - name: Generate Xcode project
+        run: |
+          brew install xcodegen
+          make project
 
       - name: Build app + widget (Release)
         run: >
-          xcodebuild -project Quaterly.xcodeproj -scheme Quaterly
+          xcodebuild -project Leap.xcodeproj -scheme Leap
           -configuration Release build CODE_SIGNING_ALLOWED=NO
+          LEAP_BUILD_COMMIT=$(git rev-parse --short=8 HEAD)
+
+  newer-macos:
+    name: L0–L2 on macOS ${{ matrix.macos }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - macos: 26
+            runner: macos-26
+            xcode: Xcode_26.3.app
+          - macos: 27
+            runner: xcode-27
+            xcode: Xcode_27.1.app
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pin Xcode
+        run: sudo xcode-select -switch /Applications/${{ matrix.xcode }}
+
+      - name: Record the toolchain
+        run: |
+          sw_vers
+          xcodebuild -version
+
+      - name: Tests
+        run: make test
+
+  ui:
+    name: L4 host-app UI on macOS 15
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pin Xcode
+        run: sudo xcode-select -switch /Applications/Xcode_26.3.app
+
+      - name: Install xcodegen
+        run: brew install xcodegen
+
+      - name: UI tests
+        run: make ui-test
+
+      - name: Upload the result bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-results
+          path: build/LeapUITests.xcresult

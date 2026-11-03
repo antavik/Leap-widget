@@ -1,0 +1,102 @@
+name: Leap
+options:
+  minimumXcodeGenVersion: "2.46.0"
+  settingPresets: none
+  generateEmptyDirectories: true
+  defaultConfig: Release
+
+configs:
+  Debug: debug
+  Release: release
+
+configFiles:
+  Debug: Config/Debug.xcconfig
+  Release: Config/Release.xcconfig
+
+packages:
+  LeapCore:
+    path: LeapCore
+
+targets:
+  Leap:
+    type: application
+    platform: macOS
+    sources:
+      - path: Leap
+      - path: build/help/Leap.help
+        type: folder
+        buildPhase: resources
+    configFiles:
+      Debug: Config/Leap.xcconfig
+      Release: Config/Leap.xcconfig
+    dependencies:
+      - package: LeapCore
+        product: LeapCore
+      - target: LeapWidget
+        embed: true
+
+  LeapUITests:
+    type: bundle.ui-testing
+    platform: macOS
+    sources:
+      - path: LeapUITests
+    configFiles:
+      Debug: Config/LeapUITests.xcconfig
+      Release: Config/LeapUITests.xcconfig
+    dependencies:
+      - target: Leap
+
+  LeapWidgetTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: LeapWidgetTests
+      - path: LeapWidget/ConfigurationIntent.swift
+      - path: LeapWidget/CalendarEntry.swift
+      - path: LeapWidget/CalendarWidgetView.swift
+      - path: LeapWidget/WidgetClickSurface.swift
+      - path: LeapWidget/InertButtonStyle.swift
+      - path: LeapWidget/DoNothingIntent.swift
+      - path: LeapCore/Tests/LeapCoreTests/Harness/RenderHarness.swift
+      - path: LeapCore/Tests/LeapCoreTests/Harness/ImageComparator.swift
+      - path: LeapCore/Tests/LeapCoreTests/Harness/Fixtures.swift
+    configFiles:
+      Debug: Config/LeapWidgetTests.xcconfig
+      Release: Config/LeapWidgetTests.xcconfig
+    dependencies:
+      - package: LeapCore
+        product: LeapCore
+
+  LeapWidget:
+    type: app-extension
+    platform: macOS
+    sources:
+      - path: LeapWidget
+    configFiles:
+      Debug: Config/LeapWidget.xcconfig
+      Release: Config/LeapWidget.xcconfig
+    dependencies:
+      - package: LeapCore
+        product: LeapCore
+
+schemes:
+  Leap:
+    build:
+      targets:
+        Leap: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      testPlans:
+        - path: Leap.xctestplan
+          defaultPlan: true
+      targets:
+        - LeapUITests
+        - LeapWidgetTests
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release

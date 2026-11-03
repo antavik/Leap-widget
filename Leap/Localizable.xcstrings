@@ -1,0 +1,270 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "About Leap Widget" : {
+      "comment" : "App menu item",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About Leap Widget"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "comment" : "Uninstall confirmation button",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
+    },
+    "Close Window" : {
+      "comment" : "File menu item",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close Window"
+          }
+        }
+      }
+    },
+    "Created by Antavik" : {
+      "comment" : "About panel credits",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Created by Antavik"
+          }
+        }
+      }
+    },
+    "Donate" : {
+      "comment" : "Help menu item",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Donate"
+          }
+        }
+      }
+    },
+    "File" : {
+      "comment" : "Menu bar title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File"
+          }
+        }
+      }
+    },
+    "Help" : {
+      "comment" : "Menu bar title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Help"
+          }
+        }
+      }
+    },
+    "Leap Widget" : {
+      "comment" : "Main window title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leap Widget"
+          }
+        }
+      }
+    },
+    "Leap Widget Manual" : {
+      "comment" : "Help menu item",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leap Widget Manual"
+          }
+        }
+      }
+    },
+    "Leap Widget and its settings will be moved to the Trash, and its widgets will disappear from the Desktop and Notification Center." : {
+      "comment" : "Uninstall confirmation message",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leap Widget and its settings will be moved to the Trash, and its widgets will disappear from the Desktop and Notification Center."
+          }
+        }
+      }
+    },
+    "Leap Widget could not hand the uninstall over to Homebrew. %@" : {
+      "comment" : "Uninstall failure message",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leap Widget could not hand the uninstall over to Homebrew. %@"
+          }
+        }
+      }
+    },
+    "Leap Widget couldn’t redraw the widgets." : {
+      "comment" : "Repair Widgets failure title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leap Widget couldn’t redraw the widgets."
+          }
+        }
+      }
+    },
+    "Leap Widget is gone, but a few of its files are not." : {
+      "comment" : "Uninstall leftovers title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leap Widget is gone, but a few of its files are not."
+          }
+        }
+      }
+    },
+    "Log out and back in to have macOS redraw them." : {
+      "comment" : "Repair Widgets failure message",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log out and back in to have macOS redraw them."
+          }
+        }
+      }
+    },
+    "OK" : {
+      "comment" : "Uninstall leftovers button",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "Quit Leap Widget" : {
+      "comment" : "App menu item",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit Leap Widget"
+          }
+        }
+      }
+    },
+    "Repair Widgets" : {
+      "comment" : "Help menu item",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repair Widgets"
+          }
+        }
+      }
+    },
+    "Run “brew uninstall --cask --zap leap-widget” in Terminal instead." : {
+      "comment" : "Uninstall failure recovery suggestion",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Run “brew uninstall --cask --zap leap-widget” in Terminal instead."
+          }
+        }
+      }
+    },
+    "Show in Finder" : {
+      "comment" : "Uninstall leftovers button",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show in Finder"
+          }
+        }
+      }
+    },
+    "Support & Feedback" : {
+      "comment" : "Help menu item",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support & Feedback"
+          }
+        }
+      }
+    },
+    "Uninstall" : {
+      "comment" : "Uninstall confirmation button",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uninstall"
+          }
+        }
+      }
+    },
+    "Uninstall Leap Widget?" : {
+      "comment" : "Uninstall confirmation title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uninstall Leap Widget?"
+          }
+        }
+      }
+    },
+    "Uninstall Leap Widget…" : {
+      "comment" : "Help menu item",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uninstall Leap Widget…"
+          }
+        }
+      }
+    },
+    "macOS keeps these out of reach of every app but Finder:\n\n%@\n\nDrag them to the Trash to finish up." : {
+      "comment" : "Uninstall leftovers message",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS keeps these out of reach of every app but Finder:\n\n%@\n\nDrag them to the Trash to finish up."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
