@@ -78,7 +78,7 @@ jobs:
         run: make test
 
   ui:
-    name: L4 host-app UI
+    name: L4 host-app UI on macOS 15
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
