@@ -5,7 +5,7 @@ on:
 
 jobs:
   fast:
-    name: L0–L3 + build
+    name: L0–L3 + build on macOS 15
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
@@ -50,16 +50,24 @@ jobs:
           -configuration Release build CODE_SIGNING_ALLOWED=NO
           LEAP_BUILD_COMMIT=$(git rev-parse --short=8 HEAD)
 
-  macos-26:
-    name: L0–L2 on macOS 26
-    # LeapCore layout invariants on the macOS 26 SwiftUI runtime. Goldens
-    # skip (no 26 key); rendering-mode paths are not reachable from tests.
-    runs-on: macos-26
+  newer-macos:
+    name: L0–L2 on macOS ${{ matrix.macos }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - macos: 26
+            runner: macos-26
+            xcode: Xcode_26.3.app
+          - macos: 27
+            runner: xcode-27
+            xcode: Xcode_27.1.app
     steps:
       - uses: actions/checkout@v4
 
       - name: Pin Xcode
-        run: sudo xcode-select -switch /Applications/Xcode_26.3.app
+        run: sudo xcode-select -switch /Applications/${{ matrix.xcode }}
 
       - name: Record the toolchain
         run: |

@@ -122,6 +122,7 @@ extension AppDelegate {
         window.title = "Accessibility Preview"
         window.styleMask = [.titled, .closable, .miniaturizable]
         window.isReleasedWhenClosed = false
+        window.setContentSize(hosting.preferredContentSize)
         window.center()
 
         return window

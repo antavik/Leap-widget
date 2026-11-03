@@ -47,6 +47,7 @@ extension AppDelegate {
         window.isReleasedWhenClosed = false
 
         window.isRestorable = false
+        window.setContentSize(hosting.preferredContentSize)
 
         return window
     }
