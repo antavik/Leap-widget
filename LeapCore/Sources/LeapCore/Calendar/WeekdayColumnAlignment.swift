@@ -2,8 +2,8 @@ import SwiftUI
 
 /// Custom guides tying the month title and year label to the first and last
 /// weekday columns. The title leads on the first column's glyph; the year
-/// label centres on the last column. The header columns are flexible, so no
-/// fixed inset stays correct across widget sizes.
+/// label ends flush with the last column's trailing edge. The header columns
+/// are flexible, so no fixed inset stays correct across widget sizes.
 extension HorizontalAlignment {
     enum FirstWeekdayColumn: AlignmentID {
         static func defaultValue(in context: ViewDimensions) -> CGFloat {

@@ -55,7 +55,7 @@ struct MonthGridView: View {
                 Text(yearLabel.text)
                     .font(.system(size: metrics.title, weight: .bold))
                     .foregroundStyle(yearLabel.isCurrent ? Color.red : Color.secondary)
-                    .alignmentGuide(.lastWeekdayColumn) { $0[HorizontalAlignment.center] }
+                    .alignmentGuide(.lastWeekdayColumn) { $0[.trailing] }
             }
         }
     }

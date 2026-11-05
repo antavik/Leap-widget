@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// The edge columns export the guides the month title and year label align
-/// to: the first glyph's leading edge, the last column's centre.
+/// to: the first glyph's leading edge, the last column's trailing edge.
 struct WeekdayHeaderCell: View {
     let symbol: String
     let isWeekend: Bool
@@ -17,14 +17,14 @@ struct WeekdayHeaderCell: View {
         Group {
             if isFirstColumn {
                 label.alignmentGuide(.firstWeekdayColumn) { $0[.leading] }
+                    .frame(maxWidth: .infinity)
             } else if isLastColumn {
-                // The glyph sits centred in its column-wide frame, so its
-                // centre is the column's centre – where the year label centres.
-                label.alignmentGuide(.lastWeekdayColumn) { $0[HorizontalAlignment.center] }
+                // The year label ends flush with the column's trailing edge.
+                label.frame(maxWidth: .infinity)
+                    .alignmentGuide(.lastWeekdayColumn) { $0[.trailing] }
             } else {
-                label
+                label.frame(maxWidth: .infinity)
             }
         }
-        .frame(maxWidth: .infinity)
     }
 }
