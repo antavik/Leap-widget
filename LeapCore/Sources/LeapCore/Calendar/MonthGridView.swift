@@ -6,9 +6,9 @@ struct MonthGridView: View {
 
     private let model: MonthModel
     private let metrics: Theme.Metrics
-    private let yearLabel: String?
+    private let yearLabel: YearLabel?
 
-    init(model: MonthModel, metrics: Theme.Metrics = Theme.small, yearLabel: String? = nil) {
+    init(model: MonthModel, metrics: Theme.Metrics = Theme.small, yearLabel: YearLabel? = nil) {
         self.model = model
         self.metrics = metrics
         self.yearLabel = yearLabel
@@ -52,9 +52,9 @@ struct MonthGridView: View {
         }
         .overlay(alignment: Alignment(horizontal: .lastWeekdayColumn, vertical: .top)) {
             if let yearLabel {
-                Text(yearLabel)
+                Text(yearLabel.text)
                     .font(.system(size: metrics.title, weight: .bold))
-                    .foregroundStyle(.red)
+                    .foregroundStyle(yearLabel.isCurrent ? Color.red : Color.secondary)
             }
         }
     }

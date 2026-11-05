@@ -52,7 +52,7 @@ struct ConfigurationChangeTests {
                         on day: DateComponents = Fixtures.referenceDay) throws -> Rendered {
         let entry = try GoldenCase.entry(settings: settings, calendar: calendar, reference: day)
         let image = try #require(RenderHarness.render(
-            CalendarSurface(models: entry.models, yearLabel: entry.yearLabel),
+            CalendarSurface(models: entry.models, yearLabels: entry.yearLabels),
             size: tile.tileSize, scheme: .light, layoutDirection: .leftToRight))
         let buffer = try #require(ImageComparator.buffer(of: image))
         let separators = Set(Self.separatorColumns(of: buffer))
@@ -247,8 +247,9 @@ struct ConfigurationChangeTests {
         let on = try render(CalendarSettings(monthOffsets: offsets, showYear: true), tile: tile)
         let off = try render(CalendarSettings(monthOffsets: offsets, showYear: false), tile: tile)
 
-        #expect(on.entry.yearLabel == "\u{2019}26")
-        #expect(off.entry.yearLabel == nil)
+        #expect(on.entry.yearLabels.compactMap { $0 } == [Self.label("\u{2019}26")])
+        #expect(on.entry.yearLabels.last == Self.label("\u{2019}26"))
+        #expect(off.entry.yearLabels.allSatisfy { $0 == nil })
         #expect(Array(on.bands.dropFirst()) == Array(off.bands.dropFirst()))
 
         let change = try #require(ImageComparator.change(from: on.buffer, to: off.buffer),
@@ -305,7 +306,7 @@ struct ConfigurationChangeTests {
         let red = try Self.todayRed(rendered)
 
         #expect(rendered.entry.models.map(\.title) == [title])
-        #expect(rendered.entry.yearLabel == "\u{2019}26")
+        #expect(rendered.entry.yearLabels == [Self.label("\u{2019}26")])
         if marksToday {
             #expect(red.leading + red.trailing > Self.circle, "no today circle: \(red)")
         } else {
@@ -320,9 +321,9 @@ struct ConfigurationChangeTests {
                               on: Fixtures.december)
 
         #expect(current.entry.models.map(\.title) == ["DECEMBER"])
-        #expect(current.entry.yearLabel == "\u{2019}26")
+        #expect(current.entry.yearLabels == [Self.label("\u{2019}26")])
         #expect(next.entry.models.map(\.title) == ["JANUARY"])
-        #expect(next.entry.yearLabel == "\u{2019}27")
+        #expect(next.entry.yearLabels == [Self.label("\u{2019}27")])
 
         let red = try Self.todayRed(next)
         #expect(red.leading + red.trailing == 0, "January marks a day in December: \(red)")
@@ -338,9 +339,9 @@ struct ConfigurationChangeTests {
 
         #expect(next.entry.models.map(\.title) == ["AUGUST", "SEPTEMBER"])
         #expect(previous.entry.models.map(\.title) == ["JULY", "AUGUST"])
-        // The label follows the current month, wherever it sits.
-        #expect(next.entry.yearLabel == "\u{2019}26")
-        #expect(previous.entry.yearLabel == "\u{2019}26")
+        // The label sits on the last month and shows the current month's year.
+        #expect(next.entry.yearLabels == [nil, Self.label("\u{2019}26")])
+        #expect(previous.entry.yearLabels == [nil, Self.label("\u{2019}26")])
         #expect(next.bands == previous.bands)
 
         let before = try Self.todayRed(next)
@@ -349,13 +350,14 @@ struct ConfigurationChangeTests {
         #expect(after.leading == 0 && after.trailing > Self.circle, "previous: \(after)")
     }
 
-    @Test func thePreviousCompanionInJanuaryLabelsTheNewYear() throws {
+    @Test func thePreviousCompanionInJanuaryLabelsBothYears() throws {
         let january = DateComponents(year: 2027, month: 1, day: 10, hour: 12)
         let rendered = try render(CalendarSettings(monthOffsets: Companion.previous.monthOffsets),
                                   tile: .medium, on: january)
 
         #expect(rendered.entry.models.map(\.title) == ["DECEMBER", "JANUARY"])
-        #expect(rendered.entry.yearLabel == "\u{2019}27")
+        #expect(rendered.entry.yearLabels == [Self.label("\u{2019}26", isCurrent: false),
+                                              Self.label("\u{2019}27")])
 
         let red = try Self.todayRed(rendered)
         #expect(red.leading == 0 && red.trailing > Self.circle, "\(red)")
@@ -374,11 +376,15 @@ struct ConfigurationChangeTests {
 
         #expect(changed.entry.clickAction == action)
         #expect(changed.entry.models == standard.entry.models)
-        #expect(changed.entry.yearLabel == standard.entry.yearLabel)
+        #expect(changed.entry.yearLabels == standard.entry.yearLabels)
         #expect(ImageComparator.change(from: standard.buffer, to: changed.buffer) == nil)
     }
 
     // MARK: - Measuring
+
+    private static func label(_ text: String, isCurrent: Bool = true) -> YearLabel {
+        YearLabel(text: text, isCurrent: isCurrent)
+    }
 
     private static func todayColumn(_ model: MonthModel) -> Int? {
         model.weeks.lazy.compactMap { $0.firstIndex(where: \.isToday) }.first

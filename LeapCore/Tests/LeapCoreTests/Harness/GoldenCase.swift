@@ -183,7 +183,7 @@ extension GoldenCase {
             let entry = try Self.entry(settings: settings, calendar: calendar,
                                        reference: reference)
             let surface = CalendarSurface(models: entry.models,
-                                          yearLabel: entry.yearLabel)
+                                          yearLabels: entry.yearLabels)
 
             return try #require(RenderHarness.render(surface,
                                                      size: tile.tileSize,
@@ -212,7 +212,7 @@ extension GoldenCase {
                                        reference: reference)
 
             return try #require(RenderHarness.intrinsicSize(
-                MultiMonthView(models: entry.models, yearLabel: entry.yearLabel),
+                MultiMonthView(models: entry.models, yearLabels: entry.yearLabels),
                 scheme: scheme,
                 layoutDirection: layoutDirection))
 
