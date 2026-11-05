@@ -139,6 +139,11 @@ extension GoldenCase {
         GoldenCase("30-medium-outside-days-hidden", medium(showOutsideDays: false)),
         GoldenCase("31-medium-month-number-arabic", medium(monthNumber: .arabic)),
         GoldenCase("32-medium-sunday-first", medium(firstWeekday: .sunday)),
+        // The spanning labels on the dark scheme: the current year's red and
+        // the other year's grey both have to survive it.
+        GoldenCase("33-medium-december-dark", medium(reference: december), scheme: .dark),
+        GoldenCase("34-medium-previous-companion-january-dark",
+                   medium(.previous, reference: january), scheme: .dark),
     ]
 
     /// The app's only real UI surface.
