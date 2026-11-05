@@ -14,30 +14,38 @@ struct LayoutInvariantTests {
                         offsets: [Int] = [0],
                         calendar: Calendar = Fixtures.mondayFirst,
                         options: MonthOptions = MonthOptions())
-    throws -> (models: [MonthModel], yearLabel: String?) {
+    throws -> (models: [MonthModel], yearLabels: [YearLabel?]) {
         let date = try #require(calendar.date(from: reference))
         let todayDate = try today.map { try #require(calendar.date(from: $0)) } ?? date
         let builder = MonthModelBuilder(calendar: calendar, options: options)
         let built = offsets.map {
             builder.model(containing: date, offset: $0, today: todayDate)
         }
-        // Follows the offset-0 month, as `monthRow` does: `first` agrees only
-        // while the row starts at offset 0.
+        // Independent of `monthRow`: every month of a year-spanning row is
+        // labelled, otherwise only the last, with the offset-0 month's year.
         let current = offsets.firstIndex(of: 0) ?? 0
+        guard built.indices.contains(current) else {
+            return (built, [YearLabel?](repeating: nil, count: built.count))
+        }
+        let year = built[current].year
+        let spans = built.contains { $0.year != year }
+        let labels = built.enumerated().map { index, model -> YearLabel? in
+            guard spans || index == built.count - 1 else { return nil }
 
-        return (built, built.indices.contains(current)
-            ? yearLabel(forYear: built[current].year)
-            : nil)
+            return YearLabel(text: yearLabel(forYear: model.year), isCurrent: model.year == year)
+        }
+
+        return (built, labels)
     }
 
-    private func buffer(_ row: (models: [MonthModel], yearLabel: String?),
+    private func buffer(_ row: (models: [MonthModel], yearLabels: [YearLabel?]),
                         tile: WidgetGeometry = .small,
                         scheme: ColorScheme = .light,
                         layoutDirection: LayoutDirection = .leftToRight)
     throws -> ImageComparator.Buffer {
         let image = try #require(
             RenderHarness.render(CalendarSurface(models: row.models,
-                                                 yearLabel: row.yearLabel),
+                                                 yearLabels: row.yearLabels),
                                  size: tile.tileSize,
                                  scheme: scheme,
                                  layoutDirection: layoutDirection),
@@ -46,10 +54,10 @@ struct LayoutInvariantTests {
         return try #require(ImageComparator.buffer(of: image))
     }
 
-    private func intrinsicSize(_ row: (models: [MonthModel], yearLabel: String?),
+    private func intrinsicSize(_ row: (models: [MonthModel], yearLabels: [YearLabel?]),
                                scheme: ColorScheme = .light) throws -> CGSize {
         try #require(RenderHarness.intrinsicSize(
-            MultiMonthView(models: row.models, yearLabel: row.yearLabel),
+            MultiMonthView(models: row.models, yearLabels: row.yearLabels),
             scheme: scheme))
     }
 
@@ -215,7 +223,7 @@ struct LayoutInvariantTests {
         let row = try models(Self.august)
         let standard = try buffer(row)
         let image = try #require(RenderHarness.render(
-            CalendarSurface(models: row.models, yearLabel: row.yearLabel)
+            CalendarSurface(models: row.models, yearLabels: row.yearLabels)
                 .dynamicTypeSize(.accessibility5),
             size: WidgetGeometry.small.tileSize,
             scheme: .light,
@@ -228,7 +236,7 @@ struct LayoutInvariantTests {
     // MARK: - Edge guards
 
     @Test func aRowWithNoMonthsStillRenders() throws {
-        let buffer = try buffer((models: [], yearLabel: nil))
+        let buffer = try buffer((models: [], yearLabels: []))
 
         #expect(ImageComparator.isFullyOpaque(buffer))
         #expect(ImageComparator.isFlat(buffer))   // nothing to draw, but a valid tile
