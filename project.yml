@@ -52,6 +52,7 @@ targets:
     sources:
       - path: LeapWidgetTests
       - path: LeapWidget/ConfigurationIntent.swift
+      - path: LeapWidget/Provider.swift
       - path: LeapWidget/CalendarEntry.swift
       - path: LeapWidget/CalendarWidgetView.swift
       - path: LeapWidget/WidgetClickSurface.swift
