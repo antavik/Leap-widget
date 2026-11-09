@@ -4,7 +4,7 @@ import LeapCore
 // Display names and pickers for the `LeapCore.WidgetOptions` enums; every
 // mapping lives in `LeapCore.CalendarSettings`.
 
-/// A fixed-choice widget parameter, saved as its raw value in a `String`.
+/// A fixed-choice widget parameter, saved in a `String`.
 ///
 /// Not `AppEnum` or `AppEntity`: on macOS 26+ the extension resolves those
 /// through `linkd`, which refuses a bundle without a Team ID
@@ -14,16 +14,31 @@ import LeapCore
 protocol WidgetOption: CaseIterable, RawRepresentable<String> {
     /// What a parameter holds before anyone picks, or when its value is lost.
     static var fallback: Self { get }
+
+    /// The value a picker saves and the collapsed row shows. Pinned
+    /// persistence/UI contract: a `String` parameter echoes its stored value
+    /// verbatim, so this must stay a user-facing label – not the enum's
+    /// `rawValue`, and not freely editable or localizable copy.
+    var parameterValue: String { get }
     var title: LocalizedStringResource { get }
     var subtitle: LocalizedStringResource? { get }
 }
 
 extension WidgetOption {
+    /// Derived from `parameterValue` so the picker and the collapsed row can
+    /// never drift apart.
+    var title: LocalizedStringResource {
+        LocalizedStringResource(stringLiteral: parameterValue)
+    }
+
     var subtitle: LocalizedStringResource? { nil }
 
     /// The saved choice, or the fallback when it is missing or unknown.
+    /// Accepts both the pinned `parameterValue` and legacy `rawValue` saves.
     init(saved rawValue: String?) {
-        self = rawValue.flatMap(Self.init(rawValue:)) ?? .fallback
+        self = rawValue.flatMap { value in
+            Self(rawValue: value) ?? Self.allCases.first { $0.parameterValue == value }
+        } ?? .fallback
     }
 }
 
@@ -37,13 +52,13 @@ extension WidgetOptionProvider {
     func results() async throws -> IntentItemCollection<String> {
         IntentItemCollection(sections: [
             IntentItemSection(items: Option.allCases.map {
-                IntentItem($0.rawValue, title: $0.title, subtitle: $0.subtitle)
+                IntentItem($0.parameterValue, title: $0.title, subtitle: $0.subtitle)
             }),
         ])
     }
 
     func defaultResult() async -> String? {
-        Option.fallback.rawValue
+        Option.fallback.parameterValue
     }
 }
 
@@ -51,7 +66,7 @@ extension WidgetOptionProvider {
 extension Companion: WidgetOption {
     static let fallback: Companion = .next
 
-    var title: LocalizedStringResource {
+    var parameterValue: String {
         switch self {
         case .next: "Next"
         case .previous: "Previous"
@@ -67,7 +82,7 @@ struct CompanionOptions: WidgetOptionProvider {
 extension DisplayedMonth: WidgetOption {
     static let fallback: DisplayedMonth = .current
 
-    var title: LocalizedStringResource {
+    var parameterValue: String {
         switch self {
         case .current: "Current"
         case .next: "Next"
@@ -83,7 +98,7 @@ struct DisplayedMonthOptions: WidgetOptionProvider {
 extension FirstWeekday: WidgetOption {
     static let fallback: FirstWeekday = .system
 
-    var title: LocalizedStringResource {
+    var parameterValue: String {
         switch self {
         case .system: "System Default"
         case .monday: "Monday"
@@ -99,7 +114,7 @@ struct FirstWeekdayOptions: WidgetOptionProvider {
 extension MonthNumberDisplay: WidgetOption {
     static let fallback: MonthNumberDisplay = .off
 
-    var title: LocalizedStringResource {
+    var parameterValue: String {
         switch self {
         case .off: "Off"
         case .arabic: "Number (6)"
@@ -115,7 +130,7 @@ struct MonthNumberDisplayOptions: WidgetOptionProvider {
 extension ClickAction: WidgetOption {
     static let fallback: ClickAction = .appleCalendar
 
-    var title: LocalizedStringResource {
+    var parameterValue: String {
         switch self {
         case .appleCalendar: "Default Calendar"
         case .fantastical: "Fantastical"
