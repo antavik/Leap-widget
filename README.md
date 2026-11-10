@@ -1,18 +1,15 @@
 # Leap Widget
 
-**A calendar widget that never asks to see your calendar.**
-
 Leap Widget puts one or two months on your macOS Desktop or in Notification
 Center, with week numbers if you want them and one click through to the calendar
 you already use.
 
 It shows dates, not events, so it needs no permissions. It never connects to the
 network, needs no account, and is free and open source (MIT).
-[Here is how to check](#privacy-you-can-check).
 
 <p align="center">
-  <img src="docs/manual/assets/widget-types.png" width="720"
-       alt="The Two Months widget with week numbers turned on, showing September and October 2026, beside the Month widget without them. Today is circled in red in both.">
+  <img src="docs/readme/assets/main.png" width="720"
+       alt="The Two Months widget with week numbers turned on, beside the Month widget without them.">
 </p>
 
 ## Install
@@ -66,7 +63,7 @@ Sunday, September 27, 2026", rather than as dozens of separate numbers.
 
 Leap Widget does not show events. If you want your meetings on the Desktop, this is
 not the app for you. If you want to see the shape of the month and keep your
-schedule to yourself, it is. [Install it](#install).
+schedule to yourself.
 
 ## Every widget has its own settings
 
@@ -106,37 +103,6 @@ arrange them yourself.
   </tr>
 </table>
 
-## Privacy you can check
-
-Don't take this on trust. The links below go to the files behind these claims, each
-release is tagged at the commit it was built from
-([release script](scripts/release.sh)), and you can [build it yourself](#for-developers).
-
-- **No calendar access.** The app does not use EventKit and
-  [declares no calendar permission](Leap/Info.plist), so macOS has nothing to ask
-  you about.
-- **No network.** The widget runs in the App Sandbox, and its
-  [entitlements file](LeapWidget/LeapWidget.entitlements) grants it nothing else,
-  so macOS will not let it open a connection. The small host app is not sandboxed,
-  but [its source](Leap) contains no networking code.
-- **No ads, no account, no tracking.** There is nothing to sign up for and nothing
-  reports back.
-- **No third-party dependencies.** Leap Widget is written in Swift and uses only
-  frameworks that ship with macOS, such as SwiftUI, WidgetKit, and AppKit. The only
-  package in [the project file](project.yml) is
-  [LeapCore](LeapCore/Package.swift), and its dependency list is empty.
-
-**Links open only when you click.** A widget with **Click Opens** set to Google
-Calendar opens `calendar.google.com` in your browser. **Help ▸ Donate** and the
-window's **Buy me a coffee** link open the donation page there too. **Help ▸ Support
-& Feedback** and the window's **Share your thoughts** link start an email in your
-mail app.
-
-**One restart to know about.** The first launch after you install or update
-re-registers the widget and [runs `killall chronod NotificationCenter`](Leap/WidgetRepair.swift)
-so that your widgets redraw correctly. Both processes relaunch on demand, and any
-widgets on screen flicker once.
-
 ## Get started
 
 1. **Open Leap Widget once.** The widgets will not appear in the widget gallery until
@@ -148,23 +114,14 @@ widgets on screen flicker once.
 3. **Make it yours.** Right-click the placed widget and choose its **Edit** item.
    Changes take effect as you pick them.
 
-Then close the window. The app quits, and your widgets stay.
-
-<p align="center">
-  <img src="docs/manual/assets/welcome-window.png" width="480"
-       alt="The Leap Widget window, listing three steps: add to the Desktop, add to Notification Center, and configure.">
-</p>
-
-The [user manual](docs/manual/index.md) covers [every option](docs/manual/widgets.md)
-and what it is good for. It also ships inside the app: choose **Help ▸ Leap Widget
+The user manual covers every option and what it is good for, choose **Help ▸ Leap Widget
 Manual** or press Command-?, and you can read and search it with no network
 connection.
 
 ## Questions
 
 **Is it really free?**
-Yes. There is one download, and everything on this page is in it. If it earns a
-place on your Desktop, you can [buy me a coffee](https://buymeacoffee.com/antavik).
+Yes. There is one download, and everything on this page is in it.
 
 **Leap Widget is not in the widget gallery. What now?**
 Open the app once, because that is what registers the widgets. If it still does not
@@ -238,15 +195,6 @@ If Leap Widget is useful to you, starring this repository helps other people fin
 it.
 
 ## For developers
-
-Building requires Xcode and [XcodeGen](https://github.com/yonaskolb/XcodeGen). CI
-builds with Xcode 26.3.
-
-```sh
-brew install xcodegen
-make test
-make release
-```
 
 [CONTRIBUTING.md](CONTRIBUTING.md) covers the build, the help book, the test layers,
 and the project layout.

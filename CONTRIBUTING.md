@@ -45,13 +45,13 @@ The app itself runs on macOS 14 Sonoma or later.
 ```sh
 make test
 
-make release
+make build
 ```
 
 `make help` lists every target. `make lint` runs SwiftLint in strict mode
 against `.swiftlint.yml` (`brew install swiftlint`).
 
-`make release` and `make debug` regenerate the project first. Run `make project`
+`make build` and `make debug` regenerate the project first. Run `make project`
 on its own before opening Xcode, and again after adding or removing a source
 file so the target picks it up.
 
@@ -105,6 +105,7 @@ Xcode and a logged-in GUI session.
 ```sh
 make test                                                  # L0-L3
 make report                                                # the same, plus reports/<stamp>-<hash>/
+
 make snapshots-record                                      # regenerate goldens that moved
 LEAP_SKIP_SNAPSHOTS=1 swift test --package-path LeapCore   # tightest loop
 LEAP_BUDGETS=1 swift test --package-path LeapCore --filter BudgetTests
@@ -143,7 +144,9 @@ instance instead.
 | `Leap/` | Host app: onboarding, `leapwidget://` → calendar URL relay |
 | `LeapWidget/` | Widget extension: intent, timeline provider, widget declaration |
 | `LeapCore/` | Local Swift package: calendar math, models, theming, widget options, the relay and the views – plus L0-L3 tests and the golden images |
+| `LeapWidgetTests/` | Unit tests for the widget extension's own code – intent → `CalendarSettings` mapping and the shipping widget view rendered from real intents – run through `Leap.xctestplan` |
 | `LeapUITests/` | XCUITest target (L4), run through `Leap.xctestplan` |
-| `docs/manual/` | The user manual in Markdown, plus its screenshots |
+| `Config/` | `.xcconfig` build settings: shared `Base`, per-configuration `Debug`/`Release`, and one per target |
+| `docs/` | Documentation and its assets |
 | `scripts/` | L0 consistency checks, the help-book build, the report harness and the release script |
 | `packaging/` | The Homebrew cask's source of truth, seeded into the tap on first publish |
