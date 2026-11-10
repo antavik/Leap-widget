@@ -272,4 +272,16 @@ struct CalendarMathTests {
         #expect(calendar.component(.day, from: dates[1]) == 8)
         #expect(calendar.component(.day, from: dates[2]) == 9)
     }
+
+    /// Havana jumps from 00:00 to 01:00 on Mar 8 2026; following days must stay at midnight.
+    @Test func timelineDatesReturnToMidnightAfterADayThatSkipsIt() throws {
+        let calendar = Fixtures.calendar(locale: "en_US", timeZone: "America/Havana")
+        let now = try Fixtures.date(2026, 3, 8, hour: 15, in: calendar)
+
+        #expect(calendar.component(.hour, from: calendar.startOfDay(for: now)) == 1)
+        #expect(try timelineDates(from: now, calendar: calendar)
+                == [now,
+                    Fixtures.date(2026, 3, 9, hour: 0, in: calendar),
+                    Fixtures.date(2026, 3, 10, hour: 0, in: calendar)])
+    }
 }
