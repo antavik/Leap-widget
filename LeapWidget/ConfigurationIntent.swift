@@ -15,26 +15,17 @@ protocol WidgetOption: CaseIterable, RawRepresentable<String> {
     /// What a parameter holds before anyone picks, or when its value is lost.
     static var fallback: Self { get }
 
-    /// The value a picker saves and the collapsed row shows. Pinned
-    /// persistence/UI contract: a `String` parameter echoes its stored value
-    /// verbatim, so this must stay a user-facing label – not the enum's
-    /// `rawValue`, and not freely editable or localizable copy.
     var parameterValue: String { get }
     var title: LocalizedStringResource { get }
     var subtitle: LocalizedStringResource? { get }
 }
 
 extension WidgetOption {
-    /// Derived from `parameterValue` so the picker and the collapsed row can
-    /// never drift apart.
     var title: LocalizedStringResource {
         LocalizedStringResource(stringLiteral: parameterValue)
     }
-
     var subtitle: LocalizedStringResource? { nil }
 
-    /// The saved choice, or the fallback when it is missing or unknown.
-    /// Accepts both the pinned `parameterValue` and legacy `rawValue` saves.
     init(saved rawValue: String?) {
         self = rawValue.flatMap { value in
             Self(rawValue: value) ?? Self.allCases.first { $0.parameterValue == value }
@@ -62,7 +53,6 @@ extension WidgetOptionProvider {
     }
 }
 
-/// The second month the two-month (medium) widget shows.
 extension Companion: WidgetOption {
     static let fallback: Companion = .next
 
@@ -78,7 +68,6 @@ struct CompanionOptions: WidgetOptionProvider {
     typealias Option = Companion
 }
 
-/// Which month the single-month (small) widget renders, relative to today.
 extension DisplayedMonth: WidgetOption {
     static let fallback: DisplayedMonth = .current
 
