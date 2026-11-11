@@ -192,11 +192,13 @@ func applyFirstWeekday(_ override: Int?, to calendar: inout Calendar) {
     }
 }
 
-/// Timeline entry dates: now plus the next two midnights. Midnights come
-/// from `Calendar`, so DST transitions stay aligned.
+/// Timeline dates are now plus the next two midnights. When DST skips 00:00,
+/// the day starts at 01:00, so reusing that start for the next day would drift by an hour.
 public func timelineDates(from now: Date, calendar: Calendar) -> [Date] {
     let todayStart = calendar.startOfDay(for: now)
-    let midnights = (1...2).compactMap { calendar.date(byAdding: .day, value: $0, to: todayStart) }
+    let midnights = (1...2).compactMap {
+        calendar.date(byAdding: .day, value: $0, to: todayStart).map(calendar.startOfDay(for:))
+    }
 
     return [now] + midnights
 }
