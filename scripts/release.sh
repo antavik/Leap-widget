@@ -79,7 +79,7 @@ notarize() {
 # ── build ────────────────────────────────────────────────────────────────────
 # Ad-hoc Release build; Developer ID is applied afterwards, with the secure
 # timestamp notarization requires.
-make release APP_VERSION="$VERSION"
+make build APP_VERSION="$VERSION"
 [ -d "$APP" ] || { echo "expected app not found: $APP" >&2; exit 1; }
 
 # ── sign, inside-out ─────────────────────────────────────────────────────────
