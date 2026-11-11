@@ -84,23 +84,33 @@ struct ConfigurationIntentTests {
 
     // MARK: - Saved choices
 
-    /// The picker offers every case by raw value and starts on the fallback;
-    /// a missing or unknown saved value reads back as the fallback.
-    @Test func everyPickerOffersEveryCaseAndFallsBack() async throws {
-        func check<Provider: WidgetOptionProvider>(_ provider: Provider) async throws
-        where Provider.Option: Equatable {
+    /// The picker offers every case by its user-facing value and starts on
+    /// the fallback's value; a missing or unknown saved value reads back as
+    /// the fallback, and legacy raw values still decode to their case.
+    @Test func everyPickerOffersDisplayValuesAndFallsBack() async throws {
+        func check<Provider: WidgetOptionProvider>(
+            _ provider: Provider,
+            _ displayValues: [String]
+        ) async throws where Provider.Option: Equatable {
             typealias Option = Provider.Option
 
-            #expect(try await provider.results().items == Option.allCases.map(\.rawValue))
-            #expect(await provider.defaultResult() == Option.fallback.rawValue)
+            #expect(try await provider.results().items == displayValues)
+            #expect(await provider.defaultResult() == displayValues.first)
+            for (option, displayValue) in zip(Option.allCases, displayValues) {
+                #expect(Option(saved: displayValue) == option,
+                        "decodes new value \(displayValue)")
+                #expect(Option(saved: option.rawValue) == option,
+                        "decodes legacy value \(option.rawValue)")
+            }
             #expect(Option(saved: nil) == Option.fallback)
             #expect(Option(saved: "unknown") == Option.fallback)
         }
 
-        try await check(CompanionOptions())
-        try await check(DisplayedMonthOptions())
-        try await check(FirstWeekdayOptions())
-        try await check(MonthNumberDisplayOptions())
-        try await check(ClickActionOptions())
+        try await check(CompanionOptions(), ["Next", "Previous"])
+        try await check(DisplayedMonthOptions(), ["Current", "Next", "Previous"])
+        try await check(FirstWeekdayOptions(), ["System Default", "Monday", "Sunday"])
+        try await check(MonthNumberDisplayOptions(), ["Off", "Number (6)", "Roman (VI)"])
+        try await check(ClickActionOptions(),
+                        ["Default Calendar", "Fantastical", "Google Calendar", "Nothing"])
     }
 }
