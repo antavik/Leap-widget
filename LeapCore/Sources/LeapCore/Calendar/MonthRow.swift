@@ -2,10 +2,6 @@ import Foundation
 
 public struct YearLabel: Equatable, Sendable {
     public let text: String
-    /// True for the label of the offset-0 (reference) month; when the row has no
-    /// offset-0 month (small widget next/previous), index 0 is the reference.
-    /// The current label keeps the accent color; the other year's label on a
-    /// December–January row renders like week numbers.
     public let isCurrent: Bool
 
     public init(text: String, isCurrent: Bool) {
@@ -14,10 +10,6 @@ public struct YearLabel: Equatable, Sendable {
     }
 }
 
-/// `yearLabels` is index-parallel to `models`. Offsets are consecutive months, so a
-/// year change within a row is the December–January case (other calendars roll at
-/// their own new year); then every month is labeled with its own year. Otherwise
-/// only the last month carries the reference year.
 public func monthRow(containing date: Date,
                      offsets: [Int],
                      showYear: Bool,

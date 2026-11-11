@@ -19,8 +19,6 @@ struct WeekdayHeaderCell: View {
                 label.alignmentGuide(.firstWeekdayColumn) { $0[.leading] }
                     .frame(maxWidth: .infinity)
             } else if isLastColumn {
-                // The year label ends on the last weekday glyph's trailing
-                // edge, never right of the weekday itself.
                 label.alignmentGuide(.lastWeekdayColumn) { $0[.trailing] }
                     .frame(maxWidth: .infinity)
             } else {
