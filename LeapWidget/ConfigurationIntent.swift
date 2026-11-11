@@ -1,16 +1,6 @@
 import AppIntents
 import LeapCore
 
-// Display names and pickers for the `LeapCore.WidgetOptions` enums; every
-// mapping lives in `LeapCore.CalendarSettings`.
-
-/// A fixed-choice widget parameter stored as a `String`.
-///
-/// Not `AppEnum`/`AppEntity`: on macOS 26+ the extension resolves those via
-/// `linkd`, which rejects ad-hoc-signed bundles without a Team ID
-/// ("requiresValidatedBundle"). Saved choices therefore arrived as `nil` and
-/// fell back; the month number never appeared. A `String`, like a `Bool`, needs
-/// no lookup.
 protocol WidgetOption: CaseIterable, RawRepresentable<String> {
     /// What a parameter holds before anyone picks, or when its value is lost.
     static var fallback: Self { get }

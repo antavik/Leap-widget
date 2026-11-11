@@ -1,16 +1,11 @@
 import Foundation
 
-/// Remembers which build of the widget extension last ran.
+/// Tracks the last widget build that ran.
 ///
-/// The widget host keeps one render archive per widget - kind, family, settings
-/// and size - and holds it for days before asking for a new one. An app update
-/// replaces the extension underneath it, and an archive written while that swap
-/// is in flight can end up covering only the appearance in use at that moment.
-/// A widget on a surface that wants the other one then has no entry to show but
-/// its placeholder, until the archive goes stale days later.
-///
-/// The first run of a new build is the moment to ask for every timeline again,
-/// which replaces those archives without anyone touching a widget.
+/// The widget host keeps one archived render per widget variant and size. During
+/// an app update, a render may be written while the extension is being swapped,
+/// leaving stale content until the archive expires. The first run of a new build
+/// refreshes those archives without requiring user interaction.
 public struct BuildMarker {
     private let defaults: UserDefaults
     private let key: String
@@ -35,10 +30,7 @@ public struct BuildMarker {
         defaults.string(forKey: key) != build
     }
 
-    /// Records `build` and reports whether it replaced a different one.
-    ///
-    /// True on the first run of a fresh install as well: there is no archive
-    /// worth keeping then either.
+    /// Records `build` and returns whether it changed the stored value.
     public func advance(to build: String) -> Bool {
         guard isBehind(build) else { return false }
 
