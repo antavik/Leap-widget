@@ -223,7 +223,7 @@ struct CalendarMathTests {
                                showYear: true,
                                builder: MonthModelBuilder(calendar: calendar,
                                                           options: MonthOptions()))
-            #expect(row.yearLabel == label, "identifier=\(identifier)")
+            #expect(row.yearLabels.first??.text == label, "identifier=\(identifier)")
         }
     }
 
@@ -252,7 +252,7 @@ struct CalendarMathTests {
                                                       options: MonthOptions()))
 
         #expect(row.models.isEmpty)
-        #expect(row.yearLabel == nil)
+        #expect(row.yearLabels.isEmpty)
     }
 
     // MARK: - Timeline dates

@@ -3,18 +3,18 @@ import SwiftUI
 public struct MultiMonthView: View {
     private let models: [MonthModel]
     private let metrics: Theme.Metrics
-    private let yearLabel: String?
+    private let yearLabels: [YearLabel?]
 
-    public init(models: [MonthModel], yearLabel: String?) {
+    public init(models: [MonthModel], yearLabels: [YearLabel?]) {
         self.models = models
         self.metrics = models.count == 1 ? Theme.small : Theme.medium
-        self.yearLabel = yearLabel
+        self.yearLabels = yearLabels
     }
 
     public var body: some View {
         Group {
             if models.count == 1 {
-                MonthGridView(model: models[0], metrics: metrics, yearLabel: yearLabel)
+                MonthGridView(model: models[0], metrics: metrics, yearLabel: yearLabels.first ?? nil)
             } else {
                 sideBySideMonths
             }
@@ -28,7 +28,7 @@ public struct MultiMonthView: View {
             ForEach(models.indices, id: \.self) { index in
                 MonthGridView(model: models[index],
                               metrics: metrics,
-                              yearLabel: index == models.indices.last ? yearLabel : nil)
+                              yearLabel: yearLabels.indices.contains(index) ? yearLabels[index] : nil)
                     .frame(maxWidth: .infinity, alignment: .topLeading)
             }
         }
@@ -43,7 +43,7 @@ public struct MultiMonthView: View {
                            calendar: previewCalendar(),
                            options: MonthOptions(showWeekNumbers: true)))
 
-    MultiMonthView(models: row.models, yearLabel: row.yearLabel)
+    MultiMonthView(models: row.models, yearLabels: row.yearLabels)
         .padding(12)
 }
 

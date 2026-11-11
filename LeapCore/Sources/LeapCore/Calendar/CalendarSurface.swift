@@ -2,15 +2,15 @@ import SwiftUI
 
 public struct CalendarSurface: View {
     private let models: [MonthModel]
-    private let yearLabel: String?
+    private let yearLabels: [YearLabel?]
 
-    public init(models: [MonthModel], yearLabel: String?) {
+    public init(models: [MonthModel], yearLabels: [YearLabel?]) {
         self.models = models
-        self.yearLabel = yearLabel
+        self.yearLabels = yearLabels
     }
 
     public var body: some View {
-        MultiMonthView(models: models, yearLabel: yearLabel)
+        MultiMonthView(models: models, yearLabels: yearLabels)
             .padding(WidgetGeometry.contentPadding)
     }
 }
