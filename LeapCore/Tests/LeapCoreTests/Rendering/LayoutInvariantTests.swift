@@ -21,8 +21,6 @@ struct LayoutInvariantTests {
         let built = offsets.map {
             builder.model(containing: date, offset: $0, today: todayDate)
         }
-        // Independent of `monthRow`: every month of a year-spanning row is
-        // labelled, otherwise only the last, with the offset-0 month's year.
         let current = offsets.firstIndex(of: 0) ?? 0
         guard built.indices.contains(current) else {
             return (built, [YearLabel?](repeating: nil, count: built.count))

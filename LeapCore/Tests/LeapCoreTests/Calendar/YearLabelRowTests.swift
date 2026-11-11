@@ -2,7 +2,7 @@ import Testing
 import Foundation
 @testable import LeapCore
 
-/// Linear A-79: the two-month widget used to carry ONE year label, taken from
+/// The two-month widget used to carry ONE year label, taken from
 /// the offset-0 month and pinned to the last month shown – so January 2027 in
 /// a December row read "JANUARY ’26". Each month now carries the label for its
 /// own year whenever the row spans a year boundary.

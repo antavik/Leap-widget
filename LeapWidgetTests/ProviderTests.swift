@@ -2,8 +2,6 @@ import Testing
 import WidgetKit
 import Foundation
 
-/// The reload policy, the one part of the timeline `LeapCore` cannot build.
-/// What the entries show is covered there, by `TimelineTests`.
 @Suite("Provider")
 struct ProviderTests {
     /// 09:00 stands for any moment of the day. 00:00 is the reload arriving

@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// The edge columns export the guides the month title and year label align
-/// to: the first glyph's leading edge, the last glyph's trailing edge.
 struct WeekdayHeaderCell: View {
     let symbol: String
     let isWeekend: Bool

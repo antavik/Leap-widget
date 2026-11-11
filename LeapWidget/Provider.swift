@@ -19,9 +19,9 @@ where Configuration: WidgetConfigurationIntent & CalendarConfiguration {
         timeline(for: configuration, now: .now, calendar: .autoupdatingCurrent)
     }
 
-    /// Entries are now plus the next two midnights: the day flips at 00:00 without a reload,
-    /// but the refresh is still scheduled for the first midnight so a stale host redraws
-    /// immediately and the later midnight covers a delayed system reload.
+    /// Entries include the next two midnights: the day changes at 00:00 without a
+    /// reload, but the refresh is scheduled for the first midnight so stale hosts
+    /// redraw immediately; the later midnight covers a delayed system reload.
     func timeline(for configuration: Configuration,
                   now: Date,
                   calendar: Calendar) -> Timeline<CalendarEntry> {

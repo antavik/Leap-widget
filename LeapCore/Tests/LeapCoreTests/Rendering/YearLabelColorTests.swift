@@ -3,12 +3,12 @@ import SwiftUI
 import Foundation
 @testable import LeapCore
 
-/// L2 – the year label's colour, per month (Linear A-79).
+/// L2 – year-label colour by month.
 ///
-/// December's two-month row spans a year boundary. Each month carries the
-/// label of its own year, and only the current month's label is red; the
-/// other renders like a week number (`.secondary`). Exact shades belong to the
-/// goldens; this pins the colour *class* of each label.
+/// A December two-month row spans a year boundary: each month keeps its own
+/// year's label, with only the current month accent-red; the other is the same
+/// muted class as a week number (`.secondary`). Exact shades live in the goldens;
+/// this pins the colour class of each label.
 @Suite("Year label colours", .tags(.layout), .serialized, .warmRenderer)
 @MainActor
 struct YearLabelColorTests {

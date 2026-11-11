@@ -104,12 +104,9 @@ extension GoldenCase {
                    small(calendar: sundayFirst, reference: february,
                          showOutsideDays: false)),
         GoldenCase("12-small-december-from-january", small(.previous, reference: january)),
-        // The measured tightest shipping case: 143×164 pt inside a 170×170 tile.
         GoldenCase("13-small-de-december-roman-week-numbers",
                    small(calendar: deDE, reference: december,
                          showWeekNumbers: true, monthNumber: .roman)),
-        // Locale is a model input, not an environment value: the Arabic symbols
-        // only appear because the *calendar* is ar_SA.
         GoldenCase("14-small-arabic-calendar-ltr", small(calendar: arSA)),
         GoldenCase("15-small-right-to-left", small(), layoutDirection: .rightToLeft),
         GoldenCase("16-medium-default-light", medium()),
@@ -120,42 +117,24 @@ extension GoldenCase {
                    medium(reference: december, showWeekNumbers: true)),
         GoldenCase("21-medium-roman-week-numbers",
                    medium(showWeekNumbers: true, monthNumber: .roman)),
-        // The year label overlays the *row*, not one month, so the two-month
-        // tile is its own case; 09 covers only the single-month overlay.
         GoldenCase("22-medium-year-label-off", medium(showYear: false)),
-        // States a configuration change can reach that 01–22 do not pin.
         GoldenCase("25-small-next-month", small(.next)),
-        // The label follows the displayed month across the year boundary.
         GoldenCase("26-small-january-from-december", small(.next, reference: december)),
         GoldenCase("27-medium-previous-companion-january", medium(.previous, reference: january)),
-        // The Sunday override also switches to US week numbering.
         GoldenCase("28-medium-dark-all-options",
                    medium(firstWeekday: .sunday, showWeekNumbers: true,
                           showOutsideDays: false, monthNumber: .roman),
                    scheme: .dark),
         GoldenCase("29-small-year-off-outside-days-hidden",
                    small(showOutsideDays: false, showYear: false)),
-        // The shared options, each alone, on the two-month tile.
         GoldenCase("30-medium-outside-days-hidden", medium(showOutsideDays: false)),
         GoldenCase("31-medium-month-number-arabic", medium(monthNumber: .arabic)),
         GoldenCase("32-medium-sunday-first", medium(firstWeekday: .sunday)),
-        // The spanning labels on the dark scheme: the current year's red and
-        // the other year's grey both have to survive it.
         GoldenCase("33-medium-december-dark", medium(reference: december), scheme: .dark),
         GoldenCase("34-medium-previous-companion-january-dark",
                    medium(.previous, reference: january), scheme: .dark),
     ]
 
-    /// The app's only real UI surface.
-    ///
-    /// Measured limit: `ImageRenderer` cannot draw interactive views, so the
-    /// donation row's two `Link`s record as SwiftUI's placeholder. Geometry is
-    /// still pinned; their text and colour stay a release-checklist item.
-    ///
-    /// No `de_DE` case: both catalogues ship `en` only, so a recorded German
-    /// onboarding image was byte-identical to 23 and could only fail when 23
-    /// already had. The wrapping it was meant to cover is asserted by
-    /// `LayoutInvariantTests.longerStepTextGrowsTheStepInsteadOfClipping`.
     static let onboardingCases: [GoldenCase] = [
         GoldenCase("23-onboarding-light", .onboarding(locale: Locale(identifier: "en_US"))),
         GoldenCase("24-onboarding-dark", .onboarding(locale: Locale(identifier: "en_US")),
