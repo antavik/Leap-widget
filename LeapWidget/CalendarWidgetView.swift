@@ -6,7 +6,7 @@ struct CalendarWidgetView: View {
 
     var body: some View {
         WidgetClickSurface(action: entry.model.clickAction) {
-            CalendarSurface(models: entry.model.models, yearLabel: entry.model.yearLabel)
+            CalendarSurface(models: entry.model.models, yearLabels: entry.model.yearLabels)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         }
     }

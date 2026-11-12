@@ -1,9 +1,6 @@
 import WidgetKit
 import LeapCore
 
-/// One entry shape for both widgets; the small one carries a single-element
-/// `models`. Everything but WidgetKit conformance lives in
-/// `LeapCore.CalendarEntryModel`, where it can be tested.
 struct CalendarEntry: TimelineEntry {
     let model: CalendarEntryModel
 
@@ -13,7 +10,6 @@ struct CalendarEntry: TimelineEntry {
         self.model = model
     }
 
-    /// A one-off entry – placeholder, snapshot, preview.
     init(date: Date,
          config: some CalendarConfiguration,
          calendar: Calendar = .autoupdatingCurrent) {

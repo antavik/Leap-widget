@@ -113,7 +113,7 @@ extension AppDelegate {
                                options: MonthOptions(showWeekNumbers: true)))
         // The medium widget's tile, so the grid lays out as it ships.
         let hosting = NSHostingController(
-            rootView: CalendarSurface(models: row.models, yearLabel: row.yearLabel)
+            rootView: CalendarSurface(models: row.models, yearLabels: row.yearLabels)
                 .frame(width: WidgetGeometry.medium.tileSize.width,
                        height: WidgetGeometry.medium.tileSize.height))
         hosting.sizingOptions = [.preferredContentSize]

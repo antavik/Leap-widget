@@ -16,11 +16,21 @@ where Configuration: WidgetConfigurationIntent & CalendarConfiguration {
 
     func timeline(for configuration: Configuration,
                   in context: Context) async -> Timeline<CalendarEntry> {
-        // Now + the next two midnights: the today marker flips at 00:00.
-        let entries = calendarEntries(for: configuration.settings,
-                                      now: .now,
-                                      calendar: .autoupdatingCurrent)
+        timeline(for: configuration, now: .now, calendar: .autoupdatingCurrent)
+    }
 
-        return Timeline(entries: entries.map(CalendarEntry.init), policy: .atEnd)
+    /// Entries include the next two midnights: the day changes at 00:00 without a
+    /// reload, but the refresh is scheduled for the first midnight so stale hosts
+    /// redraw immediately; the later midnight covers a delayed system reload.
+    func timeline(for configuration: Configuration,
+                  now: Date,
+                  calendar: Calendar) -> Timeline<CalendarEntry> {
+        let entries = calendarEntries(for: configuration.settings,
+                                      now: now,
+                                      calendar: calendar).map(CalendarEntry.init)
+        let nextMidnight = entries.first { $0.date > now }?.date
+
+        return Timeline(entries: entries,
+                        policy: nextMidnight.map { .after($0) } ?? .atEnd)
     }
 }

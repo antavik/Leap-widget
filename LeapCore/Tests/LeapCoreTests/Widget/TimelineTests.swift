@@ -88,7 +88,9 @@ struct TimelineTests {
         let entries = calendarEntries(for: settings, now: now, calendar: calendar)
 
         #expect(entries.allSatisfy { $0.clickAction == .googleCalendar })
-        #expect(entries.allSatisfy { $0.yearLabel == "\u{2019}26" })
+        #expect(entries.allSatisfy {
+            $0.yearLabels == [nil, YearLabel(text: "\u{2019}26", isCurrent: true)]
+        })
     }
 
     @Test func yearLabelIsAbsentWhenTheOptionIsOff() throws {
@@ -98,6 +100,6 @@ struct TimelineTests {
                                                             showYear: false),
                                       now: now, calendar: calendar)
 
-        #expect(entries.allSatisfy { $0.yearLabel == nil })
+        #expect(entries.allSatisfy { $0.yearLabels == [nil] })
     }
 }

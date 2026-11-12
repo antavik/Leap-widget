@@ -4,7 +4,7 @@ public struct CalendarEntryModel: Equatable, Sendable {
     public let date: Date
     public let clickAction: ClickAction
     public let models: [MonthModel]
-    public let yearLabel: String?
+    public let yearLabels: [YearLabel?]
 
     public init(date: Date,
                 settings: CalendarSettings,
@@ -17,7 +17,7 @@ public struct CalendarEntryModel: Equatable, Sendable {
         self.date = date
         self.clickAction = settings.clickAction
         self.models = row.models
-        self.yearLabel = row.yearLabel
+        self.yearLabels = row.yearLabels
     }
 }
 

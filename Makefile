@@ -17,9 +17,9 @@ UI_RESULTS   := $(BUILD_DIR)/LeapUITests.xcresult
 UI_SIGNING   := CODE_SIGN_IDENTITY="-" CODE_SIGN_STYLE=Manual
 ONLY         ?=
 
-.PHONY: all help project help-book release dist debug test ui-test lint report reports-prune snapshots-record uninstall clean
+.PHONY: all help project help-book build dist debug test ui-test lint report reports-prune snapshots-record uninstall clean
 
-all: lint test release ## lints, tests, then a Release build (default)
+all: lint test build ## lints, tests, then a Release build (default)
 
 help: ## list targets
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | \
@@ -31,7 +31,7 @@ help-book: ## render docs/manual into build/help/Leap.help
 project: help-book ## generate Leap.xcodeproj from project.yml
 	xcodegen generate --spec project.yml
 
-release: help-book project ## Release build into build/
+build: help-book project ## Release build into build/
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) \
 		-configuration Release -derivedDataPath $(BUILD_DIR) \
 		-destination 'generic/platform=macOS' \
